@@ -1,0 +1,49 @@
+# Adicionar Novo Questionário
+
+## Descrição
+Usuário adiciona um novo questionário ao sistema. Um questionário consiste em uma coleção de perguntas que podem ser habilitadas ou desabilitadas.
+
+## Atores
+Usuário que criou o quiz/formulário.
+
+## Pré-condições
+O usuário deve inserir perguntas para o questionário.
+
+## Trigger
+Usuário deseja adicionar um novo questionário ao sistema.
+
+## Fluxos:
+
+### Básico:
+1. O usuário acessa a função de adicionar novo questionário no sistema.
+2. O usuário insere o nome do questionário.
+3. O usuário decide se o novo questionário é o padrão ou não.
+4. O usuário seleciona as perguntas que farão parte do questionário.
+5. O usuário habilita ou desabilita as perguntas conforme necessário.
+6. O usuário confirma a criação do questionário.
+
+### Alternativos:
+- **2A.** O usuário decide cancelar a criação do questionário:
+  1. O usuário clica no botão de cancelamento.
+  2. O sistema cancela a operação e retorna à página anterior.
+
+### Fluxos de Exceção:
+- **3E1.** O usuário tenta criar um questionário sem selecionar nenhuma pergunta:
+  1. O sistema exibe uma mensagem de erro informando que pelo menos uma pergunta deve ser selecionada.
+  2. O usuário seleciona pelo menos uma pergunta.
+  3. O usuário continua com a criação do questionário.
+
+- **5E1.** O usuário tenta confirmar a criação do questionário sem preencher o nome:
+  1. O sistema exibe uma mensagem de erro informando que o nome do questionário é obrigatório.
+  2. O usuário preenche o nome do questionário.
+  3. O usuário continua com a criação do questionário.
+
+## Pós-condições
+- O questionário é adicionado ao sistema.
+- As perguntas selecionadas são associadas ao questionário.
+- O questionário pode ser usado em atividades do sistema.
+
+## Regras de Negócio
+- Pelo menos uma pergunta deve ser selecionada para criar um questionário.
+- O nome do questionário é obrigatório.
+- As perguntas podem ser habilitadas ou desabilitadas dentro do questionário.

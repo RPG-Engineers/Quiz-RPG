@@ -1,0 +1,35 @@
+# 3- Remover Pergunta
+
+## Descrição
+Usuário remove uma pergunta existente de um formulário customizado.
+
+## Atores
+Usuário que criou o quiz/formulário.
+
+## Pré-condições
+Uma pergunta existente em um formulário válido.
+
+## Trigger
+Usuário deseja remover uma pergunta existente.
+
+## Fluxos:
+
+### Básico:
+1. O usuário seleciona a pergunta que deseja remover.
+2. O usuário confirma a remoção da pergunta.
+
+### Alternativos:
+- **2A.** O usuário decide cancelar a remoção da pergunta:
+  1. O usuário cancela a operação.
+  2. O sistema retorna à página anterior.
+
+### Fluxos de Exceção:
+N/A
+
+## Pós-condições
+- A pergunta é removida do formulário.
+- Todas as respostas associadas à pergunta também são removidas.
+
+## Regras de Negócio
+- A remoção da pergunta é irreversível.
+- As respostas associadas à pergunta são removidas junto com ela.

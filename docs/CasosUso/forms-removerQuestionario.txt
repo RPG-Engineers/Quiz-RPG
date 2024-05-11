@@ -1,0 +1,37 @@
+# Remover Questionário
+
+## Descrição
+Usuário remove um questionário existente do sistema.
+
+## Atores
+Usuário que criou o quiz/formulário.
+
+## Pré-condições
+O questionário a ser removido deve existir no sistema.
+O usuário deve ter permissões para remover questionários.
+
+## Trigger
+Usuário deseja remover um questionário existente do sistema.
+
+## Fluxos:
+
+### Básico:
+1. O usuário acessa a função de remover questionário no sistema.
+2. O usuário seleciona o questionário que deseja remover.
+3. O usuário confirma a remoção do questionário.
+
+### Alternativos:
+- **2A.** O usuário decide cancelar a remoção do questionário:
+  1. O usuário clica no botão de cancelamento.
+  2. O sistema cancela a operação e retorna à página anterior.
+
+### Fluxos de Exceção:
+N/A
+
+## Pós-condições
+- O questionário é removido do sistema.
+- As perguntas associadas ao questionário não são removidas do sistema, mas ficam desassociadas do questionário removido.
+
+## Regras de Negócio
+- O questionário deve existir no sistema para ser removido.
+- As perguntas associadas ao questionário não são removidas.

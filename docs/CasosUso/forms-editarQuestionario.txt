@@ -1,0 +1,43 @@
+# Editar Questionário
+
+## Descrição
+Usuário edita um questionário existente no sistema, podendo modificar seu nome e a lista de perguntas associadas.
+
+## Atores
+Usuário que criou o quiz/formulário.
+
+## Pré-condições
+O usuário deve ter permissões para editar questionários.
+O questionário a ser editado deve existir no sistema.
+
+## Trigger
+Usuário deseja editar um questionário existente no sistema.
+
+## Fluxos:
+
+### Básico:
+1. O usuário acessa a função de edição de questionário no sistema.
+2. O usuário seleciona o questionário que deseja editar.
+3. O usuário modifica o nome do questionário, se necessário.
+3. O usuário modifica se o questionário é a opção padrão, se necessário.
+4. O usuário adiciona ou remove perguntas do questionário conforme desejado.
+5. O usuário confirma as alterações feitas no questionário.
+
+### Alternativos:
+- **2A.** O usuário decide cancelar a edição do questionário:
+  1. O usuário clica no botão de cancelamento.
+  2. O sistema cancela a operação e retorna à página anterior.
+
+### Fluxos de Exceção:
+- **4E1.** O usuário tenta confirmar a edição do questionário sem preencher o nome:
+  1. O sistema exibe uma mensagem de erro informando que o nome do questionário é obrigatório.
+  2. O usuário preenche o nome do questionário.
+  3. O usuário continua com a edição do questionário.
+
+## Pós-condições
+- As alterações feitas no questionário são salvas no sistema.
+- A lista de perguntas associadas ao questionário pode ter sido modificada.
+
+## Regras de Negócio
+- O nome do questionário é obrigatório.
+- O questionário deve existir no sistema para ser editado.
