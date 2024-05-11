@@ -1,0 +1,46 @@
+# 1- Criar Pergunta
+
+## Descrição
+Usuário adiciona uma pergunta nova a um formulário customizado. É necessário preencher respostas e associar tags às respostas.
+
+## Atores
+Usuário que criou o quiz/formulário.
+
+## Pré-condições
+Um formulário válido que contém a pergunta criada. Tags que serão associadas às respostas.
+
+## Trigger
+Usuário deseja adicionar uma nova pergunta ao formulário.
+
+## Fluxos:
+
+### Básico:
+1. O usuário aperta o botão para criar uma nova pergunta e é redirecionado para a página de criação de perguntas.
+2. O usuário insere a pergunta que será feita.
+3. O usuário insere as respostas e associa tags correspondentes a cada resposta.
+4. O usuário confirma a criação da pergunta.
+
+### Alternativos:
+- **2A.** O usuário decide cancelar a criação da pergunta:
+  1. O usuário clica no botão de cancelamento.
+  2. O sistema cancela a operação e retorna à página anterior.
+
+### Fluxos de Exceção:
+- **3E1.** O usuário tenta criar uma pergunta sem inserir todas as respostas necessárias:
+  1. O sistema exibe uma mensagem de erro informando que todas as respostas devem ser preenchidas.
+  2. O usuário preenche as respostas em falta.
+  3. O usuário continua com a criação da pergunta.
+
+- **3E2.** O usuário tenta criar uma pergunta sem associar tags às respostas:
+  1. O sistema exibe uma mensagem de erro informando que tags devem ser associadas a todas as respostas.
+  2. O usuário associa tags às respostas em falta.
+  3. O usuário continua com a criação da pergunta.
+
+## Pós-condições
+- A pergunta é adicionada ao formulário.
+- As respostas são associadas à pergunta.
+- As tags são associadas às respostas.
+
+## Regras de Negócio
+- As respostas devem ser preenchidas.
+- Todas as respostas devem ter tags associadas.
