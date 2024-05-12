@@ -2,9 +2,6 @@
 
 Toda a documentação do sistema. Separados em:
 
-## Diagramas de Atividade
-* Navegabilidade
-
 ## Casos de Uso 
 
 * Caso de uso geral
@@ -44,10 +41,24 @@ Formulários divididos em:
 
 * Exportar resultado
 
+## Diagramas de Atividade
+
+* Modelo de negócio
+* Navegabilidade
+* Story Map
+
 ## Entrevistas
 
-Cada participante entrevistou um mestre e um jogador de RPG, além das respostas da pesquisa feita online utilizando o Google Forms.
+* Cada participante entrevistou um mestre e um jogador de RPG
+* Respostas da pesquisa online utilizando o Google Forms
+* Questionário utilizado nas entrevistas presenciais
 
 ## Mockups
 
 Os mockups de tela que dão a idéia visual do projeto
+
+## Proposta
+
+* Canvas BMC
+* Canvas Proposta de valor
+* Algumas ideias
