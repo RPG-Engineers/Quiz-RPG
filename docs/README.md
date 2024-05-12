@@ -40,3 +40,7 @@ Formulários divididos em:
 ## Entrevistas
 
 Cada participante entrevistou um mestre e um jogador de RPG
+
+## Mockups
+
+Os mockups de tela que dão a idéia visual do projeto

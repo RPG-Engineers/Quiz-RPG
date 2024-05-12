@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- Início do head -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RPG</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- FontAwesome 6.2.0 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    body {
+        background-color: #212529;
+    }
+</style>
+<!-- Fim do head -->
+    
+</head>
+
+<body>
+    <!-- Início da navbar -->
+<nav class="navbar navbar-expand-lg mb-3" style="background-color: #c62b29;" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="index.html">
+      <img src="https://i.pinimg.com/originals/e5/16/c7/e516c77d7d44fc50039144a9b528f5db.png" alt="D&D" height="60"
+        style="padding-left: 50px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="caracteristicas.html">Características</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Mestre
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="classes.html">Classes</a></li>
+            <li><a class="dropdown-item" href="racas.html">Raças</a></li>
+            <li><a class="dropdown-item" href="backgrounds.html">Backgrounds</a></li>
+            <li><a class="dropdown-item" href="tags.html">Tags</a></li>
+            <li><a class="dropdown-item" href="perguntas.html">Perguntas</a></li>
+            <li><a class="dropdown-item" href="questionario.html">Questionários</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="dropdown">
+        <a class="nav-item dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-regular fa-folder-open fa-xl mx-2" style="color: white;"></i>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="teste.json" download><i class="fa-solid fa-file-arrow-up fa-xl mx-2"
+                style="color: white;"></i> Exportar dados</a></li>
+          <li>
+            <a class="dropdown-item" href="#" id="custom-file-button"><i class="fa-solid fa-file-arrow-down fa-xl mx-2"
+                style="color: white;"></i> Importar dados</a><input id="input-file" type="file" accept=".json"
+              style="display: none;" />
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- Fim da navbar -->
+    <div class="container h-100 mt-3">
+    <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Digite sua pesquisa">
+                <button class="btn btn-outline-secondary" type="button">Pesquisar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid d-flex justify-content-start">
+    <h3 class="text-white mt-3">Classes</h3>
+</div>
+<div class="bg-secondary">
+    <hr>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div class="container-fluid d-flex justify-content-start">
+    <h3 class="text-white mt-3">Raças</h3>
+</div>
+<div class="bg-secondary">
+    <hr>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div class="container-fluid d-flex justify-content-start">
+    <h3 class="text-white mt-3">Backgrounds</h3>
+</div>
+<div class="bg-secondary">
+    <hr>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Bárbaro</h5>
+                            <p class="card-text">Originários de culturas tribais, os bárbaros são guerreiros selvagens
+                                que canalizam sua raiva para se tornarem temíveis adversários.</p>
+                            <span class="badge text-bg-danger">Corpo a Corpo</span>
+                            <span class="badge text-bg-primary">Iniciante</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
+                            class="card-img" alt="Sua Imagem">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+</body>
+<script>
+    const customFileButton = document.getElementById('custom-file-button');
+    const inputFile = document.getElementById('input-file');
+
+    customFileButton.addEventListener('click', () => {
+        inputFile.click(); // Simula o clique no input file
+    });
+
+    inputFile.addEventListener('change', () => {
+        // Aqui você pode fazer algo com o arquivo selecionado, se necessário
+        const selectedFile = inputFile.files[0];
+        console.log('Arquivo selecionado:', selectedFile.name);
+    });
+</script>
+
+</html>
