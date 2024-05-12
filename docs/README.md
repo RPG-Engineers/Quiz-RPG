@@ -20,6 +20,8 @@ Formulários divididos em:
 * Pergunta
     - Adicionar
     - Editar
+    - Exportar
+    - Importar
     - Remover
 
 * Questionário
@@ -40,6 +42,8 @@ Formulários divididos em:
     - Remover
 
 * Exportar resultado
+
+* Ver características
 
 ## Diagramas de Atividade
 
