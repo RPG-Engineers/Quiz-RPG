@@ -11,6 +11,11 @@ Toda a documentação do sistema. Separados em:
 
 Formulários divididos em:
 
+* Background
+    - Adicionar
+    - Editar
+    - Remover
+
 * Pergunta
     - Adicionar
     - Editar
@@ -26,6 +31,9 @@ Formulários divididos em:
     - Editar
     - Remover
     - Visualizar
+
+* Tag
+    - Remover
 
 * Exportar resultado
 
