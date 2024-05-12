@@ -2,9 +2,6 @@
 
 Toda a documentação do sistema. Separados em:
 
-## Diagramas de Atividade
-* Navegabilidade
-
 ## Casos de Uso 
 
 * Caso de uso geral
@@ -44,6 +41,18 @@ Formulários divididos em:
 
 * Exportar resultado
 
+## Diagramas de Atividade
+
+* Modelo de negócio
+* Navegabilidade
+* Story Map
+
 ## Mockups
 
 Os mockups de tela que dão a idéia visual do projeto
+
+## Proposta
+
+* Canvas BMC
+* Canvas Proposta de valor
+* Algumas ideias
