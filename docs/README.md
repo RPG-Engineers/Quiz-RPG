@@ -16,6 +16,10 @@ Formulários divididos em:
     - Editar
     - Remover
 
+* Classe
+    - Adicionar
+    - Editar
+
 * Pergunta
     - Adicionar
     - Editar
@@ -24,6 +28,7 @@ Formulários divididos em:
 * Questionário
     - Adicionar
     - Editar
+    - Realizar
     - Remover
 
 * Raça
@@ -33,6 +38,8 @@ Formulários divididos em:
     - Visualizar
 
 * Tag
+    - Adicionar
+    - Editar
     - Remover
 
 * Exportar resultado
