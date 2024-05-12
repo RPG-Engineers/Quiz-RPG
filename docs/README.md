@@ -11,6 +11,15 @@ Toda a documentação do sistema. Separados em:
 
 Formulários divididos em:
 
+* Background
+    - Adicionar
+    - Editar
+    - Remover
+
+* Classe
+    - Adicionar
+    - Editar
+
 * Pergunta
     - Adicionar
     - Editar
@@ -19,6 +28,7 @@ Formulários divididos em:
 * Questionário
     - Adicionar
     - Editar
+    - Realizar
     - Remover
 
 * Raça
@@ -26,6 +36,11 @@ Formulários divididos em:
     - Editar
     - Remover
     - Visualizar
+
+* Tag
+    - Adicionar
+    - Editar
+    - Remover
 
 * Exportar resultado
 
