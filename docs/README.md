@@ -46,7 +46,7 @@ Formulários divididos em:
 
 ## Entrevistas
 
-Cada participante entrevistou um mestre e um jogador de RPG
+Cada participante entrevistou um mestre e um jogador de RPG, além das respostas da pesquisa feita online utilizando o Google Forms.
 
 ## Mockups
 
