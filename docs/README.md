@@ -65,4 +65,7 @@ Os mockups de tela que dão a idéia visual do projeto
 
 * Canvas BMC
 * Canvas Proposta de valor
+* Dúvidas e certezas
+    - Antes da entrevista
+    - Depois da entrevista
 * Algumas ideias
