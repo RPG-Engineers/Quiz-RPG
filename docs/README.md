@@ -28,3 +28,7 @@ Formulários divididos em:
     - Visualizar
 
 * Exportar resultado
+
+## Entrevistas
+
+Cada participante entrevistou um mestre e um jogador de RPG
