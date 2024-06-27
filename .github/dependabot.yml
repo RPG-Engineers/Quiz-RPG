@@ -12,3 +12,19 @@ updates:
     commit-message:
       prefix: "chore"
     open-pull-requests-limit: 5
+
+    groups:
+      # Grupo para todas as atualizações de versão (major, minor e patch)
+      version-updates:
+        patterns:
+          - "*"
+        update-types: ["major", "minor", "patch"]
+
+      # Grupo para todas as atualizações de segurança
+      security-updates:
+        patterns:
+          - "*"
+        update-types: ["minor", "patch"]
+        dependency-type: "production"
+
+
