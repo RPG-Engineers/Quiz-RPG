@@ -1,6 +1,8 @@
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import LOGO from "../assets/img/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 
 const NavbarRPG: React.FC = () => {
   return (
@@ -38,6 +40,7 @@ const NavbarRPG: React.FC = () => {
                 Questionários
               </NavDropdown.Item>
             </NavDropdown>
+            <FontAwesomeIcon icon={faFolderOpen} style={{color: "white"}} className="fa-xl mx-2" />
           </Nav>
         </Navbar.Collapse>
       </Container>
