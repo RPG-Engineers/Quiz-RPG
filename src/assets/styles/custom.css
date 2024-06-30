@@ -1,7 +1,29 @@
 body {
-    background-color: #212529;
+  background-color: #212529;
 }
 
 .navbar-color {
-    background-color: #c62b29;
+  background-color: #c62b29;
+}
+
+.remover-seta.dropdown-toggle::after {
+  display: none;
+}
+
+.custom-nav-link .nav-link:hover,
+.custom-nav-link .nav-link:focus,
+.custom-nav-link .nav-link.active {
+  color: #fff !important; /* Aumenta a transparência dos links */
+}
+
+@media (max-width: 768px) {
+  .hidden-icon {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .show-text {
+    display: none;
+  }
 }
