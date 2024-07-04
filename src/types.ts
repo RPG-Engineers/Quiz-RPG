@@ -1,3 +1,5 @@
+// Tipos dos Objetos
+
 export interface Questionario {
   id?: number;
   nome: string;
@@ -34,7 +36,24 @@ export interface Caracteristica {
 }
 
 export enum TipoCaracteristica {
-  Classe = "Classe",
-  Raca = "Raça",
-  Background = "Background",
+  CLASSE = "Classe",
+  RACA = "Raça",
+  BACKGROUND = "Background",
+}
+
+// Tipos exclusivo para as Tabelas do Banco
+
+export interface QuestionarioPergunta {
+  id_questionario: number;
+  id_pergunta: number;
+}
+
+export interface AlternativaTag {
+  id_alternativa: number;
+  id_tag: number;
+}
+
+export interface CaracteristicaTag {
+  id_caracteristica: number;
+  id_tag: number;
 }
