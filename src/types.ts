@@ -36,9 +36,9 @@ export interface Caracteristica {
 }
 
 export enum TipoCaracteristica {
-  CLASSE = "Classe",
-  RACA = "Raça",
-  BACKGROUND = "Background",
+  CLASSE = 1,
+  RACA = 2,
+  BACKGROUND = 3,
 }
 
 // Tipos exclusivo para as Tabelas do Banco
