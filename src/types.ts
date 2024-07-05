@@ -8,7 +8,6 @@ export interface Questionario {
 
 export interface Pergunta {
   id?: number;
-  id_questionario?: number;
   pergunta: string;
 }
 
@@ -20,8 +19,6 @@ export interface Alternativa {
 
 export interface Tag {
   id?: number;
-  id_alternativa?: number;
-  id_caracteristica?: number;
   nome: string;
   cor: string;
 }
