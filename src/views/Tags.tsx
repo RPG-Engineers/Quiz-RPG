@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import TagCreationCard from '../components/TagCreationCard';
 import TagEditionCard from '../components/TagEditionCard';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 type Tag = {
   id: string;
@@ -51,10 +51,10 @@ const Tags: React.FC = () => {
                 <span className="badge" style={{ backgroundColor: tag.color, color: '#ffffff' }}>{tag.name}</span>
                 <div>
                   <button type="button" className="btn btn-warning text-white me-2" onClick={() => handleEdit(tag.id)}>
-                    <i className="fas fa-pen"></i>
+                    <FontAwesomeIcon icon={faPen} />
                   </button>
                   <button type="button" className="btn btn-danger" onClick={() => handleDelete(tag.id)}>
-                    <i className="fas fa-trash"></i>
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </div>
               </div>
