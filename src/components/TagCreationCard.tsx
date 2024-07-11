@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 type TagCreationCardProps = {
   onCreate: (name: string, color: string) => void;

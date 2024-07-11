@@ -1,3 +1,5 @@
+import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 interface BackgroundCardProps {
@@ -24,10 +26,10 @@ const BackgroundCard: React.FC<BackgroundCardProps> = ({ background, onEdit, onD
             <a href={background.referenceUrl} target="_blank" rel="noopener noreferrer">Ler mais</a>
             <div className="d-flex mt-2">
               <button type="button" className="btn btn-warning text-white mx-1" onClick={onEdit}>
-                <i className="fa-solid fa-pencil"></i>
+                <FontAwesomeIcon icon={faPencil} />
               </button>
               <button type="button" className="btn btn-danger mx-1" onClick={onDelete}>
-                <i className="fa fa-trash"></i>
+                <FontAwesomeIcon icon={faTrash} />
               </button>
             </div>
           </div>
