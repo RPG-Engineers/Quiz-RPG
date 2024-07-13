@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap';
 import { Caracteristica, TipoCaracteristica } from '../types';
 import { getCaracteristicas } from '../database/database';
-
+import CaracteristicaCards from '../components/CaracteristicaCards';
 
 const Caracteristicas: React.FC = () => {
   const [caracteristicas, setCaracteristicas] = useState<Caracteristica[]>([]);
@@ -15,33 +15,6 @@ const Caracteristicas: React.FC = () => {
 
     fetchCaracteristicas();
   }, []);
-
-  const renderCards = (tipo: TipoCaracteristica) => {
-    return caracteristicas
-      .filter(caracteristica => caracteristica.tipo === tipo)
-      .map((caracteristica) => (
-        <div key={caracteristica.id} className="col-md-4 mb-4">
-          <div className="card mb-3" style={{ maxWidth: '540px' }}>
-            <div className="row no-gutters">
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">{caracteristica.nome}</h5>
-                  <p className="card-text">{caracteristica.descricaco}</p>
-                  <span className="badge bg-secondary">{TipoCaracteristica[caracteristica.tipo]}</span>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <img 
-                  src={caracteristica.url_imagem} 
-                  className="card-img" 
-                  alt={caracteristica.nome} 
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      ));
-  };
 
   return (
     <>
@@ -63,11 +36,7 @@ const Caracteristicas: React.FC = () => {
         <hr />
       </div>
       
-      <div className="container mt-5">
-        <div className="row">
-          {renderCards(TipoCaracteristica.CLASSE)}
-        </div>
-      </div>
+      <CaracteristicaCards tipo={TipoCaracteristica.CLASSE} caracteristicas={caracteristicas} />
 
       <div className="container-fluid d-flex justify-content-start">
         <h3 className="text-white mt-3">Raças</h3>
@@ -76,11 +45,7 @@ const Caracteristicas: React.FC = () => {
         <hr />
       </div>
       
-      <div className="container mt-5">
-        <div className="row">
-          {renderCards(TipoCaracteristica.RACA)}
-        </div>
-      </div>
+      <CaracteristicaCards tipo={TipoCaracteristica.RACA} caracteristicas={caracteristicas} />
 
       <div className="container-fluid d-flex justify-content-start">
         <h3 className="text-white mt-3">Backgrounds</h3>
@@ -89,11 +54,7 @@ const Caracteristicas: React.FC = () => {
         <hr />
       </div>
       
-      <div className="container mt-5">
-        <div className="row">
-          {renderCards(TipoCaracteristica.BACKGROUND)}
-        </div>
-      </div>
+      <CaracteristicaCards tipo={TipoCaracteristica.BACKGROUND} caracteristicas={caracteristicas} />
     </>
   );
 };
