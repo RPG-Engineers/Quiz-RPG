@@ -50,4 +50,3 @@ const CaracteristicaCards: React.FC<CaracteristicaCardsProps> = ({ tipo, caracte
 };
 
 export default CaracteristicaCards;
-
