@@ -1,193 +1,29 @@
-/* Cor de fundo da página */
 body {
   background-color: #212529;
 }
 
-/* Cor de fundo da navbar */
 .navbar-color {
   background-color: #c62b29;
 }
 
-/* Remove a seta do dropdown */
 .remover-seta.dropdown-toggle::after {
   display: none;
 }
 
-/* Estilo dos links na navbar */
 .custom-nav-link .nav-link:hover,
 .custom-nav-link .nav-link:focus,
 .custom-nav-link .nav-link.active {
   color: #fff !important; /* Aumenta a transparência dos links */
 }
 
-/* Esconde ícones em telas pequenas */
 @media (max-width: 768px) {
   .hidden-icon {
     display: none;
   }
 }
 
-/* Esconde o texto em telas grandes */
 @media (min-width: 768px) {
   .show-text {
     display: none;
   }
-}
-
-/* Estilo básico do card */
-.card {
-  border: 1px solid #dee2e6; /* Adiciona uma borda leve */
-  border-radius: .375rem; /* Bordas arredondadas */
-  display: flex; /* Flexbox para organizar o conteúdo e a imagem */
-  flex-direction: column; /* Organiza o conteúdo verticalmente */
-  justify-content: space-between; /* Espaço entre o conteúdo e o final do card */
-}
-
-/* Espaçamento interno do card */
-.card-body {
-  padding: 1.25rem; /* Adiciona um pouco mais de espaço interno */
-  flex: 1; /* Faz o conteúdo ocupar o espaço restante disponível */
-}
-
-/* Cor de fundo branca para alguns cards */
-.bg-white {
-  background-color: #ffffff;
-}
-
-/* Cor do texto escuro para alguns cards */
-.text-dark {
-  color: #212529;
-}
-
-/* Define a largura do BackgroundCreationCard */
-.card.bg-white.text-dark {
-  width: 100%; /* Faz o card ocupar 100% da largura do Col */
-  max-width: 500px; /* Define a largura máxima do card */
-  margin: 0 auto; /* Centraliza o card */
-}
-
-/* Define a largura e o espaçamento dos BackgroundCard */
-.card.mb-3 {
-  width: 100%; /* Faz o card ocupar 100% da largura do Col */
-  max-width: 100%; /* Ajusta para não ultrapassar a largura do Col */
-  margin-bottom: 1.5rem; /* Espaço entre os cards */
-}
-
-/* Estilo para o separador branco */
-hr.my-4 {
-  border: 0;
-  border-top: 1px solid #ffffff;
-  margin: 1.5rem 0; /* Espaço superior e inferior */
-}
-
-/* Estilo dos títulos das seções */
-.text-center h2 {
-  color: #ffffff;
-  margin-bottom: 1rem;
-}
-
-/* Define a largura do BackgroundCreationCard */
-.d-flex.justify-content-center .card.bg-white.text-dark {
-  width: 100%; /* Faz o card ocupar 100% da largura do container */
-  max-width: 600px; /* Define a largura máxima do card */
-  margin: 0 auto; /* Centraliza o card */
-}
-
-/* Define a largura e o espaçamento dos BackgroundCard */
-.row.g-4 {
-  display: flex; /* Ativa o flexbox para a linha */
-  flex-wrap: wrap; /* Permite que os cards quebrem para a linha seguinte */
-  align-items: stretch; /* Faz com que os itens se estiquem para a mesma altura */
-}
-
-/* Ajuste para garantir que o conteúdo do card se estique para a altura mínima */
-.card-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1; /* Faz com que o conteúdo ocupe o espaço restante disponível */
-}
-
-/* Estilo da imagem do card */
-.card-img {
-  object-fit: contain; /* Ajusta a imagem para não cortar e manter as proporções */
-  max-height: 200px; /* Define uma altura máxima para a imagem */
-  width: 100%; /* Faz a imagem ocupar 100% da largura do contêiner */
-  display: block; /* Remove o espaço em branco abaixo da imagem */
-  margin-left: 0; /* Remove a margem à esquerda da imagem */
-}
-
-/* Estilo do card de background */
-.card.bg-white.text-dark {
-  display: flex; /* Flexbox para organizar o conteúdo e a imagem */
-  flex-wrap: nowrap; /* Não permite quebra de linha entre conteúdo e imagem */
-  justify-content: space-between; /* Espaço entre o conteúdo e a imagem */
-}
-
-/* Alinhamento dos campos do BackgroundCreationCard */
-.card.bg-white.text-dark .form-group {
-  margin-bottom: 1rem;
-}
-
-/* Títulos dos campos do BackgroundCreationCard */
-.card.bg-white.text-dark label {
-  display: block;
-  text-align: left; /* Alinha o texto do título à esquerda */
-}
-
-/* Campos de entrada do BackgroundCreationCard */
-.card.bg-white.text-dark .form-control {
-  text-align: left; /* Alinha o texto do campo de entrada à esquerda */
-}
-
-/* Tamanho do campo de entrada do BackgroundCreationCard */
-.card.bg-white.text-dark .form-control,
-.card.bg-white.text-dark textarea {
-  width: 100%; /* Faz o campo de entrada ocupar 100% da largura do contêiner */
-  box-sizing: border-box; /* Inclui padding e bordas no cálculo da largura */
-}
-
-/* Alinhamento dos campos do BackgroundCreationCard em telas pequenas */
-@media (max-width: 767.98px) {
-  .card.bg-white.text-dark .form-group {
-    margin-bottom: 1rem; /* Adiciona margem inferior */
-  }
-
-  .card.bg-white.text-dark label,
-  .card.bg-white.text-dark .form-control {
-    text-align: left; /* Alinha o texto do título e o texto dos campos à esquerda */
-  }
-}
-
-/* Estilo dos campos e títulos do BackgroundCreationCard */
-.card.bg-white.text-dark .form-group label {
-  margin-bottom: 0.5rem; /* Adiciona um pouco de espaço abaixo dos rótulos dos campos */
-}
-
-/* Adiciona espaçamento entre o título e os campos do BackgroundCreationCard */
-.card.bg-white.text-dark .form-group {
-  margin-bottom: 1rem; /* Adiciona espaço entre os campos */
-}
-
-/* Estilo adicional para manter a altura uniforme dos cards na mesma linha */
-.row.g-4 .col-md-6.col-lg-4 {
-  display: flex; /* Ativa o flexbox para a coluna */
-  align-items: stretch; /* Faz com que os cards se estiquem para a mesma altura */
-}
-
-/* Certifique-se de que o card ocupa toda a altura disponível da coluna */
-.row.g-4 .col-md-6.col-lg-4 .card {
-  display: flex; /* Flexbox para organizar o conteúdo e a imagem */
-  flex-direction: column; /* Organiza o conteúdo verticalmente */
-  justify-content: space-between; /* Espaço entre o conteúdo e o final do card */
-}
-
-a {
-  text-decoration: none; /* Remove o sublinhado */
-  color: #c62b29; /* Altera a cor do link */
-}
-
-/* Altera a cor do link ao passar o mouse sobre ele */
-a:hover {
-  color: #DF9084; /* Cor ao passar o mouse */
 }

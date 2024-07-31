@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { addCaracteristica, getCaracteristicas, getTags, deleteCaracteristica } from "../database/database";
+import { getCaracteristicaById, updateCaracteristica, getTags } from "../database/database";
 import { Tag, Caracteristica } from "../types";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-const Backgrounds: React.FC = () => {
+const EditarBackground: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
     const [nome, setNome] = useState("");
     const [descricao, setDescricao] = useState("");
     const [urlImagem, setUrlImagem] = useState("");
     const [urlReferencia, setUrlReferencia] = useState("");
     const [tags, setTags] = useState<Tag[]>([]);
     const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
-    const [caracteristicas, setCaracteristicas] = useState<Caracteristica[]>([]);
     const navigate = useNavigate();
 
-    // Função para carregar tags e características
-    const fetchTagsAndCaracteristicas = async () => {
-        const tagsFromDB = await getTags();
-        const caracteristicasFromDB = await getCaracteristicas();
-        setTags(tagsFromDB);
-        setCaracteristicas(caracteristicasFromDB);
-    };
-
-    // Carregar tags e características na montagem inicial do componente
     useEffect(() => {
-        fetchTagsAndCaracteristicas();
-    }, []);
+        const fetchBackgroundData = async () => {
+            const background = await getCaracteristicaById(Number(id));
+            setNome(background.nome);
+            setDescricao(background.descricao);
+            setUrlImagem(background.urlImagem);
+            setUrlReferencia(background.urlReferencia);
+            setSelectedTags(new Set(background.tags));
+
+            const tagsFromDB = await getTags();
+            setTags(tagsFromDB);
+        };
+
+        fetchBackgroundData();
+    }, [id]);
 
     const handleTagToggle = (id: number) => {
         setSelectedTags(prev => {
@@ -40,7 +43,7 @@ const Backgrounds: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const novaCaracteristica: Caracteristica = {
+        const updatedCaracteristica: Caracteristica = {
             nome,
             descricao,
             urlImagem,
@@ -48,24 +51,8 @@ const Backgrounds: React.FC = () => {
             tags: Array.from(selectedTags),
         };
 
-        await addCaracteristica(novaCaracteristica);
-        setNome("");
-        setDescricao("");
-        setUrlImagem("");
-        setUrlReferencia("");
-        setSelectedTags(new Set());
-
-        // Atualizar a listagem após adicionar um novo background
-        fetchTagsAndCaracteristicas();
-    };
-
-    const handleDelete = async (id: number) => {
-        await deleteCaracteristica(id);
-        setCaracteristicas(prev => prev.filter(caracteristica => caracteristica.id_caracteristica !== id));
-    };
-
-    const handleEdit = (id: number) => {
-        navigate(`/editar-background/${id}`); // Navegar para a tela de edição
+        await updateCaracteristica(Number(id), updatedCaracteristica);
+        navigate("/backgrounds");
     };
 
     return (
@@ -134,39 +121,9 @@ const Backgrounds: React.FC = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <button type="submit" className="btn btn-success mt-3">Criar</button>
+                                <button type="submit" className="btn btn-success mt-3">Salvar</button>
                             </form>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div className="container h-100 mt-4">
-                <div className="row align-items-center h-100">
-                    <div className="col-6 mx-auto">
-                        {caracteristicas.map((caracteristica) => (
-                            <div key={caracteristica.id_caracteristica} className="card mb-3">
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <div className="card-body">
-                                            <h5 className="card-title">{caracteristica.nome}</h5>
-                                            <p className="card-text">{caracteristica.descricao}</p>
-                                            <span className="badge text-bg-danger">{caracteristica.tags.join(", ")}</span>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <img src={caracteristica.urlImagem} className="card-img" alt={caracteristica.nome} />
-                                    </div>
-                                    <div className="col-md-2">
-                                        <button type="button" className="btn btn-warning mt-3 text-white" onClick={() => handleEdit(caracteristica.id_caracteristica)}>
-                                            <i className="fa-solid fa-pen"></i>
-                                        </button>
-                                        <button type="button" className="btn btn-danger mt-3" onClick={() => handleDelete(caracteristica.id_caracteristica)}>
-                                            <i className="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </div>
@@ -174,4 +131,4 @@ const Backgrounds: React.FC = () => {
     );
 };
 
-export default Backgrounds;
+export default EditarBackground;
