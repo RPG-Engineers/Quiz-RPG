@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { addCaracteristica, getCaracteristicas, getTags, deleteCaracteristica } from "../database/database";
-import { Tag, Caracteristica } from "../types";
+import { Tag, Caracteristica, TipoCaracteristica } from "../types";
 import { useNavigate } from "react-router-dom";
 
 const Backgrounds: React.FC = () => {
@@ -46,6 +46,7 @@ const Backgrounds: React.FC = () => {
             urlImagem,
             urlReferencia,
             tags: Array.from(selectedTags),
+            tipo:TipoCaracteristica.BACKGROUND,
         };
 
         await addCaracteristica(novaCaracteristica);
@@ -156,6 +157,7 @@ const Backgrounds: React.FC = () => {
                                     <div className="col-md-4">
                                         <img src={caracteristica.urlImagem} className="card-img" alt={caracteristica.nome} />
                                     </div>
+                                  
                                     <div className="col-md-2">
                                         <button type="button" className="btn btn-warning mt-3 text-white" onClick={() => handleEdit(caracteristica.id_caracteristica)}>
                                             <i className="fa-solid fa-pen"></i>
