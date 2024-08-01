@@ -4,7 +4,7 @@ import { Caracteristica, TipoCaracteristica } from '../types';
 import CaracteristicaCards from '../components/CaracteristicaCards';
 import '../assets/styles/custom.css';
 import '../assets/styles/SearchBarStyles.css';
-import { filtrarCaracteristicas } from '../database/database';
+import { filtrarCaracteristicas, getCaracteristicas } from '../database/database';
 
 const Caracteristicas: React.FC = () => {
   const [caracteristicas, setCaracteristicas] = useState<Caracteristica[]>([]);
@@ -13,7 +13,9 @@ const Caracteristicas: React.FC = () => {
   useEffect(() => {
     const fetchCaracteristicas = async () => {
       try {
-        const fetchedCaracteristicas = await filtrarCaracteristicas(termoBusca);
+        const fetchedCaracteristicas = termoBusca
+          ? await filtrarCaracteristicas(termoBusca)
+          : await getCaracteristicas();
         setCaracteristicas(fetchedCaracteristicas);
       } catch (error) {
         console.error('Erro ao buscar características:', error);
