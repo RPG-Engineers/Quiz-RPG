@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap';
 import { Caracteristica, TipoCaracteristica } from '../types';
 import CaracteristicaCards from '../components/CaracteristicaCards';
-import '../assets/styles/custom.css';
 import '../assets/styles/SearchBarStyles.css';
 import { filtrarCaracteristicas, getCaracteristicas } from '../database/database';
 
