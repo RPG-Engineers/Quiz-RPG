@@ -268,17 +268,29 @@ export const deleteCaracteristica = async (id: number) => {
 
 export const filtrarCaracteristicas = async (termo: string): Promise<Caracteristica[]> => {
   try {
-    const resultado = await db.caracteristica
+    // Filtrar características pelo nome da característica
+    const caracteristicasPorNome = await db.caracteristica
       .where("nome")
-      .startsWithIgnoreCase(termo) // Filtra pelo nome da característica
-      .or("id_caracteristica")
-      .anyOf(
-        await db.caracteristica_tag
-          .where("id_tag")
-          .startsWithIgnoreCase(termo) // Filtra pelo nome da tag
-          .primaryKeys()
-      ) // Obtém os IDs das características correspondentes
+      .startsWithIgnoreCase(termo)
       .toArray();
+
+    // Filtra as características pelo nome da tag
+    const tagIds = await db.tag
+      .where("nome")
+      .startsWithIgnoreCase(termo)
+      .primaryKeys();
+
+    const caracteristicasPorTags = tagIds.length > 0
+      ? await db.caracteristica
+          .where("id_caracteristica")
+          .anyOf(tagIds)
+          .toArray()
+      : []; // Se não houver tags correspondentes, retorna array vazio
+
+    // Combinar e remover duplicados
+    const todasCaracteristicas = [...caracteristicasPorNome, ...caracteristicasPorTags];
+    const resultado = Array.from(new Set(todasCaracteristicas.map(c => c.id_caracteristica)))
+      .map(id => todasCaracteristicas.find(c => c.id_caracteristica === id) as Caracteristica);
 
     return resultado;
   } catch (error) {
@@ -286,3 +298,4 @@ export const filtrarCaracteristicas = async (termo: string): Promise<Caracterist
     throw error;
   }
 };
+
