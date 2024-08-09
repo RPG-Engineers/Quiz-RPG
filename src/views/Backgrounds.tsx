@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { addCaracteristica, getCaracteristicas, getTags, deleteCaracteristica } from "../database/database";
-import { Tag, Caracteristica, TipoCaracteristica } from "../types";
+import { addCaracteristica, getCaracteristicas, getTags, deleteCaracteristica, associateCaracteristicaToTags, getTagsByCaracteristicaId } from "../database/database";
+import { Tag, Caracteristica, TipoCaracteristica, CaracteristicaWithTags } from "../types";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Backgrounds: React.FC = () => {
     const [nome, setNome] = useState("");
@@ -10,15 +12,24 @@ const Backgrounds: React.FC = () => {
     const [urlReferencia, setUrlReferencia] = useState("");
     const [tags, setTags] = useState<Tag[]>([]);
     const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
-    const [caracteristicas, setCaracteristicas] = useState<Caracteristica[]>([]);
+    const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);
     const navigate = useNavigate();
 
     // Função para carregar tags e características
     const fetchTagsAndCaracteristicas = async () => {
         const tagsFromDB = await getTags();
         const caracteristicasFromDB = await getCaracteristicas();
+
+        // Associe tags a cada característica
+        const caracteristicasWithTags = await Promise.all(
+            caracteristicasFromDB.map(async (caracteristica) => {
+                const tagsCaracteristica = await getTagsByCaracteristicaId(caracteristica.id_caracteristica ?? -1);
+                return { ...caracteristica, tags: tagsCaracteristica };
+            })
+        );
+
         setTags(tagsFromDB);
-        setCaracteristicas(caracteristicasFromDB);
+        setCaracteristicas(caracteristicasWithTags);
     };
 
     // Carregar tags e características na montagem inicial do componente
@@ -41,15 +52,15 @@ const Backgrounds: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const novaCaracteristica: Caracteristica = {
-            nome,
-            descricao,
-            urlImagem,
-            urlReferencia,
-            tags: Array.from(selectedTags),
+            nome: nome,
+            descricao: descricao,
+            url_imagem: urlImagem,
+            url_referencia: urlReferencia,
             tipo:TipoCaracteristica.BACKGROUND,
         };
 
-        await addCaracteristica(novaCaracteristica);
+        const id = await addCaracteristica(novaCaracteristica);
+        await associateCaracteristicaToTags(id, Array.from(selectedTags))
         setNome("");
         setDescricao("");
         setUrlImagem("");
@@ -126,11 +137,11 @@ const Backgrounds: React.FC = () => {
                                         {tags.map((tag) => (
                                             <span
                                                 key={tag.id_tag}
-                                                className={`badge ${selectedTags.has(tag.id_tag) ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill`}
-                                                onClick={() => handleTagToggle(tag.id_tag)}
+                                                className={`badge ${selectedTags.has(tag.id_tag ?? -1) ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill`}
+                                                onClick={() => handleTagToggle(tag.id_tag ?? -1)}
                                                 style={{ cursor: "pointer" }}
                                             >
-                                                {tag.name}
+                                                {tag.nome}
                                             </span>
                                         ))}
                                     </div>
@@ -151,19 +162,27 @@ const Backgrounds: React.FC = () => {
                                         <div className="card-body">
                                             <h5 className="card-title">{caracteristica.nome}</h5>
                                             <p className="card-text">{caracteristica.descricao}</p>
-                                            <span className="badge text-bg-danger">{caracteristica.tags.join(", ")}</span>
+                                            {caracteristica.tags.map((tag) => (
+                                                <span
+                                                    key={tag.id_tag}
+                                                    className="badge"
+                                                    style={{ backgroundColor: tag.cor, color: "white"}}
+                                                >
+                                                    {tag.nome}
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
                                     <div className="col-md-4">
-                                        <img src={caracteristica.urlImagem} className="card-img" alt={caracteristica.nome} />
+                                        <img src={caracteristica.url_imagem} className="card-img" alt={caracteristica.nome} />
                                     </div>
                                   
                                     <div className="col-md-2">
-                                        <button type="button" className="btn btn-warning mt-3 text-white" onClick={() => handleEdit(caracteristica.id_caracteristica)}>
-                                            <i className="fa-solid fa-pen"></i>
+                                        <button type="button" className="btn btn-warning mt-3 text-white" onClick={() => handleEdit(caracteristica.id_caracteristica ?? -1)}>
+                                            <FontAwesomeIcon icon={faPen} />
                                         </button>
-                                        <button type="button" className="btn btn-danger mt-3" onClick={() => handleDelete(caracteristica.id_caracteristica)}>
-                                            <i className="fa-solid fa-trash"></i>
+                                        <button type="button" className="btn btn-danger mt-3" onClick={() => handleDelete(caracteristica.id_caracteristica ?? -1)}>
+                                            <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     </div>
                                 </div>
