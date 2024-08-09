@@ -12,8 +12,8 @@ const EditarTag: React.FC = () => {
     useEffect(() => {
         const fetchTagData = async () => {
             const tag = await getTagById(Number(id));
-            setNome(tag.name);
-            setCor(tag.color);
+            setNome(tag.nome);
+            setCor(tag.cor);
         };
 
         fetchTagData();
@@ -22,8 +22,8 @@ const EditarTag: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const updatedTag: Tag = {
-            name: nome,
-            color: cor,
+            nome: nome,
+            cor: cor,
         };
 
         await updateTag(Number(id), updatedTag);
