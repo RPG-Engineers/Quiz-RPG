@@ -1,15 +1,33 @@
 import { Button, Container, Dropdown, Nav, NavDropdown, Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LOGO from "../assets/img/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 import { faFileArrowDown, faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { exportDexieToJSON } from "../database/db";
+import { exportDexieToJSON, importJSONFromFile } from "../database/db";
+import React from "react";
 
 const NavbarRPG: React.FC = () => {
-  // Função de exportação associada ao clique
+  const navigate = useNavigate();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Função de exportação
   const handleExportClick = async () => {
     await exportDexieToJSON();
+  };
+
+  // Função para disparar o clique no input de arquivo
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Função de importação
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      await importJSONFromFile(file);
+      navigate(0);
+    }
   };
   return (
     <Navbar expand="md" className="navbar-color custom-nav-link" data-bs-theme="dark">
@@ -72,10 +90,17 @@ const NavbarRPG: React.FC = () => {
                   Exportar dados
                 </Button>
               </Dropdown.Item>
-              <Dropdown.Item as="button">
+              <Dropdown.Item as="button" onClick={handleImportClick}>
                 <Button variant="button">
                   <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
                   Importar dados
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                  />
                 </Button>
               </Dropdown.Item>
             </Dropdown.Menu>
