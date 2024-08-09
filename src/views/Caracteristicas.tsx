@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Form, FormControl, InputGroup, Row } from 'react-bootstrap';
-import { Caracteristica, TipoCaracteristica } from '../types';
+import { CaracteristicaWithTags, TipoCaracteristica } from '../types';
 import CaracteristicaCards from '../components/CaracteristicaCards';
 import '../assets/styles/SearchBarStyles.css';
-import { filtrarCaracteristicas, getCaracteristicas } from '../database/database';
+import { filtrarCaracteristicas, getCaracteristicas, getTagsByCaracteristicaId } from '../database/database';
 
 const Caracteristicas: React.FC = () => {
-  const [caracteristicas, setCaracteristicas] = useState<Caracteristica[]>([]);
+  const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);
   const [termoBusca, setTermoBusca] = useState('');
 
   useEffect(() => {
@@ -15,7 +15,16 @@ const Caracteristicas: React.FC = () => {
         const fetchedCaracteristicas = termoBusca
           ? await filtrarCaracteristicas(termoBusca)
           : await getCaracteristicas();
-        setCaracteristicas(fetchedCaracteristicas);
+        
+        // Associe tags a cada característica
+        const caracteristicasWithTags = await Promise.all(
+          fetchedCaracteristicas.map(async (caracteristica) => {
+              const tagsCaracteristica = await getTagsByCaracteristicaId(caracteristica.id_caracteristica ?? -1);
+              return { ...caracteristica, tags: tagsCaracteristica };
+          })
+        );
+        
+        setCaracteristicas(caracteristicasWithTags);
       } catch (error) {
         console.error('Erro ao buscar características:', error);
       }

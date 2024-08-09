@@ -1,9 +1,9 @@
-import React from 'react';
-import { Caracteristica, TipoCaracteristica } from '../types';
+import React from "react";
+import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 
 interface CaracteristicaCardsProps {
   tipo: TipoCaracteristica;
-  caracteristicas: Caracteristica[];
+  caracteristicas: CaracteristicaWithTags[];
 }
 
 const CaracteristicaCards: React.FC<CaracteristicaCardsProps> = ({ tipo, caracteristicas }) => {
@@ -11,30 +11,39 @@ const CaracteristicaCards: React.FC<CaracteristicaCardsProps> = ({ tipo, caracte
     <div className="container mt-5">
       <div className="row">
         {caracteristicas
-          .filter(caracteristica => caracteristica.tipo === tipo)
+          .filter((caracteristica) => caracteristica.tipo === tipo)
           .map((caracteristica) => (
-            <div key={caracteristica.id} className="col-md-4 mb-4">
-              <div className="card mb-3" style={{ maxWidth: '540px', height: '300px' }}>
-                <div className="row no-gutters" style={{ height: '100%' }}>
+            <div key={caracteristica.id_caracteristica} className="col-md-4 mb-4">
+              <div className="card mb-3" style={{ maxWidth: "540px", height: "300px" }}>
+                <div className="row no-gutters" style={{ height: "100%" }}>
                   <div className="col-md-8 d-flex flex-column">
-                  <h5 className="card-title">{caracteristica.nome}</h5>
+                    <h5 className="card-title">{caracteristica.nome}</h5>
                     <h6>Descrição</h6>
-                    <div 
-                      className="card-body" 
-                      style={{ 
-                        overflowY: 'auto', 
-                        maxHeight: '200px',
-                        scrollbarWidth: 'none', // Firefox
-                        msOverflowStyle: 'none'  // IE and Edge
+                    <div
+                      className="card-body"
+                      style={{
+                        overflowY: "auto",
+                        maxHeight: "200px",
+                        scrollbarWidth: "none", // Firefox
+                        msOverflowStyle: "none", // IE and Edge
                       }}
                     >
                       <p className="card-text">{caracteristica.descricao}</p>
                     </div>
-                    <span className="badge text-bg-danger">{caracteristica.tags.join(", ")}</span>
+                    {caracteristica.tags.map((tag) => (
+                      <span key={tag.id_tag} className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
+                        {tag.nome}
+                      </span>
+                    ))}
                   </div>
                   <div className="col-md-4">
-                                        <img src={caracteristica.urlImagem} className="card-img" alt={caracteristica.nome} style={{ objectFit: 'cover', height: '100%' }}/>
-                                    </div>
+                    <img
+                      src={caracteristica.url_imagem}
+                      className="card-img"
+                      alt={caracteristica.nome}
+                      style={{ objectFit: "cover", height: "100%" }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
