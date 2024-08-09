@@ -1,27 +1,18 @@
-import {
-  Button,
-  Container,
-  Dropdown,
-  Nav,
-  NavDropdown,
-  Navbar,
-} from "react-bootstrap";
+import { Button, Container, Dropdown, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import LOGO from "../assets/img/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
-import {
-  faFileArrowDown,
-  faFileArrowUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowDown, faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { exportDexieToJSON } from "../database/db";
 
 const NavbarRPG: React.FC = () => {
+  // Função de exportação associada ao clique
+  const handleExportClick = async () => {
+    await exportDexieToJSON();
+  };
   return (
-    <Navbar
-      expand="md"
-      className="navbar-color custom-nav-link"
-      data-bs-theme="dark"
-    >
+    <Navbar expand="md" className="navbar-color custom-nav-link" data-bs-theme="dark">
       <Container fluid>
         <Navbar.Brand as={Link} to={"/"}>
           <img src={LOGO} height="60" className="" alt="D&D Logo" />
@@ -55,59 +46,35 @@ const NavbarRPG: React.FC = () => {
                 Questionários
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown
-              title="Importar/Exportar Dados"
-              id="export-nav-dropdown"
-              className="show-text"
-            >
+            <NavDropdown title="Importar/Exportar Dados" id="export-nav-dropdown" className="show-text">
               <Dropdown.Item as="button">
                 <Button variant="button">
-                  <FontAwesomeIcon
-                    icon={faFileArrowUp}
-                    className="fa-xl mx-2"
-                  />
+                  <FontAwesomeIcon icon={faFileArrowUp} className="fa-xl mx-2" />
                   Exportar dados
                 </Button>
               </Dropdown.Item>
               <Dropdown.Item as="button">
                 <Button variant="button">
-                  <FontAwesomeIcon
-                    icon={faFileArrowDown}
-                    className="fa-xl mx-2"
-                  />
+                  <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
                   Importar dados
                 </Button>
               </Dropdown.Item>
             </NavDropdown>
           </Nav>
           <Dropdown>
-            <Dropdown.Toggle
-              variant="link"
-              id="export-dropdown"
-              className="remover-seta"
-            >
-              <FontAwesomeIcon
-                icon={faFolderOpen}
-                style={{ color: "white" }}
-                className="fa-xl mx-2 hidden-icon"
-              />
+            <Dropdown.Toggle variant="link" id="export-dropdown" className="remover-seta">
+              <FontAwesomeIcon icon={faFolderOpen} style={{ color: "white" }} className="fa-xl mx-2 hidden-icon" />
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
-              <Dropdown.Item as="button">
+              <Dropdown.Item as="button" onClick={handleExportClick}>
                 <Button variant="button">
-                  <FontAwesomeIcon
-                    icon={faFileArrowUp}
-                    className="fa-xl mx-2"
-                  />
+                  <FontAwesomeIcon icon={faFileArrowUp} className="fa-xl mx-2" />
                   Exportar dados
                 </Button>
               </Dropdown.Item>
               <Dropdown.Item as="button">
                 <Button variant="button">
-                  <FontAwesomeIcon
-                    icon={faFileArrowDown}
-                    className="fa-xl mx-2"
-                  />
+                  <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
                   Importar dados
                 </Button>
               </Dropdown.Item>
