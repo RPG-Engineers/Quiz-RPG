@@ -75,7 +75,7 @@ export const deletePergunta = async (id: number) => {
     await db.questionario_pergunta.where("id_pergunta").equals(id).delete();
     const alternativas_associadas = await db.alternativa.where("id_pergunta").equals(id).toArray();
     for (const alternativa of alternativas_associadas) {
-      const alternativa_id = alternativa.id;
+      const alternativa_id = alternativa.id_alternativa;
       if (typeof alternativa_id === "undefined") {
         throw new Error("Alternativa não encontrada durante a deleção");
       }
@@ -153,7 +153,7 @@ export const getTagsByAlternativaId = async (id_alternativa: number): Promise<Ta
 };
 
 export const getTagsByCaracteristicaId = async (id_caracteristica: number): Promise<Tag[]> => {
-  return await db.transaction("r", db.caracteristica_tag, db.pergunta, async () => {
+  return await db.transaction("r", db.caracteristica_tag, db.tag, async () => {
     const tags_ids = await db.caracteristica_tag.where("id_caracteristica").equals(id_caracteristica).toArray();
     const tags = await Dexie.Promise.all(
       tags_ids.map(async (tags_carac) => {
@@ -184,6 +184,7 @@ export const deleteTag = async (id: number) => {
 
 export const addCaracteristica = async (caracteristica: Caracteristica) => {
   await db.caracteristica.add(caracteristica);
+  return caracteristica.id_caracteristica ?? -1;
 };
 
 export const getCaracteristicas = async (): Promise<Caracteristica[]> => {
@@ -200,6 +201,62 @@ export const getCaracteristicaById = async (id: number): Promise<Caracteristica>
 
 export const updateCaracteristica = async (id: number, updated_caracteristica: Caracteristica) => {
   await db.caracteristica.update(id, updated_caracteristica);
+};
+
+export const associateCaracteristicaToTags = async (id: number, tag_ids: number[]) => {
+  try {
+    await db.transaction('rw', db.caracteristica_tag, async () => {
+      const entries = tag_ids.map(tag_id => ({
+        id_caracteristica: id,
+        id_tag: tag_id
+      }));
+      await db.caracteristica_tag.bulkAdd(entries);
+    });
+  } catch (error) {
+    console.error('Erro ao associar características com tags:', error);
+  }
+}
+
+export const updateAssociationCaracteristicaToTags = async (id: number, tag_ids: number[]) => {
+  try {
+    await db.transaction('rw', db.caracteristica_tag, async () => {
+      // Obtenha as associações existentes para a característica
+      const existingAssociations = await db.caracteristica_tag
+        .where('id_caracteristica')
+        .equals(id)
+        .toArray();
+
+      // Crie um Set com IDs fornecidos para facilitar a verificação
+      const tagIdsSet = new Set(tag_ids);
+
+      // Determine as associações a adicionar e remover
+      const currentTagIdsSet = new Set(existingAssociations.map(entry => entry.id_tag));
+      const tagsToAdd = tag_ids.filter(tag_id => !currentTagIdsSet.has(tag_id));
+      const tagsToRemove = existingAssociations
+        .filter(entry => !tagIdsSet.has(entry.id_tag))
+        .map(entry => entry.id_tag);
+
+      // Adicione novas associações
+      const newAssociations = tagsToAdd.map(tag_id => ({
+        id_caracteristica: id,
+        id_tag: tag_id
+      }));
+      if (newAssociations.length > 0) {
+        await db.caracteristica_tag.bulkAdd(newAssociations);
+      }
+
+      // Remova associações antigas
+      if (tagsToRemove.length > 0) {
+        await db.caracteristica_tag
+          .where('id_caracteristica')
+          .equals(id)
+          .and(entry => tagsToRemove.includes(entry.id_tag))
+          .delete();
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar associações de características com tags:', error);
+  }
 };
 
 export const deleteCaracteristica = async (id: number) => {
