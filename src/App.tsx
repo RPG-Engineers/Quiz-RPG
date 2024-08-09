@@ -9,6 +9,7 @@ import Tags from "./views/Tags";
 import EditarTag from "./views/EditarTag";
 import Perguntas from "./views/Perguntas";
 import Questionarios from "./views/Questionarios";
+import EditarBackground from "./views/EditarBackground";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         <Route path="/racas" element={<Racas />} />
         <Route path="/backgrounds" element={<Backgrounds />} />
         <Route path="/tags" element={<Tags />} />
-        <Route path="/editar-tag/:id" element={<EditarTag />} /> {/* Adicione a nova rota de edição */}
+        <Route path="/editar-tag/:id" element={<EditarTag />} />
+        <Route path="/editar-background/:id" element={<EditarBackground />} />
         <Route path="/perguntas" element={<Perguntas />} />
         <Route path="/questionarios" element={<Questionarios />} />
       </Routes>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getCaracteristicaById, updateCaracteristica, getTags } from "../database/database";
-import { Tag, Caracteristica } from "../types";
+import { getCaracteristicaById, updateCaracteristica, getTags, getTagsByCaracteristicaId, updateAssociationCaracteristicaToTags } from "../database/database";
+import { Tag, Caracteristica, TipoCaracteristica } from "../types";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditarBackground: React.FC = () => {
@@ -18,9 +18,15 @@ const EditarBackground: React.FC = () => {
             const background = await getCaracteristicaById(Number(id));
             setNome(background.nome);
             setDescricao(background.descricao);
-            setUrlImagem(background.urlImagem);
-            setUrlReferencia(background.urlReferencia);
-            setSelectedTags(new Set(background.tags));
+            setUrlImagem(background.url_imagem);
+            setUrlReferencia(background.url_referencia);
+            const backgroundTags = await getTagsByCaracteristicaId(Number(id));
+            const tagIds = new Set(
+                backgroundTags
+                    .map(tag => tag.id_tag) // Mapeie para IDs
+                    .filter((id): id is number => id !== undefined) // Filtre IDs indefinidos
+            );
+            setSelectedTags(tagIds);
 
             const tagsFromDB = await getTags();
             setTags(tagsFromDB);
@@ -44,14 +50,15 @@ const EditarBackground: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const updatedCaracteristica: Caracteristica = {
-            nome,
-            descricao,
-            urlImagem,
-            urlReferencia,
-            tags: Array.from(selectedTags),
+            nome: nome,
+            descricao: descricao,
+            url_imagem: urlImagem,
+            url_referencia: urlReferencia,
+            tipo:TipoCaracteristica.BACKGROUND,
         };
 
         await updateCaracteristica(Number(id), updatedCaracteristica);
+        await updateAssociationCaracteristicaToTags(Number(id), Array.from(selectedTags))
         navigate("/backgrounds");
     };
 
@@ -112,11 +119,11 @@ const EditarBackground: React.FC = () => {
                                         {tags.map((tag) => (
                                             <span
                                                 key={tag.id_tag}
-                                                className={`badge ${selectedTags.has(tag.id_tag) ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill`}
-                                                onClick={() => handleTagToggle(tag.id_tag)}
+                                                className={`badge ${selectedTags.has(tag.id_tag ?? -1) ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill`}
+                                                onClick={() => handleTagToggle(tag.id_tag ?? -1)}
                                                 style={{ cursor: "pointer" }}
                                             >
-                                                {tag.name}
+                                                {tag.nome}
                                             </span>
                                         ))}
                                     </div>
