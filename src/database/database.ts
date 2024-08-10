@@ -268,26 +268,33 @@ export const deleteCaracteristica = async (id: number) => {
 
 export const filtrarCaracteristicas = async (termo: string): Promise<Caracteristica[]> => {
   try {
-    // Filtrar características pelo nome da característica
-    const caracteristicasPorNome = await db.caracteristica
-      .where("nome")
-      .startsWithIgnoreCase(termo)
-      .toArray();
-
-    // Filtra as características pelo nome da tag
+    // Buscar IDs das tags que correspondem ao termo
     const tagIds = await db.tag
       .where("nome")
       .startsWithIgnoreCase(termo)
       .primaryKeys();
 
-    const caracteristicasPorTags = tagIds.length > 0
-      ? await db.caracteristica
-          .where("id_caracteristica")
+    // Buscar IDs das características associadas às tags encontradas
+    const caracteristicasPorTagsIds = tagIds.length > 0
+      ? await db.caracteristica_tag
+          .where("id_tag")
           .anyOf(tagIds)
           .toArray()
-      : []; // Se não houver tags correspondentes, retorna array vazio
+      : [];
 
-    // Combinar e remover duplicados
+    const idsPorTags = caracteristicasPorTagsIds.map(item => item.id_caracteristica);
+
+    // Buscar características pelo nome das características ou pelo nome das tags
+    const caracteristicasPorNome = await db.caracteristica
+      .where("nome")
+      .startsWithIgnoreCase(termo)
+      .toArray();
+
+    const caracteristicasPorTags = idsPorTags.length > 0
+      ? await db.caracteristica.where("id_caracteristica").anyOf(idsPorTags).toArray()
+      : [];
+
+    // Combina e remove os duplicados
     const todasCaracteristicas = [...caracteristicasPorNome, ...caracteristicasPorTags];
     const resultado = Array.from(new Set(todasCaracteristicas.map(c => c.id_caracteristica)))
       .map(id => todasCaracteristicas.find(c => c.id_caracteristica === id) as Caracteristica);
