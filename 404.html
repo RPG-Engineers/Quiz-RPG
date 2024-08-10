@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="refresh" content="0; url=/" />
+  <title>Page Not Found</title>
+  <script>
+    window.onload = function() {
+      var baseUrl = '/Quiz-RPG/';
+      var redirectUrl = baseUrl + 'index.html';
+      window.location.replace(redirectUrl);
+    };
+  </script>
 </head>
 <body>
   <p>If you are not redirected, <a href="/">click here</a>.</p>
