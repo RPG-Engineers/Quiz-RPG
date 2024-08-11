@@ -10,6 +10,8 @@ import EditarTag from "./views/EditarTag";
 import Perguntas from "./views/Perguntas";
 import Questionarios from "./views/Questionarios";
 import EditarBackground from "./views/EditarBackground";
+import EditarClasse from "./views/EditarClasse";
+import EditarRaca from "./views/EditarRaca";
 import { useEffect } from "react";
 import { importDefaultData } from "./database/db";
 
@@ -30,6 +32,8 @@ function App() {
         <Route path="/tags" element={<Tags />} />
         <Route path="/editar-tag/:id" element={<EditarTag />} />
         <Route path="/editar-background/:id" element={<EditarBackground />} />
+        <Route path="/editar-classe/:id" element={<EditarClasse />} />
+        <Route path="/editar-raca/:id" element={<EditarRaca />} />
         <Route path="/perguntas" element={<Perguntas />} />
         <Route path="/questionarios" element={<Questionarios />} />
       </Routes>
