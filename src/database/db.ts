@@ -134,6 +134,51 @@ export const importJSONFromFile = async (file: File) => {
   }
 };
 
+export const importDefaultData = async () => {
+  try {
+    // Adicione o caminho para o seu arquivo JSON com dados padrão
+    const response = await fetch('default-data.json');
+    const data = await response.json();
+
+    // Verificar se o banco de dados está vazio
+    const counts = await Dexie.Promise.all([
+      db.caracteristica.count(),
+      db.tag.count(),
+      db.caracteristica_tag.count(),
+      db.alternativa.count(),
+      db.alternativa_tag.count(),
+      db.pergunta.count(),
+      db.questionario.count(),
+      db.questionario_pergunta.count()
+    ]);
+
+    const isEmpty = counts.every(count => count === 0);
+
+    if (isEmpty) {
+      // O banco de dados está vazio, insira os dados padrão
+      await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
+        await db.caracteristica.bulkAdd(data.caracteristicas);
+        await db.tag.bulkAdd(data.tags);
+        await db.caracteristica_tag.bulkAdd(data.caracteristica_tag);
+        await db.alternativa.bulkAdd(data.alternativa);
+      });
+
+      await db.transaction('rw', db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
+        await db.alternativa_tag.bulkAdd(data.alternativa_tag);
+        await db.pergunta.bulkAdd(data.pergunta);
+        await db.questionario.bulkAdd(data.questionario);
+        await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
+      });
+
+      console.log('Dados padrão importados com sucesso!');
+    } else {
+      console.log('O banco de dados já contém dados. Dados padrão não foram importados.');
+    }
+  } catch (error) {
+    console.error('Erro ao importar dados padrão:', error);
+  }
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const restoreBackup = async (backup: any) => {
   await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {

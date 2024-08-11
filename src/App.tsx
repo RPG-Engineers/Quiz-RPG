@@ -10,8 +10,13 @@ import EditarTag from "./views/EditarTag";
 import Perguntas from "./views/Perguntas";
 import Questionarios from "./views/Questionarios";
 import EditarBackground from "./views/EditarBackground";
+import { useEffect } from "react";
+import { importDefaultData } from "./database/db";
 
 function App() {
+  useEffect(() => {
+    importDefaultData().catch(err => console.error(err));
+  }, []);
   return (
     <Router basename="/Quiz-RPG">
       <NavbarRPG />
