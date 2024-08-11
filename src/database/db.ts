@@ -37,7 +37,10 @@ class AppDB extends Dexie {
   }
 }
 
-// Função para exportar todos os dados do Dexie para JSON usando file-saver
+/**
+ * Função para exportar todos os dados do Dexie para JSON usando file-saver
+ * 
+ */
 export const exportDexieToJSON = async () => {
   try {
     // Obter todos os dados de cada tabela
@@ -75,7 +78,12 @@ export const exportDexieToJSON = async () => {
   }
 };
 
-// Função para importar dados com rollback
+/**
+ * Função para importar dados do JSON fornecido pelo usuário
+ * e caso dê algum erro ele fará um rollback automaticamente
+ *
+ * @param {File} file Arquivo JSON aberto pelo usuário
+ */
 export const importJSONFromFile = async (file: File) => {
   try {
     const reader = new FileReader();
@@ -134,6 +142,10 @@ export const importJSONFromFile = async (file: File) => {
   }
 };
 
+/**
+ * Função para importar os dados default
+ *
+ */
 export const importDefaultData = async () => {
   try {
     // Adicione o caminho para o seu arquivo JSON com dados padrão
@@ -179,6 +191,11 @@ export const importDefaultData = async () => {
   }
 };
 
+/**
+ * Restaura o banco de dados para a versão de backup
+ *
+ * @param {*} backup Dados de backup para restaurar o banco dados Dexie
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const restoreBackup = async (backup: any) => {
   await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
@@ -204,7 +221,10 @@ const restoreBackup = async (backup: any) => {
   });
 };
 
-// Função para obter uma cópia dos dados
+/**
+ * Função que faz um backup do banco de dados, retorna o backup do banco
+ *
+ */
 const getBackup = async () => {
   const caracteristicas = await db.caracteristica.toArray();
   const tags = await db.tag.toArray();
