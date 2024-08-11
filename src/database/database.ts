@@ -1,5 +1,5 @@
 import Dexie from "dexie";
-import { Alternativa, Caracteristica, Pergunta, Questionario, Tag } from "../types";
+import { Alternativa, Caracteristica, Pergunta, Questionario, Tag, TipoCaracteristica } from "../types";
 import { db } from "./db";
 
 // === CRUD Questionario ===
@@ -297,6 +297,14 @@ export const addCaracteristica = async (caracteristica: Caracteristica) => {
  */
 export const getCaracteristicas = async (): Promise<Caracteristica[]> => {
   return await db.caracteristica.toArray();
+};
+
+/**
+ * Obtém todas as características de um tipo banco de dados
+ *
+ */
+export const getCaracteristicasByTipo = async (tipo : TipoCaracteristica): Promise<Caracteristica[]> => {
+  return await db.caracteristica.where("tipo").equals(tipo).toArray();
 };
 
 /**
