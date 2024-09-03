@@ -14,10 +14,11 @@ import EditarClasse from "./views/EditarClasse";
 import EditarRaca from "./views/EditarRaca";
 import { useEffect } from "react";
 import { importDefaultData } from "./database/db";
+import { Responder } from "./views/Responder";
 
 function App() {
   useEffect(() => {
-    importDefaultData().catch(err => console.error(err));
+    importDefaultData().catch((err) => console.error(err));
   }, []);
   return (
     <Router basename="/Quiz-RPG">
@@ -36,6 +37,7 @@ function App() {
         <Route path="/editar-raca/:id" element={<EditarRaca />} />
         <Route path="/perguntas" element={<Perguntas />} />
         <Route path="/questionarios" element={<Questionarios />} />
+        <Route path="/responder/:id" element={<Responder />} />
       </Routes>
     </Router>
   );
