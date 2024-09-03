@@ -15,6 +15,8 @@ import EditarRaca from "./views/EditarRaca";
 import { useEffect } from "react";
 import { importDefaultData } from "./database/db";
 import { Responder } from "./views/Responder";
+import EditarPergunta from "./views/EditarPergunta";
+import EditarQuestionario from "./views/EditarQuestionario";
 
 function App() {
   useEffect(() => {
@@ -31,13 +33,15 @@ function App() {
         <Route path="/racas" element={<Racas />} />
         <Route path="/backgrounds" element={<Backgrounds />} />
         <Route path="/tags" element={<Tags />} />
+        <Route path="/perguntas" element={<Perguntas />} />
+        <Route path="/questionarios" element={<Questionarios />} />
+        <Route path="/responder/:id" element={<Responder />} />
         <Route path="/editar-tag/:id" element={<EditarTag />} />
         <Route path="/editar-background/:id" element={<EditarBackground />} />
         <Route path="/editar-classe/:id" element={<EditarClasse />} />
         <Route path="/editar-raca/:id" element={<EditarRaca />} />
-        <Route path="/perguntas" element={<Perguntas />} />
-        <Route path="/questionarios" element={<Questionarios />} />
-        <Route path="/responder/:id" element={<Responder />} />
+        <Route path="/editar-pergunta/:id" element={<EditarPergunta />} />
+        <Route path="/editar-questionario/:id" element={<EditarQuestionario />} />
       </Routes>
     </Router>
   );
