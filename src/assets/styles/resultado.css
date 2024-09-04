@@ -1,24 +1,24 @@
-.gold {
+.card-resultado.gold {
   border: 5px solid gold;
   margin-top: 40px;
 }
 
-.silver {
+.card-resultado.silver {
   border: 5px solid silver;
   margin-top: 55px;
 }
 
-.bronze {
+.card-resultado.bronze {
   border: 5px solid #cd7f32;
   margin-top: 70px;
 }
 
-.card img {
+.card-resultado img {
   height: 40vh;
   object-fit: cover;
 }
 
-.card {
+.card-resultado {
   box-sizing: border-box;
   height: 500px;
   box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
@@ -35,7 +35,7 @@
   color: black;
 }
 
-.card:hover {
+.card-resultado:hover {
   border: 1px solid black;
   transform: scale(1.05);
 }

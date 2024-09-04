@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import "../assets/styles/resultado.css";
 
 enum CardType {
   Bronze = 'bronze',
@@ -16,7 +15,7 @@ interface CardResultadoProps {
 
 const CardResultado: React.FC<CardResultadoProps> = ({ title, imageSrc, type }) => {
   return (
-    <Card className={`text-center ${type}`}>
+    <Card className={`text-center card-resultado ${type}`}>
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Img variant="top" src={imageSrc} alt={`Imagem ${type}`} />
