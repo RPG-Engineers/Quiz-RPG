@@ -1,0 +1,41 @@
+.gold {
+  border: 5px solid gold;
+  margin-top: 40px;
+}
+
+.silver {
+  border: 5px solid silver;
+  margin-top: 55px;
+}
+
+.bronze {
+  border: 5px solid #cd7f32;
+  margin-top: 70px;
+}
+
+.card img {
+  height: 40vh;
+  object-fit: cover;
+}
+
+.card {
+  box-sizing: border-box;
+  height: 500px;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px);
+  border-radius: 17px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-weight: bolder;
+  color: black;
+}
+
+.card:hover {
+  border: 1px solid black;
+  transform: scale(1.05);
+}
