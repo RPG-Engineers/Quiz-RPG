@@ -1,14 +1,32 @@
 import { faTags, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Accordion, Button, Card, Container, Form, useAccordionButton } from "react-bootstrap";
+import { TagSelection } from "./TagSelection";
+import { useState } from "react";
+import { Tag } from "../types";
 
 export interface CreateAlternativaProps {
+  tags: Tag[];
   eventKey: string;
   placeholder: string;
   onRemove: () => void;
 }
 
-export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ eventKey, placeholder, onRemove }) => {
+export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ tags, eventKey, placeholder, onRemove }) => {
+  const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
+
+  const handleTagToggle = (id: number) => {
+    setSelectedTags((prev) => {
+      const newSelectedTags = new Set(prev);
+      if (newSelectedTags.has(id)) {
+        newSelectedTags.delete(id);
+      } else {
+        newSelectedTags.add(id);
+      }
+      return newSelectedTags;
+    });
+  };
+
   return (
     <Card>
       <Card.Header>
@@ -24,7 +42,7 @@ export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ eventKey, 
         <Container className="mt-2">
           <Form.Group>
             <Form.Label>Tags para Selecionar</Form.Label>
-            {/* Componente que mostra as Tags */}
+            <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle}></TagSelection>
           </Form.Group>
         </Container>
       </Accordion.Collapse>

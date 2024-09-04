@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
+import { Tag } from "../types";
+import { getTags } from "../database/database";
 
 export const CreatePergunta: React.FC = () => {
-  const [alternativas, setAlternativas] = useState<Omit<CreateAlternativaProps, "onRemove">[]>([
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [alternativas, setAlternativas] = useState<Omit<CreateAlternativaProps, "tags" | "onRemove">[]>([
     { placeholder: "Opção 1", eventKey: "0" },
   ]);
 
   const handleAddOption = () => {
     const newKey = alternativas.length.toString();
-    const newOption = {
+    const newOption: Omit<CreateAlternativaProps, "tags" | "onRemove"> = {
       placeholder: `Opção ${alternativas.length + 1}`,
       eventKey: newKey,
     };
     setAlternativas([...alternativas, newOption]);
   };
+
+  const fetchTags = async () => {
+    const tagsFromDB = await getTags();
+    setTags(tagsFromDB);
+  };
+
+  useEffect(() => {
+    fetchTags();
+  }, []);
 
   const handleRemoveOption = (indexToRemove: number) => {
     const newAlternativas = alternativas
@@ -48,6 +60,7 @@ export const CreatePergunta: React.FC = () => {
                       placeholder={alternativa.placeholder}
                       eventKey={alternativa.eventKey}
                       onRemove={() => handleRemoveOption(index)}
+                      tags={tags}
                     />
                   ))}
                 </Accordion>

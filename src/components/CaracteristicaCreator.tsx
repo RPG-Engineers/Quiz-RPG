@@ -11,6 +11,7 @@ import { Tag, Caracteristica, TipoCaracteristica, CaracteristicaWithTags } from 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getTipo } from "../utils/util";
+import { TagSelection } from "./TagSelection";
 
 interface CaracteristicaCreatorProps {
   tipo: TipoCaracteristica;
@@ -26,12 +27,12 @@ const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, han
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
   const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);
   const stringTipo = getTipo(tipo) == "background" ? "o background" : "a " + getTipo(tipo);
-  
+
   // Função para carregar tags e características
-  const fetchTagsAndCaracteristicas = async (tipo : TipoCaracteristica) => {
+  const fetchTagsAndCaracteristicas = async (tipo: TipoCaracteristica) => {
     const tagsFromDB = await getTags();
     const caracteristicasFromDB = await getCaracteristicasByTipo(tipo);
-    
+
     // Associe tags a cada característica
     const caracteristicasWithTags = await Promise.all(
       caracteristicasFromDB.map(async (caracteristica) => {
@@ -39,16 +40,16 @@ const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, han
         return { ...caracteristica, tags: tagsCaracteristica };
       })
     );
-    
+
     setTags(tagsFromDB);
     setCaracteristicas(caracteristicasWithTags);
   };
-  
+
   // Carregar tags e características na montagem inicial do componente
   useEffect(() => {
     fetchTagsAndCaracteristicas(tipo);
   }, [tipo]);
-  
+
   const handleTagToggle = (id: number) => {
     setSelectedTags((prev) => {
       const newSelectedTags = new Set(prev);
@@ -141,20 +142,7 @@ const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, han
                 </div>
                 <div className="form-group mt-2">
                   <label>Tags para Selecionar</label>
-                  <div className="badge-container mt-1">
-                    {tags.map((tag) => (
-                      <span
-                        key={tag.id_tag}
-                        className={`badge ${
-                          selectedTags.has(tag.id_tag ?? -1) ? "text-bg-danger" : "bg-secondary-subtle"
-                        } rounded-pill`}
-                        onClick={() => handleTagToggle(tag.id_tag ?? -1)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {tag.nome}
-                      </span>
-                    ))}
-                  </div>
+                  <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
                 </div>
                 <button type="submit" className="btn btn-success mt-3">
                   Criar
