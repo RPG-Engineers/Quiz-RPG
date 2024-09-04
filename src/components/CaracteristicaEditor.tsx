@@ -8,11 +8,12 @@ import {
 } from "../database/database";
 import { Tag, Caracteristica, TipoCaracteristica } from "../types";
 import { useNavigate } from "react-router-dom";
+import { TagSelection } from "./TagSelection";
 
 interface CaracteristicaEditorProps {
   id: number;
-  tipo: TipoCaracteristica
-  navigationDestiny: string
+  tipo: TipoCaracteristica;
+  navigationDestiny: string;
 }
 
 const CaracteristicaEditor: React.FC<CaracteristicaEditorProps> = ({ id, tipo, navigationDestiny }) => {
@@ -126,20 +127,7 @@ const CaracteristicaEditor: React.FC<CaracteristicaEditorProps> = ({ id, tipo, n
                 </div>
                 <div className="form-group mt-2">
                   <label>Tags para Selecionar</label>
-                  <div className="badge-container mt-1">
-                    {tags.map((tag) => (
-                      <span
-                        key={tag.id_tag}
-                        className={`badge ${
-                          selectedTags.has(tag.id_tag ?? -1) ? "text-bg-danger" : "bg-secondary-subtle"
-                        } rounded-pill`}
-                        onClick={() => handleTagToggle(tag.id_tag ?? -1)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {tag.nome}
-                      </span>
-                    ))}
-                  </div>
+                  <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
                 </div>
                 <button type="submit" className="btn btn-success mt-3">
                   Salvar
