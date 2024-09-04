@@ -5,15 +5,17 @@ import { Accordion, Button, Card, Container, Form, useAccordionButton } from "re
 export interface CreateAlternativaProps {
   eventKey: string;
   placeholder: string;
+  onRemove: () => void;
 }
-export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ eventKey, placeholder }) => {
+
+export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ eventKey, placeholder, onRemove }) => {
   return (
     <Card>
       <Card.Header>
         <Form.Group className="d-flex gap-1">
           <Form.Control type="text" placeholder={placeholder} />
           <CustomToggle eventKey={eventKey}></CustomToggle>
-          <Button variant="danger" className="ml-2">
+          <Button variant="danger" className="ml-2" onClick={onRemove}>
             <FontAwesomeIcon icon={faTrash} />
           </Button>
         </Form.Group>

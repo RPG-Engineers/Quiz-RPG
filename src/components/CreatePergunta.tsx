@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootst
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 
 export const CreatePergunta: React.FC = () => {
-  const [alternativas, setAlternativas] = useState<CreateAlternativaProps[]>([
+  const [alternativas, setAlternativas] = useState<Omit<CreateAlternativaProps, "onRemove">[]>([
     { placeholder: "Opção 1", eventKey: "0" },
   ]);
 
@@ -15,7 +15,20 @@ export const CreatePergunta: React.FC = () => {
     };
     setAlternativas([...alternativas, newOption]);
   };
-  
+
+  const handleRemoveOption = (indexToRemove: number) => {
+    const newAlternativas = alternativas
+      // Remove a alternativa
+      .filter((_, index) => index !== indexToRemove)
+      // Atualiza os índices
+      .map((alternativa, index) => ({
+        ...alternativa,
+        placeholder: `Opção ${index + 1}`,
+        eventKey: index.toString(),
+      }));
+    setAlternativas(newAlternativas);
+  };
+
   return (
     <Container className="mt-3">
       <Row>
@@ -34,6 +47,7 @@ export const CreatePergunta: React.FC = () => {
                       key={index}
                       placeholder={alternativa.placeholder}
                       eventKey={alternativa.eventKey}
+                      onRemove={() => handleRemoveOption(index)}
                     />
                   ))}
                 </Accordion>
