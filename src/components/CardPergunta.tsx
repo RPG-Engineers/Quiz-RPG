@@ -7,9 +7,10 @@ import { Pergunta } from "../types";
 interface CardPerguntaProps {
   pergunta: Pergunta;
   handleEdit: (id: number) => void;
+  handleDelete: (id: number) => Promise<void>;
 }
 
-export const CardPergunta: React.FC<CardPerguntaProps> = ({ pergunta, handleEdit }) => {
+export const CardPergunta: React.FC<CardPerguntaProps> = ({ pergunta, handleEdit, handleDelete }) => {
   return (
     <Container className="mt-3">
       <Row>
@@ -22,7 +23,7 @@ export const CardPergunta: React.FC<CardPerguntaProps> = ({ pergunta, handleEdit
                   <FontAwesomeIcon icon={faPen} onClick={() => handleEdit(pergunta.id_pergunta!)} />
                 </Button>
                 <Button variant="danger">
-                  <FontAwesomeIcon icon={faTrash} />
+                  <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(pergunta.id_pergunta!)}/>
                 </Button>
               </div>
             </Card.Body>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CardPergunta } from "../components/CardPergunta";
 import { CreatePergunta } from "../components/CreatePergunta";
-import { getPerguntas, getTags } from "../database/database";
+import { deletePergunta, getPerguntas, getTags } from "../database/database";
 import { Pergunta, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +12,11 @@ const Perguntas: React.FC = () => {
 
   const handleEdit = (id: number) => {
     navigate(`/editar-pergunta/${id}`);
+  };
+
+  const handleDelete = async (id: number) => {
+    await deletePergunta(id);
+    setPerguntas((prev) => prev.filter((pergunta) => pergunta.id_pergunta !== id));
   };
 
   const fetchData = async () => {
@@ -29,7 +34,7 @@ const Perguntas: React.FC = () => {
     <>
       <CreatePergunta tags={tags} fetchData={fetchData} />
       {perguntas.map((pergunta) => (
-        <CardPergunta key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} />
+        <CardPergunta key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} handleDelete={handleDelete}/>
       ))}
     </>
   );
