@@ -6,9 +6,10 @@ import { useState } from "react";
 import { Tag } from "../types";
 
 export interface CreateAlternativaProps {
-  tags: Tag[];
-  eventKey: string;
+  id: string;
   placeholder: string;
+  eventKey: string;
+  tags: Tag[];
   onRemove: () => void;
 }
 
