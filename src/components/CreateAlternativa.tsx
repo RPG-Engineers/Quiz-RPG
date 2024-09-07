@@ -2,7 +2,7 @@ import { faTags, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Accordion, Button, Card, Container, Form, useAccordionButton } from "react-bootstrap";
 import { TagSelection } from "./TagSelection";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tag } from "../types";
 
 export interface CreateAlternativaProps {
@@ -11,28 +11,40 @@ export interface CreateAlternativaProps {
   eventKey: string;
   tags: Tag[];
   onRemove: () => void;
+  onTextChange: (id: string, text: string) => void;
+  onTagChange: (id: string, selectedTags: Set<number>) => void;
 }
 
-export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ tags, eventKey, placeholder, onRemove }) => {
+export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ id, tags, eventKey, placeholder, onRemove, onTextChange, onTagChange }) => {
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
+  const [text, setText] = useState("");
 
-  const handleTagToggle = (id: number) => {
+  const handleTagToggle = (tagId: number) => {
     setSelectedTags((prev) => {
       const newSelectedTags = new Set(prev);
-      if (newSelectedTags.has(id)) {
-        newSelectedTags.delete(id);
+      if (newSelectedTags.has(tagId)) {
+        newSelectedTags.delete(tagId);
       } else {
-        newSelectedTags.add(id);
+        newSelectedTags.add(tagId);
       }
       return newSelectedTags;
     });
+  };
+
+  useEffect(() => {
+    onTagChange(id, selectedTags);
+  }, [selectedTags]);
+
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setText(event.target.value);
+    onTextChange(id, event.target.value);
   };
 
   return (
     <Card>
       <Card.Header>
         <Form.Group className="d-flex gap-1">
-          <Form.Control type="text" placeholder={placeholder} />
+          <Form.Control type="text" placeholder={placeholder} value={text} onChange={handleTextChange} />
           <CustomToggle eventKey={eventKey}></CustomToggle>
           <Button variant="danger" className="ml-2" onClick={onRemove}>
             <FontAwesomeIcon icon={faTrash} />

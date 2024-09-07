@@ -65,6 +65,7 @@ export const deleteQuestionario = async (id: number) => {
  */
 export const addPergunta = async (pergunta: Pergunta) => {
   await db.pergunta.add(pergunta);
+  return pergunta.id_pergunta ?? -1;
 };
 
 /**
@@ -149,6 +150,7 @@ export const deletePergunta = async (id: number) => {
  */
 export const addAlternativa = async (alternativa: Alternativa) => {
   await db.alternativa.add(alternativa);
+  return alternativa.id_alternativa ?? -1;
 };
 
 /**
@@ -168,6 +170,27 @@ export const getAlternativasByPerguntaId = async (id_pergunta: number): Promise<
  */
 export const updateAlternativa = async (id: number, updated_alternativa: Alternativa) => {
   await db.alternativa.update(id, updated_alternativa);
+};
+
+
+/**
+ * Associa as tags à alternativa
+ *
+ * @param {number} id Id da alternativa
+ * @param {number[]} tag_ids Ids das tags a serem associadas
+ */
+export const associateAlternativaToTags = async (id: number, tag_ids: number[]) => {
+  try {
+    await db.transaction("rw", db.alternativa_tag, async () => {
+      const entries = tag_ids.map((tag_id) => ({
+        id_alternativa: id,
+        id_tag: tag_id,
+      }));
+      await db.alternativa_tag.bulkAdd(entries);
+    });
+  } catch (error) {
+    console.error("Erro ao associar alternativa com tags:", error);
+  }
 };
 
 /**
