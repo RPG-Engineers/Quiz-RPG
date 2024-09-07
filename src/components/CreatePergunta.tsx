@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 import { Alternativa, Pergunta, Tag } from "../types";
@@ -42,9 +42,9 @@ export const CreatePergunta: React.FC = () => {
     setAlternativaTexts((prev) => ({ ...prev, [id]: text }));
   };
 
-  const handleAlternativaTagChange = (id: string, selectedTags: Set<number>) => {
+  const handleAlternativaTagChange = useCallback((id: string, selectedTags: Set<number>) => {
     setAlternativaTags((prev) => ({ ...prev, [id]: selectedTags }));
-  };
+  }, []);  
 
   const handleRemoveOption = (idToRemove: string) => {
     setAlternativaProps((prev) =>
@@ -54,14 +54,18 @@ export const CreatePergunta: React.FC = () => {
     );
 
     setAlternativaTexts((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
+  
     setAlternativaTags((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

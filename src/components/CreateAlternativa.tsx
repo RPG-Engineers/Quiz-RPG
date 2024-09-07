@@ -33,7 +33,7 @@ export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ id, tags, 
 
   useEffect(() => {
     onTagChange(id, selectedTags);
-  }, [selectedTags]);
+  }, [id, selectedTags, onTagChange]);  
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
