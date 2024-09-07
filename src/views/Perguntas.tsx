@@ -14,19 +14,20 @@ const Perguntas: React.FC = () => {
     navigate(`/editar-pergunta/${id}`);
   };
 
+  const fetchData = async () => {
+    const tagsFromDB = await getTags();
+    const perguntasFromDB = await getPerguntas();
+    setTags(tagsFromDB);
+    setPerguntas(perguntasFromDB);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const tagsFromDB = await getTags();
-      const perguntasFromDB = await getPerguntas();
-      setTags(tagsFromDB);
-      setPerguntas(perguntasFromDB);
-    };
     fetchData();
   }, []);
 
   return (
     <>
-      <CreatePergunta tags={tags} />
+      <CreatePergunta tags={tags} fetchData={fetchData} />
       {perguntas.map((pergunta) => (
         <CardPergunta key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} />
       ))}

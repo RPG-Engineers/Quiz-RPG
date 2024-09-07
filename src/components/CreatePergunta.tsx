@@ -7,9 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 
 interface CreatePerguntaProps {
   tags: Tag[]
+  fetchData: () => Promise<void>
 }
 
-export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags }) => {
+export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags, fetchData }) => {
   const [alternativaProps, setAlternativaProps] = useState<CreateAlternativaProps[]>([
     {
       id: uuidv4(),
@@ -103,6 +104,7 @@ export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags }) => {
     ]);
     setAlternativaTexts({});
     setAlternativaTags({});
+    fetchData();
   };
 
   return (
