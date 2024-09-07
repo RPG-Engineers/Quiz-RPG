@@ -1,46 +1,111 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
-import { Tag } from "../types";
-import { getTags } from "../database/database";
-import { v4 as uuidv4 } from 'uuid';
+import { Alternativa, Pergunta, Tag } from "../types";
+import { addAlternativa, addPergunta, associateAlternativaToTags, getTags } from "../database/database";
+import { v4 as uuidv4 } from "uuid";
 
 export const CreatePergunta: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [alternativas, setAlternativas] = useState<CreateAlternativaProps[]>([
-    { id: uuidv4(), placeholder: "Opção 1", eventKey: "0", tags: [], onRemove: () => {} },
-  ]);
-
-  const handleAddOption = () => {
-    const newOption: CreateAlternativaProps = {
+  const [alternativaProps, setAlternativaProps] = useState<CreateAlternativaProps[]>([
+    {
       id: uuidv4(),
-      placeholder: `Opção ${alternativas.length + 1}`,
-      eventKey: uuidv4(),
+      placeholder: "Opção 1",
+      eventKey: "0",
       tags: [],
       onRemove: () => {},
-    };
-    setAlternativas([...alternativas, newOption]);
+      onTextChange: () => {},
+      onTagChange: () => {},
+    },
+  ]);
+  const [questionText, setQuestionText] = useState("");
+  const [alternativaTexts, setAlternativaTexts] = useState<{ [key: string]: string }>({});
+  const [alternativaTags, setAlternativaTags] = useState<{ [key: string]: Set<number> }>({});
+
+  const handleAddOption = () => {
+    const newOptionId = uuidv4();
+    setAlternativaProps((prev) => [
+      ...prev,
+      {
+        id: newOptionId,
+        placeholder: `Opção ${prev.length + 1}`,
+        eventKey: newOptionId,
+        tags: [],
+        onRemove: () => handleRemoveOption(newOptionId),
+        onTextChange: handleAlternativaTextChange,
+        onTagChange: handleAlternativaTagChange,
+      },
+    ]);
   };
 
-  const fetchTags = async () => {
-    const tagsFromDB = await getTags();
-    setTags(tagsFromDB);
+  const handleAlternativaTextChange = (id: string, text: string) => {
+    setAlternativaTexts((prev) => ({ ...prev, [id]: text }));
+  };
+
+  const handleAlternativaTagChange = (id: string, selectedTags: Set<number>) => {
+    setAlternativaTags((prev) => ({ ...prev, [id]: selectedTags }));
+  };
+
+  const handleRemoveOption = (idToRemove: string) => {
+    setAlternativaProps((prev) =>
+      prev
+        .filter((alt) => alt.id !== idToRemove)
+        .map((alt, index) => ({ ...alt, placeholder: `Opção ${index + 1}`, eventKey: alt.id }))
+    );
+
+    setAlternativaTexts((prev) => {
+      const { [idToRemove]: _, ...rest } = prev;
+      return rest;
+    });
+    setAlternativaTags((prev) => {
+      const { [idToRemove]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const novaPergunta: Pergunta = {
+      pergunta: questionText,
+    };
+
+    const id = await addPergunta(novaPergunta);
+
+    for (const alternativa of alternativaProps) {
+      const alternativaSave: Alternativa = {
+        id_pergunta: id,
+        alternativa: alternativaTexts[alternativa.id],
+      };
+
+      const id_alternativa = await addAlternativa(alternativaSave);
+      await associateAlternativaToTags(id_alternativa, Array.from(alternativaTags[alternativa.id]));
+    }
+
+    // Limpar os campos após adicionar uma nova pergunta
+    setQuestionText("");
+    setAlternativaProps([
+      {
+        id: uuidv4(),
+        placeholder: "Opção 1",
+        eventKey: "0",
+        tags: [],
+        onRemove: () => {},
+        onTextChange: handleAlternativaTextChange,
+        onTagChange: handleAlternativaTagChange,
+      },
+    ]);
+    setAlternativaTexts({});
+    setAlternativaTags({});
   };
 
   useEffect(() => {
+    const fetchTags = async () => {
+      const tagsFromDB = await getTags();
+      setTags(tagsFromDB);
+    };
     fetchTags();
   }, []);
-
-  const handleRemoveOption = (idToRemove: string) => {
-    const newAlternativas = alternativas
-      .filter(alternativa => alternativa.id !== idToRemove)
-      .map((alternativa, index) => ({
-        ...alternativa,
-        placeholder: `Opção ${index + 1}`,
-        eventKey: index.toString(),
-      }));
-    setAlternativas(newAlternativas);
-  };
 
   return (
     <Container className="mt-3">
@@ -49,30 +114,39 @@ export const CreatePergunta: React.FC = () => {
           <Card>
             <Card.Body>
               <Card.Title>Sua Pergunta</Card.Title>
-              <Form id="questionForm">
-                <Form.Group controlId="questionInput">
-                  <Form.Control type="text" placeholder="Escreva a pergunta aqui..." />
-                </Form.Group>
-                <Card.Title className="mt-3">Alternativas</Card.Title>
-                <Accordion className="d-flex flex-column gap-2">
-                  {alternativas.map((alternativa) => (
-                    <CreateAlternativa
-                      key={alternativa.id}
-                      id={alternativa.id}
-                      placeholder={alternativa.placeholder}
-                      eventKey={alternativa.eventKey}
-                      onRemove={() => handleRemoveOption(alternativa.id)}
-                      tags={tags}
+              <Form id="questionForm" onSubmit={handleSubmit}>
+                <Form.Group>
+                  <Form.Group controlId="questionInput">
+                    <Form.Control
+                      type="text"
+                      placeholder="Escreva a pergunta aqui..."
+                      value={questionText}
+                      onChange={(e) => setQuestionText(e.target.value)}
                     />
-                  ))}
-                </Accordion>
-                <Button variant="light" className="mt-3" id="addOptionButton" onClick={handleAddOption}>
-                  Adicionar opção
+                  </Form.Group>
+                  <Card.Title className="mt-3">Alternativas</Card.Title>
+                  <Accordion className="d-flex flex-column gap-2">
+                    {alternativaProps.map((alternativa) => (
+                      <CreateAlternativa
+                        key={alternativa.id}
+                        id={alternativa.id}
+                        placeholder={alternativa.placeholder}
+                        eventKey={alternativa.eventKey}
+                        onRemove={() => handleRemoveOption(alternativa.id)}
+                        tags={tags}
+                        onTextChange={handleAlternativaTextChange}
+                        onTagChange={handleAlternativaTagChange}
+                      />
+                    ))}
+                  </Accordion>
+                  <Button variant="light" className="mt-3" id="addOptionButton" onClick={handleAddOption}>
+                    Adicionar opção
+                  </Button>
+                </Form.Group>
+                <Button variant="success" type="submit" className="mt-3">
+                  Criar
                 </Button>
               </Form>
-              <Button variant="success" type="submit" className="mt-3">
-                Criar
-              </Button>
             </Card.Body>
           </Card>
         </Col>
