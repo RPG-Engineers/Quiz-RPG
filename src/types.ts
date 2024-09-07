@@ -60,3 +60,7 @@ export interface CaracteristicaTag {
 export interface CaracteristicaWithTags extends Caracteristica {
   tags: Tag[];
 }
+
+export interface AlternativaWithTags extends Alternativa {
+  tags: Tag[];
+}

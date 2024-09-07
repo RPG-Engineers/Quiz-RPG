@@ -13,11 +13,27 @@ export interface CreateAlternativaProps {
   onRemove: () => void;
   onTextChange: (id: string, text: string) => void;
   onTagChange: (id: string, selectedTags: Set<number>) => void;
+  initialText?: string;
+  initialTags?: Set<number>;
 }
 
-export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ id, tags, eventKey, placeholder, onRemove, onTextChange, onTagChange }) => {
-  const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
-  const [text, setText] = useState("");
+export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ 
+  id, 
+  tags, 
+  eventKey, 
+  placeholder, 
+  onRemove, 
+  onTextChange, 
+  onTagChange, 
+  initialText = "",
+  initialTags = new Set()
+}) => {
+  const [selectedTags, setSelectedTags] = useState<Set<number>>(initialTags);
+  const [text, setText] = useState(initialText);
+
+  useEffect(() => {
+    onTagChange(id, selectedTags);
+  }, [id, selectedTags, onTagChange]);
 
   const handleTagToggle = (tagId: number) => {
     setSelectedTags((prev) => {
@@ -31,10 +47,6 @@ export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ id, tags, 
     });
   };
 
-  useEffect(() => {
-    onTagChange(id, selectedTags);
-  }, [id, selectedTags, onTagChange]);  
-
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
     onTextChange(id, event.target.value);
@@ -44,7 +56,12 @@ export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ id, tags, 
     <Card>
       <Card.Header>
         <Form.Group className="d-flex gap-1">
-          <Form.Control type="text" placeholder={placeholder} value={text} onChange={handleTextChange} />
+          <Form.Control 
+            type="text" 
+            placeholder={placeholder} 
+            value={text} 
+            onChange={handleTextChange} 
+          />
           <CustomToggle eventKey={eventKey}></CustomToggle>
           <Button variant="danger" className="ml-2" onClick={onRemove}>
             <FontAwesomeIcon icon={faTrash} />
@@ -55,7 +72,11 @@ export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ id, tags, 
         <Container className="mt-2">
           <Form.Group>
             <Form.Label>Tags para Selecionar</Form.Label>
-            <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle}></TagSelection>
+            <TagSelection 
+              tags={tags} 
+              selectedTags={selectedTags} 
+              handleTagToggle={handleTagToggle} 
+            />
           </Form.Group>
         </Container>
       </Accordion.Collapse>
