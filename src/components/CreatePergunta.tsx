@@ -3,18 +3,21 @@ import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootst
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 import { Tag } from "../types";
 import { getTags } from "../database/database";
+import { v4 as uuidv4 } from 'uuid';
 
 export const CreatePergunta: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [alternativas, setAlternativas] = useState<Omit<CreateAlternativaProps, "tags" | "onRemove">[]>([
-    { placeholder: "Opção 1", eventKey: "0" },
+  const [alternativas, setAlternativas] = useState<CreateAlternativaProps[]>([
+    { id: uuidv4(), placeholder: "Opção 1", eventKey: "0", tags: [], onRemove: () => {} },
   ]);
 
   const handleAddOption = () => {
-    const newKey = alternativas.length.toString();
-    const newOption: Omit<CreateAlternativaProps, "tags" | "onRemove"> = {
+    const newOption: CreateAlternativaProps = {
+      id: uuidv4(),
       placeholder: `Opção ${alternativas.length + 1}`,
-      eventKey: newKey,
+      eventKey: uuidv4(),
+      tags: [],
+      onRemove: () => {},
     };
     setAlternativas([...alternativas, newOption]);
   };
@@ -28,11 +31,9 @@ export const CreatePergunta: React.FC = () => {
     fetchTags();
   }, []);
 
-  const handleRemoveOption = (indexToRemove: number) => {
+  const handleRemoveOption = (idToRemove: string) => {
     const newAlternativas = alternativas
-      // Remove a alternativa
-      .filter((_, index) => index !== indexToRemove)
-      // Atualiza os índices
+      .filter(alternativa => alternativa.id !== idToRemove)
       .map((alternativa, index) => ({
         ...alternativa,
         placeholder: `Opção ${index + 1}`,
@@ -54,12 +55,13 @@ export const CreatePergunta: React.FC = () => {
                 </Form.Group>
                 <Card.Title className="mt-3">Alternativas</Card.Title>
                 <Accordion className="d-flex flex-column gap-2">
-                  {alternativas.map((alternativa, index) => (
+                  {alternativas.map((alternativa) => (
                     <CreateAlternativa
-                      key={index}
+                      key={alternativa.id}
+                      id={alternativa.id}
                       placeholder={alternativa.placeholder}
                       eventKey={alternativa.eventKey}
-                      onRemove={() => handleRemoveOption(index)}
+                      onRemove={() => handleRemoveOption(alternativa.id)}
                       tags={tags}
                     />
                   ))}
