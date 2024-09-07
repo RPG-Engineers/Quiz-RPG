@@ -1,12 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 import { Alternativa, Pergunta, Tag } from "../types";
-import { addAlternativa, addPergunta, associateAlternativaToTags, getTags } from "../database/database";
+import { addAlternativa, addPergunta, associateAlternativaToTags } from "../database/database";
 import { v4 as uuidv4 } from "uuid";
 
-export const CreatePergunta: React.FC = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
+interface CreatePerguntaProps {
+  tags: Tag[]
+}
+
+export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags }) => {
   const [alternativaProps, setAlternativaProps] = useState<CreateAlternativaProps[]>([
     {
       id: uuidv4(),
@@ -44,7 +47,7 @@ export const CreatePergunta: React.FC = () => {
 
   const handleAlternativaTagChange = useCallback((id: string, selectedTags: Set<number>) => {
     setAlternativaTags((prev) => ({ ...prev, [id]: selectedTags }));
-  }, []);  
+  }, []);
 
   const handleRemoveOption = (idToRemove: string) => {
     setAlternativaProps((prev) =>
@@ -58,14 +61,13 @@ export const CreatePergunta: React.FC = () => {
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
-  
+
     setAlternativaTags((prev) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,14 +104,6 @@ export const CreatePergunta: React.FC = () => {
     setAlternativaTexts({});
     setAlternativaTags({});
   };
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      const tagsFromDB = await getTags();
-      setTags(tagsFromDB);
-    };
-    fetchTags();
-  }, []);
 
   return (
     <Container className="mt-3">
