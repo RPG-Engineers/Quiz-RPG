@@ -77,12 +77,13 @@ export const getQuestionarios = async (): Promise<Questionario[]> => {
  *
  * @param {number} id Id do questionário a ser obtido
  */
-export const getQuestionarioById = async (id: number): Promise<Questionario> => {
+export const getQuestionarioById = async (id: number): Promise<QuestionarioWithPerguntas> => {
   const questionario = await db.questionario.get(id);
   if (typeof questionario === "undefined") {
     throw new Error("Questionário não encontrado");
   }
-  return questionario;
+  const perguntas = await getPerguntasByQuestionarioId(questionario.id_questionario!);
+  return { ...questionario, perguntas };
 };
 
 /**
@@ -91,8 +92,76 @@ export const getQuestionarioById = async (id: number): Promise<Questionario> => 
  * @param {number} id Id do questionário a ser atualizado
  * @param {Questionario} updated_questionario Questionário atualizado
  */
-export const updateQuestionario = async (id: number, updated_questionario: Questionario) => {
+export const updateQuestionarioById = async (id: number, updated_questionario: Questionario) => {
   await db.questionario.update(id, updated_questionario);
+};
+
+/**
+ * Atualiza um questionário do banco de dados
+ *
+ * @param {number} id Id do questionário a ser atualizado
+ * @param {Questionario} updated_questionario Questionário atualizado
+ */
+export const updateQuestionario = async (updated_questionario: QuestionarioWithPerguntas) => {
+  const questionario: Questionario = {
+    nome: updated_questionario.nome,
+    default: updated_questionario.default,
+  };
+  const perguntas: Pergunta[] = updated_questionario.perguntas;
+
+  // Atualiza o questionário
+  await db.questionario.update(updated_questionario.id_questionario!, questionario);
+
+  // Obtém os IDs das perguntas
+  const perguntas_ids = perguntas.map((pergunta) => pergunta.id_pergunta!);
+
+  // Associa as perguntas ao questionário
+  await updateAssociationQuestionarioToPerguntas(updated_questionario.id_questionario!, perguntas_ids);
+};
+
+/**
+ * Atualiza a associação de perguntas a um questionário
+ *
+ * @param {number} id_questionario Id do questionário
+ * @param {number[]} perguntas_ids Ids das perguntas a serem associadas
+ */
+export const updateAssociationQuestionarioToPerguntas = async (id_questionario: number, perguntas_ids: number[]) => {
+  try {
+    await db.transaction("rw", db.questionario_pergunta, async () => {
+      // Obtenha as associações existentes para o questionário
+      const existingAssociations = await db.questionario_pergunta.where("id_questionario").equals(id_questionario).toArray();
+
+      // Crie um Set com IDs fornecidos para facilitar a verificação
+      const perguntaIdsSet = new Set(perguntas_ids);
+
+      // Determine as associações a adicionar e remover
+      const currentPerguntaIdsSet = new Set(existingAssociations.map((entry) => entry.id_pergunta));
+      const perguntasToAdd = perguntas_ids.filter((id_pergunta) => !currentPerguntaIdsSet.has(id_pergunta));
+      const perguntasToRemove = existingAssociations
+        .filter((entry) => !perguntaIdsSet.has(entry.id_pergunta))
+        .map((entry) => entry.id_pergunta);
+
+      // Adicione novas associações
+      const newAssociations = perguntasToAdd.map((id_pergunta) => ({
+        id_questionario: id_questionario,
+        id_pergunta: id_pergunta,
+      }));
+      if (newAssociations.length > 0) {
+        await db.questionario_pergunta.bulkAdd(newAssociations);
+      }
+
+      // Remova associações antigas
+      if (perguntasToRemove.length > 0) {
+        await db.questionario_pergunta
+          .where("id_questionario")
+          .equals(id_questionario)
+          .and((entry) => perguntasToRemove.includes(entry.id_pergunta))
+          .delete();
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar associações de questionário com perguntas:", error);
+  }
 };
 
 /**

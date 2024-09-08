@@ -5,7 +5,7 @@ const EditarQuestionario: React.FC = () => {
     const { id } = useParams<{ id: string }>();
 
     return (
-        <QuizEditor></QuizEditor>
+        <QuizEditor id={Number(id)} navigationDestiny="/questionarios"></QuizEditor>
     );
 };
 
