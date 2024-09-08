@@ -4,7 +4,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { CardQuiz } from "../components/CardQuiz";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getQuestionarios, updateQuestionario } from "../database/database";
+import { deleteQuestionario, getQuestionarios, updateQuestionario } from "../database/database";
 import { Questionario } from "../types";
 
 const Questionarios: React.FC = () => {
@@ -38,6 +38,11 @@ const Questionarios: React.FC = () => {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    await deleteQuestionario(id);
+    setQuestionarios((prev) => prev.filter((questionario) => questionario.id_questionario !== id));
+  };
+
   return (
     <>
       <Container className="h-100 mt-3">
@@ -55,9 +60,9 @@ const Questionarios: React.FC = () => {
       {questionarios.map((questionario) => (
         <CardQuiz
           key={questionario.id_questionario}
-          title={questionario.nome}
-          checked={questionario.default}
+          questionario={questionario}
           onSelect={() => handleSelect(questionario.id_questionario!)}
+          handleDelete={handleDelete}
         />
       ))}
     </>
