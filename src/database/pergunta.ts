@@ -55,16 +55,7 @@ export const getPerguntasByQuestionarioId = async (id_questionario: number): Pro
     return perguntas;
   });
 };
-/**
- * Atualiza uma pergunta do banco de dados
- *
- * @param {number} id Id da pergunta a ser atualizada
- * @param {Pergunta} updated_pergunta Pergunta atualizada
- */
 
-export const updatePergunta = async (id: number, updated_pergunta: Pergunta) => {
-  await db.pergunta.update(id, updated_pergunta);
-};
 /**
  * Deleta uma pergunta do banco de dados
  *
