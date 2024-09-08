@@ -2,7 +2,8 @@ import React, { useCallback, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 import { Alternativa, Pergunta, Tag } from "../types";
-import { addAlternativa, addPergunta, associateAlternativaToTags } from "../database/database";
+import { addAlternativa, associateAlternativaToTags } from "../database/alternativa";
+import { addPergunta } from "../database/pergunta";
 import { v4 as uuidv4 } from "uuid";
 
 interface CreatePerguntaProps {

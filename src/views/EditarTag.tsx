@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getTagById, updateTag } from "../database/database";
+import { getTagById, updateTag } from "../database/tag";
 import { Tag } from "../types";
 import { useParams, useNavigate } from "react-router-dom";
 
