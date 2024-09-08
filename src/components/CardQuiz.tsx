@@ -1,20 +1,27 @@
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Questionario } from "../types";
 
-export const CardQuiz: React.FC<{ title: string; checked: boolean; onSelect: () => void }> = ({ title, checked, onSelect }) => {
+interface CardQuizProps {
+  questionario: Questionario
+  onSelect: () => void;
+  handleDelete: (id: number) => Promise<void>;
+}
+
+export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, handleDelete }) => {
   return (
     <Container className="h-100 mt-3">
       <Row className="align-items-center h-100">
         <Col xs={6} className="mx-auto">
           <Card>
             <Card.Body>
-              <Card.Title>{title}</Card.Title>
+              <Card.Title>{questionario.nome}</Card.Title>
               <Form.Check
                 type="switch"
-                id={`flexSwitch${title.replace(/\s+/g, "")}`}
+                id={`flexSwitch${questionario.nome.replace(/\s+/g, "")}`}
                 label="Default"
-                checked={checked}
+                checked={questionario.default}
                 onChange={onSelect}
               />
               <div className="d-flex gap-1">
@@ -24,7 +31,7 @@ export const CardQuiz: React.FC<{ title: string; checked: boolean; onSelect: () 
                 <Button variant="warning" className="mt-2 text-white">
                   <FontAwesomeIcon icon={faPen} />
                 </Button>
-                <Button variant="danger" className="mt-2">
+                <Button variant="danger" className="mt-2" onClick={() => handleDelete(questionario.id_questionario!)}>
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
               </div>
