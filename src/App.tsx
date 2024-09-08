@@ -18,6 +18,7 @@ import { Responder } from "./views/Responder";
 import EditarPergunta from "./views/EditarPergunta";
 import EditarQuestionario from "./views/EditarQuestionario";
 import { Resultado } from "./views/Resultado";
+import CriarQuestionario from "./views/CriarQuestionario";
 
 function App() {
   useEffect(() => {
@@ -43,6 +44,7 @@ function App() {
         <Route path="/editar-raca/:id" element={<EditarRaca />} />
         <Route path="/editar-pergunta/:id" element={<EditarPergunta />} />
         <Route path="/editar-questionario/:id" element={<EditarQuestionario />} />
+        <Route path="/criar-questionario" element={<CriarQuestionario />} />
         <Route path="/resultado" element={<Resultado />} />
       </Routes>
     </Router>
