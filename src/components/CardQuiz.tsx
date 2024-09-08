@@ -2,7 +2,7 @@ import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 
-export const CardQuiz: React.FC<{ title: string; checked: boolean }> = ({ title, checked }) => {
+export const CardQuiz: React.FC<{ title: string; checked: boolean; onSelect: () => void }> = ({ title, checked, onSelect }) => {
   return (
     <Container className="h-100 mt-3">
       <Row className="align-items-center h-100">
@@ -14,7 +14,8 @@ export const CardQuiz: React.FC<{ title: string; checked: boolean }> = ({ title,
                 type="switch"
                 id={`flexSwitch${title.replace(/\s+/g, "")}`}
                 label="Default"
-                defaultChecked={checked}
+                checked={checked}
+                onChange={onSelect}
               />
               <div className="d-flex gap-1">
                 <Button variant="dark" className="mt-2">

@@ -3,12 +3,41 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { CardQuiz } from "../components/CardQuiz";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getQuestionarios, updateQuestionario } from "../database/database";
+import { Questionario } from "../types";
 
 const Questionarios: React.FC = () => {
+  const [questionarios, setQuestionarios] = useState<Questionario[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const questionariosFromDB = await getQuestionarios();
+      setQuestionarios(questionariosFromDB);
+    };
+    fetchData();
+  }, []);
+
   const handleCreate = () => {
     navigate(`/criar-questionario`);
   };
+
+  const handleSelect = async (id: number) => {
+    // Atualiza todos os questionários, removendo o "default" dos outros
+    const updatedQuestionarios = questionarios.map((q) => ({
+      ...q,
+      default: q.id_questionario === id,
+    }));
+
+    setQuestionarios(updatedQuestionarios);
+
+    // Atualiza o banco de dados
+    for (const questionario of updatedQuestionarios) {
+      await updateQuestionario(questionario.id_questionario!, questionario);
+    }
+  };
+
   return (
     <>
       <Container className="h-100 mt-3">
@@ -23,8 +52,14 @@ const Questionarios: React.FC = () => {
           </Col>
         </Row>
       </Container>
-      <CardQuiz title="Questionário Jogador" checked={true} />
-      <CardQuiz title="Questionário NPC" checked={false} />
+      {questionarios.map((questionario) => (
+        <CardQuiz
+          key={questionario.id_questionario}
+          title={questionario.nome}
+          checked={questionario.default}
+          onSelect={() => handleSelect(questionario.id_questionario!)}
+        />
+      ))}
     </>
   );
 };
