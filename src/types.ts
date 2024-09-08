@@ -64,3 +64,7 @@ export interface CaracteristicaWithTags extends Caracteristica {
 export interface AlternativaWithTags extends Alternativa {
   tags: Tag[];
 }
+
+export interface QuestionarioWithPerguntas extends Questionario {
+  perguntas: Pergunta[]
+}

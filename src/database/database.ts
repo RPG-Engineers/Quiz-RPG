@@ -1,5 +1,15 @@
 import Dexie from "dexie";
-import { Alternativa, AlternativaWithTags, Caracteristica, Pergunta, Questionario, Tag, TipoCaracteristica } from "../types";
+import {
+  Alternativa,
+  AlternativaWithTags,
+  Caracteristica,
+  Pergunta,
+  Questionario,
+  QuestionarioPergunta,
+  QuestionarioWithPerguntas,
+  Tag,
+  TipoCaracteristica,
+} from "../types";
 import { db } from "./db";
 
 // === CRUD Questionario ===
@@ -7,10 +17,51 @@ import { db } from "./db";
 /**
  * Adiciona um questionário ao banco de dados
  *
- * @param {Questionario} questionario Questionário a ser adicionado
+ * @param {QuestionarioWithPerguntas} questionarioWithPerguntas Questionário a ser adicionado
  */
-export const addQuestionario = async (questionario: Questionario) => {
-  await db.questionario.add(questionario);
+export const addQuestionario = async (questionarioWithPerguntas: QuestionarioWithPerguntas) => {
+  const questionario: Questionario = {
+    nome: questionarioWithPerguntas.nome,
+    default: questionarioWithPerguntas.default,
+  };
+  const perguntas: Pergunta[] = questionarioWithPerguntas.perguntas;
+
+  try {
+    // Adiciona o questionário e obtém o ID gerado
+    const questionario_id = await db.questionario.add(questionario);
+
+    // Obtém os IDs das perguntas
+    const perguntas_ids = perguntas.map((pergunta) => pergunta.id_pergunta!);
+
+    // Associa as perguntas ao questionário
+    await associateQuestionarioToPerguntas(questionario_id, perguntas_ids);
+
+    console.log("Questionário e associações adicionados com sucesso!");
+  } catch (error) {
+    console.error("Erro ao adicionar questionário e associações:", error);
+  }
+};
+
+/**
+ * Associa as perguntas ao questionário
+ *
+ * @param {number} questionario_id Id do questionário
+ * @param {number[]} perguntas_ids Ids das perguntas a serem associadas
+ */
+const associateQuestionarioToPerguntas = async (questionario_id: number, perguntas_ids: number[]) => {
+  try {
+    await db.transaction("rw", db.questionario_pergunta, async () => {
+      const entries: QuestionarioPergunta[] = perguntas_ids.map((perguntas_id) => ({
+        id_questionario: questionario_id,
+        id_pergunta: perguntas_id,
+      }));
+      await db.questionario_pergunta.bulkAdd(entries);
+    });
+
+    console.log("Associações adicionadas com sucesso!");
+  } catch (error) {
+    console.error("Erro ao associar perguntas ao questionário:", error);
+  }
 };
 
 /**
@@ -171,7 +222,6 @@ export const getAlternativasByPerguntaId = async (id_pergunta: number): Promise<
 export const updateAlternativa = async (id: number, updated_alternativa: Alternativa) => {
   await db.alternativa.update(id, updated_alternativa);
 };
-
 
 /**
  * Associa as tags à alternativa
@@ -371,7 +421,7 @@ export const getCaracteristicas = async (): Promise<Caracteristica[]> => {
  * Obtém todas as características de um tipo banco de dados
  *
  */
-export const getCaracteristicasByTipo = async (tipo : TipoCaracteristica): Promise<Caracteristica[]> => {
+export const getCaracteristicasByTipo = async (tipo: TipoCaracteristica): Promise<Caracteristica[]> => {
   return await db.caracteristica.where("tipo").equals(tipo).toArray();
 };
 
@@ -463,21 +513,14 @@ export const updateAssociationCaracteristicaToTags = async (id: number, tag_ids:
   }
 };
 
-
 export async function getAlternativasWithTagsByPergunta(pergunta: Pergunta): Promise<AlternativaWithTags[]> {
   // Primeiro, buscamos todas as alternativas associadas à pergunta
-  const alternativas = await db.alternativa
-    .where("id_pergunta")
-    .equals(pergunta.id_pergunta!)
-    .toArray();
+  const alternativas = await db.alternativa.where("id_pergunta").equals(pergunta.id_pergunta!).toArray();
 
   // Agora, para cada alternativa, buscamos as tags associadas
   const alternativasWithTags: AlternativaWithTags[] = await Promise.all(
     alternativas.map(async (alternativa) => {
-      const tags = await db.alternativa_tag
-        .where("id_alternativa")
-        .equals(alternativa.id_alternativa!)
-        .toArray();
+      const tags = await db.alternativa_tag.where("id_alternativa").equals(alternativa.id_alternativa!).toArray();
 
       const tagDetails: Tag[] = await Promise.all(
         tags.map(async (altTag) => {
@@ -495,7 +538,6 @@ export async function getAlternativasWithTagsByPergunta(pergunta: Pergunta): Pro
 
   return alternativasWithTags;
 }
-
 
 /**
  * Edita uma pergunta e suas alternativas, incluindo as associações de tags
@@ -517,20 +559,27 @@ export const editPerguntaEAlternativas = async (pergunta: Pergunta, alternativas
 
       // Determine as alternativas a adicionar, remover e editar
       const alternativesToAdd = alternativas.filter((alt) => !alt.id_alternativa);
-      const alternativesToRemove = existingAlternatives.filter((existingAlt) => !providedAlternativeIds.has(existingAlt.id_alternativa));
-      const alternativesToUpdate = alternativas.filter((alt) => alt.id_alternativa && providedAlternativeIds.has(alt.id_alternativa));
+      const alternativesToRemove = existingAlternatives.filter(
+        (existingAlt) => !providedAlternativeIds.has(existingAlt.id_alternativa)
+      );
+      const alternativesToUpdate = alternativas.filter(
+        (alt) => alt.id_alternativa && providedAlternativeIds.has(alt.id_alternativa)
+      );
 
       // Adicione novas alternativas
       if (alternativesToAdd.length > 0) {
-        const addedAlternativesIds = await db.alternativa.bulkAdd(alternativesToAdd.map((alt) => ({
-          id_pergunta: pergunta.id_pergunta!,
-          alternativa: alt.alternativa,
-        })), { allKeys: true });
+        const addedAlternativesIds = await db.alternativa.bulkAdd(
+          alternativesToAdd.map((alt) => ({
+            id_pergunta: pergunta.id_pergunta!,
+            alternativa: alt.alternativa,
+          })),
+          { allKeys: true }
+        );
 
         // Adicionar associações de tags para as alternativas recém-criadas
         for (let i = 0; i < addedAlternativesIds.length; i++) {
           const newAltId = addedAlternativesIds[i];
-          const newAltTags = alternativesToAdd[i].tags.map(tag => tag.id_tag!);
+          const newAltTags = alternativesToAdd[i].tags.map((tag) => tag.id_tag!);
           if (newAltTags) {
             await updateAlternativaTags(String(newAltId), newAltTags);
           }
@@ -548,7 +597,7 @@ export const editPerguntaEAlternativas = async (pergunta: Pergunta, alternativas
       // Atualize alternativas existentes e suas associações de tags
       for (const alt of alternativesToUpdate) {
         await db.alternativa.update(alt.id_alternativa, { alternativa: alt.alternativa });
-        const updatedTags = alt.tags.map(tag => tag.id_tag!);
+        const updatedTags = alt.tags.map((tag) => tag.id_tag!);
         if (updatedTags) {
           await updateAlternativaTags(String(alt.id_alternativa), updatedTags);
         }
@@ -571,7 +620,6 @@ export const updateAlternativaTags = async (id_alternativa: string, tags: number
 
   await db.alternativa_tag.bulkAdd(alternativaTags);
 };
-
 
 /**
  * Deleta uma característica do banco de dados
