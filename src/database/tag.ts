@@ -33,27 +33,7 @@ export const getTagById = async (id: number): Promise<Tag> => {
   }
   return tag;
 };
-/**
- * Obtém as tags de uma determinada alternativa
- *
- * @param {number} id_alternativa Id da alternativa
- */
 
-export const getTagsByAlternativaId = async (id_alternativa: number): Promise<Tag[]> => {
-  return await db.transaction("r", db.caracteristica_tag, db.pergunta, async () => {
-    const tags_ids = await db.alternativa_tag.where("id_alternativa").equals(id_alternativa).toArray();
-    const tags = await Dexie.Promise.all(
-      tags_ids.map(async (tags_carac) => {
-        const tag = await db.tag.get(tags_carac.id_tag);
-        if (typeof tag === "undefined") {
-          throw new Error("Tag não encontrada");
-        }
-        return tag;
-      })
-    );
-    return tags;
-  });
-};
 /**
  * Obtém as tags de uma determinada característica
  *
@@ -75,6 +55,7 @@ export const getTagsByCaracteristicaId = async (id_caracteristica: number): Prom
     return tags;
   });
 };
+
 /**
  * Atualiza uma tag do banco de dados
  *
@@ -85,6 +66,7 @@ export const getTagsByCaracteristicaId = async (id_caracteristica: number): Prom
 export const updateTag = async (id: number, updated_tag: Tag) => {
   await db.tag.update(id, updated_tag);
 };
+
 /**
  * Deleta uma tag do banco de dados
  *
