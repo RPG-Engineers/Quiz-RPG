@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { addTag, getTags, deleteTag } from "../database/database";
+import { addTag, getTags, deleteTag } from "../database/tag";
 import { Tag } from "../types";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

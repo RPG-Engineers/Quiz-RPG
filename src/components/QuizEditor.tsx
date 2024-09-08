@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getPerguntas, getQuestionarioById, updateQuestionario } from "../database/database";
+import { getPerguntas } from "../database/pergunta";
+import { getQuestionarioById, updateQuestionario } from "../database/questionario";
 import { Pergunta, Questionario, QuestionarioWithPerguntas } from "../types";
 
 interface QuizEditorProps {

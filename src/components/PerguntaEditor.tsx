@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 import { v4 as uuidv4 } from "uuid";
-import { getPerguntaById, getAlternativasWithTagsByPergunta, editPerguntaEAlternativas } from "../database/database";
+import { getAlternativasWithTagsByPergunta, editPerguntaEAlternativas } from "../database/caracteristica";
+import { getPerguntaById } from "../database/pergunta";
 import { AlternativaWithTags, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
 

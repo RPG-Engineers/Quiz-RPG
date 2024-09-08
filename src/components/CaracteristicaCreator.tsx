@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
   addCaracteristica,
-  getTags,
   deleteCaracteristica,
   associateCaracteristicaToTags,
-  getTagsByCaracteristicaId,
-  getCaracteristicasByTipo,
-} from "../database/database";
+  getCaracteristicasByTipo
+} from "../database/caracteristica";
+import { getTags, getTagsByCaracteristicaId } from "../database/tag";
 import { Tag, Caracteristica, TipoCaracteristica, CaracteristicaWithTags } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";

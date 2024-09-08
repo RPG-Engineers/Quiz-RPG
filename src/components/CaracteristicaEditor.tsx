@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
   getCaracteristicaById,
   updateCaracteristica,
+  updateAssociationCaracteristicaToTags
+} from "../database/caracteristica";
+import {
   getTags,
-  getTagsByCaracteristicaId,
-  updateAssociationCaracteristicaToTags,
-} from "../database/database";
+  getTagsByCaracteristicaId
+} from "../database/tag";
 import { Tag, Caracteristica, TipoCaracteristica } from "../types";
 import { useNavigate } from "react-router-dom";
 import { TagSelection } from "./TagSelection";

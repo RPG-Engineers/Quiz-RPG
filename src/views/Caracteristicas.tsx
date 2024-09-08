@@ -3,7 +3,8 @@ import { Button, Container, Form, FormControl, InputGroup, Row } from 'react-boo
 import { CaracteristicaWithTags, TipoCaracteristica } from '../types';
 import CaracteristicaCards from '../components/CaracteristicaCards';
 import '../assets/styles/SearchBarStyles.css';
-import { filtrarCaracteristicas, getCaracteristicas, getTagsByCaracteristicaId } from '../database/database';
+import { filtrarCaracteristicas, getCaracteristicas } from "../database/caracteristica";
+import { getTagsByCaracteristicaId } from "../database/tag";
 
 const Caracteristicas: React.FC = () => {
   const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);

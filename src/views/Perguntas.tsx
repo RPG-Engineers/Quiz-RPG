@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { CardPergunta } from "../components/CardPergunta";
 import { CreatePergunta } from "../components/CreatePergunta";
-import { deletePergunta, getPerguntas, getTags } from "../database/database";
+import { getTags } from "../database/tag";
+import { deletePergunta, getPerguntas } from "../database/pergunta";
 import { Pergunta, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
 

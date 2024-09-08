@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { PerguntaEditor } from "../components/PerguntaEditor";
-import { getTags } from "../database/database";
+import { getTags } from "../database/tag";
 import { Tag } from "../types";
 import { useEffect, useState } from "react";
 

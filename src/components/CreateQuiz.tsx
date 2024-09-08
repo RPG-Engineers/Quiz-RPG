@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Pergunta, QuestionarioWithPerguntas } from "../types";
-import { addQuestionario, getPerguntas } from "../database/database";
+import { getPerguntas } from "../database/pergunta";
+import { addQuestionario } from "../database/questionario";
 import { useNavigate } from "react-router-dom";
 
 export const CreateQuiz: React.FC = () => {
