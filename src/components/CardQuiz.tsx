@@ -6,10 +6,11 @@ import { Questionario } from "../types";
 interface CardQuizProps {
   questionario: Questionario
   onSelect: () => void;
+  handleEdit: (id: number) => void;
   handleDelete: (id: number) => Promise<void>;
 }
 
-export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, handleDelete }) => {
+export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, handleEdit, handleDelete }) => {
   return (
     <Container className="h-100 mt-3">
       <Row className="align-items-center h-100">
@@ -28,7 +29,7 @@ export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, hand
                 <Button variant="dark" className="mt-2">
                   Iniciar
                 </Button>
-                <Button variant="warning" className="mt-2 text-white">
+                <Button variant="warning" className="mt-2 text-white" onClick={() => handleEdit(questionario.id_questionario!)}>
                   <FontAwesomeIcon icon={faPen} />
                 </Button>
                 <Button variant="danger" className="mt-2" onClick={() => handleDelete(questionario.id_questionario!)}>

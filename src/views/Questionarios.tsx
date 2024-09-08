@@ -4,7 +4,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { CardQuiz } from "../components/CardQuiz";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteQuestionario, getQuestionarios, updateQuestionario } from "../database/database";
+import { deleteQuestionario, getQuestionarios, updateQuestionarioById } from "../database/database";
 import { Questionario } from "../types";
 
 const Questionarios: React.FC = () => {
@@ -34,8 +34,12 @@ const Questionarios: React.FC = () => {
 
     // Atualiza o banco de dados
     for (const questionario of updatedQuestionarios) {
-      await updateQuestionario(questionario.id_questionario!, questionario);
+      await updateQuestionarioById(questionario.id_questionario!, questionario);
     }
+  };
+
+  const handleEdit = (id: number) => {
+    navigate(`/editar-questionario/${id}`);
   };
 
   const handleDelete = async (id: number) => {
@@ -62,6 +66,7 @@ const Questionarios: React.FC = () => {
           key={questionario.id_questionario}
           questionario={questionario}
           onSelect={() => handleSelect(questionario.id_questionario!)}
+          handleEdit={handleEdit}
           handleDelete={handleDelete}
         />
       ))}
