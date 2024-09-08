@@ -72,7 +72,7 @@ const CaracteristicaEditor: React.FC<CaracteristicaEditorProps> = ({ id, tipo, n
     };
 
     await updateCaracteristica(id, updatedCaracteristica);
-    await updateAssociationCaracteristicaToTags(id, Array.from(selectedTags));
+    await updateAssociationCaracteristicaToTags(id, selectedTags);
     navigate(navigationDestiny);
   };
 

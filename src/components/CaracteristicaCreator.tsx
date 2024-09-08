@@ -3,9 +3,9 @@ import {
   addCaracteristica,
   deleteCaracteristica,
   associateCaracteristicaToTags,
-  getCaracteristicasByTipo
+  getCaracteristicasByTipo,
 } from "../database/caracteristica";
-import { getTags, getTagsByCaracteristicaId } from "../database/tag";
+import { getTags } from "../database/tag";
 import { Tag, Caracteristica, TipoCaracteristica, CaracteristicaWithTags } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -31,17 +31,8 @@ const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, han
   const fetchTagsAndCaracteristicas = async (tipo: TipoCaracteristica) => {
     const tagsFromDB = await getTags();
     const caracteristicasFromDB = await getCaracteristicasByTipo(tipo);
-
-    // Associe tags a cada característica
-    const caracteristicasWithTags = await Promise.all(
-      caracteristicasFromDB.map(async (caracteristica) => {
-        const tagsCaracteristica = await getTagsByCaracteristicaId(caracteristica.id_caracteristica ?? -1);
-        return { ...caracteristica, tags: tagsCaracteristica };
-      })
-    );
-
     setTags(tagsFromDB);
-    setCaracteristicas(caracteristicasWithTags);
+    setCaracteristicas(caracteristicasFromDB);
   };
 
   // Carregar tags e características na montagem inicial do componente
@@ -72,7 +63,7 @@ const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, han
     };
 
     const id = await addCaracteristica(novaCaracteristica);
-    await associateCaracteristicaToTags(id, Array.from(selectedTags));
+    await associateCaracteristicaToTags(id, selectedTags);
     setNome("");
     setDescricao("");
     setUrlImagem("");
