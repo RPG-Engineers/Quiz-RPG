@@ -87,7 +87,7 @@ export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags, fetchData 
       };
 
       const id_alternativa = await addAlternativa(alternativaSave);
-      await associateAlternativaToTags(id_alternativa, Array.from(alternativaTags[alternativa.id]));
+      await associateAlternativaToTags(id_alternativa, alternativaTags[alternativa.id]);
     }
 
     // Limpar os campos após adicionar uma nova pergunta

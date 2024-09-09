@@ -1,137 +1,148 @@
-import { Alternativa, AlternativaWithTags, Pergunta } from "../types";
+import { Alternativa, AlternativaTag, AlternativaWithTags } from "../types";
 import { db } from "./db";
 import { getTagsByAlternativaId } from "./tag";
 
-// === CRUD Alternativa ===
 /**
  *  Adiciona uma alternativa ao banco de dados
- *
+ *  e retorna o id da alternativa adicionada
  * @param {Alternativa} alternativa Alternativa a ser adicionada
  */
 
-export const addAlternativa = async (alternativa: Alternativa) => {
+export async function addAlternativa(alternativa: Alternativa) {
   await db.alternativa.add(alternativa);
-  return alternativa.id_alternativa ?? -1;
-};
+  if (alternativa.id_alternativa !== undefined) {
+    return alternativa.id_alternativa;
+  } else {
+    throw new Error("ID da alternativa não foi definido.");
+  }
+}
 
 /**
  * Associa as tags à alternativa
  *
  * @param {number} id Id da alternativa
- * @param {number[]} tag_ids Ids das tags a serem associadas
+ * @param {Set<number>} tagsIds Ids das tags a serem associadas
  */
-
-export const associateAlternativaToTags = async (id: number, tag_ids: number[]) => {
+export async function associateAlternativaToTags(id: number, tagsIds: Set<number>) {
+  const tagsIdsArray = Array.from(tagsIds);
   try {
     await db.transaction("rw", db.alternativa_tag, async () => {
-      const entries = tag_ids.map((tag_id) => ({
+      const entries = tagsIdsArray.map((tagId) => ({
         id_alternativa: id,
-        id_tag: tag_id,
+        id_tag: tagId,
       }));
       await db.alternativa_tag.bulkAdd(entries);
     });
   } catch (error) {
     console.error("Erro ao associar alternativa com tags:", error);
+    throw error;
   }
-};
-
-export async function getAlternativasWithTagsByPergunta(pergunta: Pergunta): Promise<AlternativaWithTags[]> {
-  // Primeiro, buscamos todas as alternativas associadas à pergunta
-  const alternativas = await db.alternativa.where("id_pergunta").equals(pergunta.id_pergunta!).toArray();
-
-  // Agora, para cada alternativa, buscamos as tags associadas usando a função getTagsByAlternativaId
-  const alternativasWithTags: AlternativaWithTags[] = await Promise.all(
-    alternativas.map(async (alternativa) => {
-      const tags = await getTagsByAlternativaId(alternativa.id_alternativa!);
-
-      return {
-        ...alternativa,
-        tags: tags,
-      };
-    })
-  );
-
-  return alternativasWithTags;
 }
 
 /**
- * Edita uma pergunta e suas alternativas, incluindo as associações de tags
+ * Obtém todas as alternativas de uma pergunta
+ * com suas tags também
  *
- * @param {Pergunta} pergunta Pergunta a ser editada
- * @param {Alternativa[]} alternativas Lista de alternativas atualizada para a pergunta, incluindo tags
+ * @param {number} perguntaId Id da pergunta
  */
-export const editPerguntaEAlternativas = async (pergunta: Pergunta, alternativas: AlternativaWithTags[]) => {
+export async function getAlternativasByPerguntaId(perguntaId: number): Promise<AlternativaWithTags[]> {
+  // Buscamos todas as alternativas associadas à pergunta
+  const alternativas = await db.alternativa.where("id_pergunta").equals(perguntaId).toArray();
+
+  // Para cada alternativa obtém suas tags e associa
+  return await associateTagsToAlternativas(alternativas);
+}
+
+/**
+ * Atualiza uma alternativa do banco de dados
+ *
+ * @param {number} id Id da alternativa a ser atualizada
+ * @param {Caracteristica} updatedAlternativa Alternativa atualizada
+ */
+export async function updateAlternativa(id: number, updatedAlternativa: Alternativa) {
+  await db.alternativa.update(id, updatedAlternativa);
+}
+
+/**
+ * Atualiza a associação de tags a uma alternativa
+ *
+ * @param {number} id Id da alternativa
+ * @param {Set<number>} tagsIds Ids das tags a serem associadas
+ */
+export async function updateAssociationAlternativaToTags(id: number, tagsIds: Set<number>) {
   try {
-    await db.transaction("rw", [db.pergunta, db.alternativa, db.alternativa_tag], async () => {
-      // Atualize o texto da pergunta
-      await db.pergunta.update(pergunta.id_pergunta, { pergunta: pergunta.pergunta });
+    await db.transaction("rw", db.alternativa_tag, async () => {
+      // Obtenha as associações existentes para a alternativa
+      const existingAssociations = await db.alternativa_tag.where("id_alternativa").equals(id).toArray();
 
-      // Obtenha as alternativas existentes para a pergunta
-      const existingAlternatives = await db.alternativa.where("id_pergunta").equals(pergunta.id_pergunta!).toArray();
+      // Determine as associações a adicionar e remover
+      const currentTagIdsSet = new Set(existingAssociations.map((entry) => entry.id_tag));
+      const tagsToAdd = Array.from(tagsIds).filter((tagId) => !currentTagIdsSet.has(tagId));
+      const tagsToRemove = existingAssociations
+        .filter((entry) => !tagsIds.has(entry.id_tag))
+        .map((entry) => entry.id_tag);
 
-      // Crie um Set com IDs das alternativas fornecidas para facilitar a verificação
-      const providedAlternativeIds = new Set(alternativas.map((alt) => alt.id_alternativa));
-
-      // Determine as alternativas a adicionar, remover e editar
-      const alternativesToAdd = alternativas.filter((alt) => !alt.id_alternativa);
-      const alternativesToRemove = existingAlternatives.filter(
-        (existingAlt) => !providedAlternativeIds.has(existingAlt.id_alternativa)
-      );
-      const alternativesToUpdate = alternativas.filter(
-        (alt) => alt.id_alternativa && providedAlternativeIds.has(alt.id_alternativa)
-      );
-
-      // Adicione novas alternativas
-      if (alternativesToAdd.length > 0) {
-        const addedAlternativesIds = await db.alternativa.bulkAdd(
-          alternativesToAdd.map((alt) => ({
-            id_pergunta: pergunta.id_pergunta!,
-            alternativa: alt.alternativa,
-          })),
-          { allKeys: true }
-        );
-
-        // Adicionar associações de tags para as alternativas recém-criadas
-        for (let i = 0; i < addedAlternativesIds.length; i++) {
-          const newAltId = addedAlternativesIds[i];
-          const newAltTags = alternativesToAdd[i].tags.map((tag) => tag.id_tag!);
-          if (newAltTags) {
-            await updateAlternativaTags(String(newAltId), newAltTags);
-          }
-        }
+      // Adicione novas associações
+      const newAssociations: AlternativaTag[] = tagsToAdd.map((tagId) => ({
+        id_alternativa: id,
+        id_tag: tagId,
+      }));
+      if (newAssociations.length > 0) {
+        await db.alternativa_tag.bulkAdd(newAssociations);
       }
 
-      // Remova alternativas antigas e suas associações de tags
-      if (alternativesToRemove.length > 0) {
-        await db.alternativa.bulkDelete(alternativesToRemove.map((alt) => alt.id_alternativa));
-        for (const alt of alternativesToRemove) {
-          await db.alternativa_tag.where("id_alternativa").equals(alt.id_alternativa!).delete();
-        }
-      }
-
-      // Atualize alternativas existentes e suas associações de tags
-      for (const alt of alternativesToUpdate) {
-        await db.alternativa.update(alt.id_alternativa, { alternativa: alt.alternativa });
-        const updatedTags = alt.tags.map((tag) => tag.id_tag!);
-        if (updatedTags) {
-          await updateAlternativaTags(String(alt.id_alternativa), updatedTags);
-        }
+      // Remova associações antigas
+      if (tagsToRemove.length > 0) {
+        await db.alternativa_tag
+          .where("id_alternativa")
+          .equals(id)
+          .and((entry) => tagsToRemove.includes(entry.id_tag))
+          .delete();
       }
     });
   } catch (error) {
-    console.error("Erro ao editar pergunta e alternativas:", error);
+    console.error("Erro ao atualizar associações de alternativas com tags:", error);
+    throw error;
   }
-};
+}
 
-export const updateAlternativaTags = async (id_alternativa: string, tags: number[]) => {
-  // Remove as associações de tags existentes para a alternativa
-  await db.alternativa_tag.where({ id_alternativa }).delete();
+/**
+ * Deleta uma alternativa do banco de dados
+ *
+ * @param {number} id Id da alternativa a ser deletada
+ */
+export async function deleteAlternativa(id: number) {
+  await db.transaction("rw", db.alternativa, db.alternativa_tag, async () => {
+    await db.alternativa.delete(id);
+    await db.alternativa_tag.where("id_alternativa").equals(id).delete();
+  });
+}
 
-  // Adiciona as novas associações de tags para a alternativa
-  const alternativaTags = tags.map((id_tag) => ({
-    id_alternativa: Number(id_alternativa),
-    id_tag,
-  }));
+// === Funções Auxiliares ===
 
-  await db.alternativa_tag.bulkAdd(alternativaTags);
-};
+/**
+ * Associa as tags respectivas de cada alternativa criando um objeto
+ * AlternativaWithTags e o retorna
+ *
+ * @param {Alternativa[]} alternativas
+ */
+async function associateTagsToAlternativas(alternativas: Alternativa[]): Promise<AlternativaWithTags[]> {
+  return await Promise.all(
+    alternativas.map(async (alternativa) => {
+      // Obtém as tags da cada alternativa
+      const tagsAlternativa = await getTagsByAlternativaId(alternativa.id_alternativa!);
+
+      // Converte os ids das tags em um Set<number>
+      const tagsIdsSet: Set<number> = new Set(tagsAlternativa.map(tag => tag.id_tag!));
+
+      // Associa as tags no objeto
+      const alternativaWithTags: AlternativaWithTags = {
+        ...alternativa,
+        tagsIds: tagsIdsSet,
+      };
+
+      return alternativaWithTags;
+    })
+  );
+}
+

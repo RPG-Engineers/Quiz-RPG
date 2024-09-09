@@ -62,7 +62,7 @@ export interface CaracteristicaWithTags extends Caracteristica {
 }
 
 export interface AlternativaWithTags extends Alternativa {
-  tags: Tag[];
+  tagsIds: Set<number>;
 }
 
 export interface QuestionarioWithPerguntas extends Questionario {

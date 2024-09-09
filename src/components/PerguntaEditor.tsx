@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
 import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
 import { v4 as uuidv4 } from "uuid";
-import { getAlternativasWithTagsByPergunta, editPerguntaEAlternativas } from "../database/alternativa";
-import { getPerguntaById } from "../database/pergunta";
-import { AlternativaWithTags, Tag } from "../types";
+import { getAlternativasByPerguntaId } from "../database/alternativa";
+import { getPerguntaById, updateAssociationPerguntaToAlternativas, updatePergunta } from "../database/pergunta";
+import { AlternativaWithTags, Pergunta, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
 
 interface PerguntaEditorProps {
@@ -68,9 +68,7 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
     const fetchPerguntaData = async () => {
       const pergunta = await getPerguntaById(id);
       setQuestionText(pergunta.pergunta);
-
-      const alternativasWithTags = await getAlternativasWithTagsByPergunta(pergunta);
-
+      const alternativasWithTags = await getAlternativasByPerguntaId(id);
       const alternativasTexts: { [key: string]: string } = {};
       const alternativasTags: { [key: string]: Set<number> } = {};
       const alternativasProps: CreateAlternativaProps[] = [];
@@ -78,9 +76,7 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
       for (const alternativa of alternativasWithTags) {
         if (alternativa.id_alternativa) {
           alternativasTexts[alternativa.id_alternativa.toString()] = alternativa.alternativa;
-          alternativasTags[alternativa.id_alternativa.toString()] = new Set<number>(
-            alternativa.tags.map(tag => tag.id_tag!).filter(Boolean)
-          );
+          alternativasTags[alternativa.id_alternativa.toString()] = alternativa.tagsIds;
 
           alternativasProps.push({
             id: alternativa.id_alternativa.toString(),
@@ -90,8 +86,8 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
             onRemove: () => handleRemoveOption(alternativa.id_alternativa!.toString()),
             onTextChange: handleAlternativaTextChange,
             onTagChange: handleAlternativaTagChange,
-            initialText: alternativa.alternativa, 
-            initialTags: new Set(alternativa.tags.map(tag => tag.id_tag!).filter(Boolean)),
+            initialText: alternativa.alternativa,
+            initialTags: alternativa.tagsIds,
           });
         }
       }
@@ -104,33 +100,29 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
     fetchPerguntaData();
   }, [id, handleAlternativaTagChange, tags]);
 
-  const handleEdit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    const alternativas: AlternativaWithTags[] = alternativaProps.map((alt) => ({
-      id_alternativa: alt.id !== uuidv4() ? Number(alt.id) : undefined,
-      id_pergunta: id,
-      alternativa: alternativaTexts[alt.id] || "",
-      tags: Array.from(alternativaTags[alt.id] || []).map(tagId => ({
-        id_tag: tagId,
-        nome: "", // Assumindo que o nome e a cor das tags já são conhecidos em outro contexto
-        cor: ""
-      }))
-    }));
-  
-    try {
-      await editPerguntaEAlternativas(
-        { id_pergunta: id, pergunta: questionText },
-        alternativas
-      );
-    } catch (error) {
-      console.error("Erro ao salvar pergunta e alternativas:", error);
+
+    const updatedPegunta: Pergunta = {
+      pergunta: questionText
     }
-  
-    // Redirecionar para a página especificada após salvar
+
+    const alternativas: AlternativaWithTags[] = alternativaProps.map((alt) => {
+      const id_alternativa = isNaN(Number(alt.id)) ? undefined : Number(alt.id);
+      return {
+        id_alternativa,
+        id_pergunta: id,
+        alternativa: alternativaTexts[alt.id],
+        tagsIds: alternativaTags[alt.id],
+      };
+    });
+    
+
+    await updatePergunta(id, updatedPegunta);
+    await updateAssociationPerguntaToAlternativas(id, alternativas);
     navigate(navigationDestiny);
   };
-  
+
   return (
     <Container className="mt-3">
       <Row>
@@ -138,7 +130,7 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
           <Card>
             <Card.Body>
               <Card.Title>Sua Pergunta</Card.Title>
-              <Form id="questionForm" onSubmit={handleEdit}>
+              <Form id="questionForm" onSubmit={handleSubmit}>
                 <Form.Group>
                   <Form.Group controlId="questionInput">
                     <Form.Control
