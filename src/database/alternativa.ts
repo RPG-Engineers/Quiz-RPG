@@ -1,5 +1,6 @@
-import { Pergunta, AlternativaWithTags, Tag, Alternativa } from "../types";
+import { Alternativa, AlternativaWithTags, Pergunta } from "../types";
 import { db } from "./db";
+import { getTagsByAlternativaId } from "./tag";
 
 // === CRUD Alternativa ===
 /**
@@ -38,27 +39,21 @@ export async function getAlternativasWithTagsByPergunta(pergunta: Pergunta): Pro
   // Primeiro, buscamos todas as alternativas associadas à pergunta
   const alternativas = await db.alternativa.where("id_pergunta").equals(pergunta.id_pergunta!).toArray();
 
-  // Agora, para cada alternativa, buscamos as tags associadas
+  // Agora, para cada alternativa, buscamos as tags associadas usando a função getTagsByAlternativaId
   const alternativasWithTags: AlternativaWithTags[] = await Promise.all(
     alternativas.map(async (alternativa) => {
-      const tags = await db.alternativa_tag.where("id_alternativa").equals(alternativa.id_alternativa!).toArray();
-
-      const tagDetails: Tag[] = await Promise.all(
-        tags.map(async (altTag) => {
-          const tag = await db.tag.where("id_tag").equals(altTag.id_tag!).first();
-          return tag!;
-        })
-      );
+      const tags = await getTagsByAlternativaId(alternativa.id_alternativa!);
 
       return {
         ...alternativa,
-        tags: tagDetails,
+        tags: tags,
       };
     })
   );
 
   return alternativasWithTags;
 }
+
 /**
  * Edita uma pergunta e suas alternativas, incluindo as associações de tags
  *
