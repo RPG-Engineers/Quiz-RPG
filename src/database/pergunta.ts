@@ -2,78 +2,80 @@ import Dexie from "dexie";
 import { Pergunta } from "../types";
 import { db } from "./db";
 
-// === CRUD Pergunta ===
 /**
- * Adiciona uma pergunta ao banco de dados
+ * Adiciona uma pergunta ao banco de dados e retorna
+ * o id da pergunta adicionada.
  *
  * @param {Pergunta} pergunta Pergunta a ser adicionada
  */
-
-export const addPergunta = async (pergunta: Pergunta) => {
+export async function addPergunta(pergunta: Pergunta) {
   await db.pergunta.add(pergunta);
-  return pergunta.id_pergunta ?? -1;
-};
+  if (pergunta.id_pergunta !== undefined) {
+    return pergunta.id_pergunta;
+  } else {
+    throw new Error("ID da pergunta não foi definido.");
+  }
+}
+
 /**
  * Obtém todas as perguntas do banco de dados
  *
  */
-
-export const getPerguntas = async (): Promise<Pergunta[]> => {
+export async function getPerguntas(): Promise<Pergunta[]> {
   return await db.pergunta.toArray();
-};
+}
+
 /**
  * Obtém uma pergunta do banco de dados
  *
  * @param {number} id Id da pergunta a ser obtida
  */
-
-export const getPerguntaById = async (id: number): Promise<Pergunta> => {
+export async function getPerguntaById(id: number): Promise<Pergunta> {
   const pergunta = await db.pergunta.get(id);
-  if (typeof pergunta === "undefined") {
+  if (pergunta === undefined || pergunta === null) {
     throw new Error("Pergunta não encontrada");
   }
   return pergunta;
-};
+}
+
 /**
  * Obtém as perguntas de um determinado questionário
  *
- * @param {number} id_questionario Id do questionário
+ * @param {number} questionarioId Id do questionário
  */
-
-export const getPerguntasByQuestionarioId = async (id_questionario: number): Promise<Pergunta[]> => {
+export async function getPerguntasByQuestionarioId(questionarioId: number): Promise<Pergunta[]> {
   return await db.transaction("r", db.questionario_pergunta, db.pergunta, async () => {
-    const perguntas_ids = await db.questionario_pergunta.where("id_questionario").equals(id_questionario).toArray();
+    const perguntasIds = await db.questionario_pergunta.where("id_questionario").equals(questionarioId).toArray();
     const perguntas = await Dexie.Promise.all(
-      perguntas_ids.map(async (pergunta_quest) => {
+      perguntasIds.map(async (pergunta_quest) => {
         const pergunta = await db.pergunta.get(pergunta_quest.id_pergunta);
-        if (typeof pergunta === "undefined") {
-          throw new Error("Pergunta não encontrada");
+        if (pergunta === undefined || pergunta === null) {
+          throw new Error("Pergunta não encontrada, dados inconsistentes");
         }
         return pergunta;
       })
     );
     return perguntas;
   });
-};
+}
 
 /**
  * Deleta uma pergunta do banco de dados
  *
  * @param {number} id Id da pergunta a ser deletada
  */
-
-export const deletePergunta = async (id: number) => {
+export async function deletePergunta(id: number) {
   await db.transaction("rw", db.questionario_pergunta, db.pergunta, db.alternativa, db.alternativa_tag, async () => {
     await db.pergunta.delete(id);
     await db.questionario_pergunta.where("id_pergunta").equals(id).delete();
-    const alternativas_associadas = await db.alternativa.where("id_pergunta").equals(id).toArray();
-    for (const alternativa of alternativas_associadas) {
+    const alternativas = await db.alternativa.where("id_pergunta").equals(id).toArray();
+    for (const alternativa of alternativas) {
       const alternativa_id = alternativa.id_alternativa;
-      if (typeof alternativa_id === "undefined") {
-        throw new Error("Alternativa não encontrada durante a deleção");
+      if (alternativa_id === undefined) {
+        throw new Error("Alternativa corrompida durante a deleção");
       }
       await db.alternativa_tag.where("id_alternativa").equals(alternativa_id).delete();
       await db.alternativa.delete(alternativa_id);
     }
   });
-};
+}
