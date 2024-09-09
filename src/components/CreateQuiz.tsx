@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
-import { Pergunta, QuestionarioWithPerguntas } from "../types";
-import { getPerguntas } from "../database/pergunta";
-import { addQuestionario } from "../database/questionario";
 import { useNavigate } from "react-router-dom";
+import { getPerguntas } from "../database/pergunta";
+import { addQuestionario, associateQuestionarioToPerguntas } from "../database/questionario";
+import { Pergunta, Questionario } from "../types";
 
 export const CreateQuiz: React.FC = () => {
   const [quizName, setQuizName] = useState("");
@@ -27,13 +27,13 @@ export const CreateQuiz: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const quiz: QuestionarioWithPerguntas = {
+    const quiz: Questionario = {
       nome: quizName,
-      default: false,
-      perguntas: perguntas.filter((pergunta) => selectedPerguntas.has(pergunta.id_pergunta!)),
+      default: false
     };
-    
-    await addQuestionario(quiz);
+
+    const id = await addQuestionario(quiz);
+    await associateQuestionarioToPerguntas(id, selectedPerguntas)
     navigate(`/questionarios`);
   };
 

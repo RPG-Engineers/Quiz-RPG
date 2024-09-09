@@ -4,7 +4,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { CardQuiz } from "../components/CardQuiz";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteQuestionario, getQuestionarios, updateQuestionarioById } from "../database/questionario";
+import { deleteQuestionario, getQuestionarios, updateQuestionario } from "../database/questionario";
 import { Questionario } from "../types";
 
 const Questionarios: React.FC = () => {
@@ -34,7 +34,7 @@ const Questionarios: React.FC = () => {
 
     // Atualiza o banco de dados
     for (const questionario of updatedQuestionarios) {
-      await updateQuestionarioById(questionario.id_questionario!, questionario);
+      await updateQuestionario(questionario.id_questionario!, questionario);
     }
   };
 
