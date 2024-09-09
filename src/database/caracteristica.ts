@@ -142,7 +142,7 @@ export async function updateAssociationCaracteristicaToTags(id: number, tagsIds:
         .map((entry) => entry.id_tag);
 
       // Adicione novas associações
-      const newAssociations = tagsToAdd.map((tagId) => ({
+      const newAssociations: CaracteristicaTag[] = tagsToAdd.map((tagId) => ({
         id_caracteristica: id,
         id_tag: tagId,
       }));
@@ -180,7 +180,7 @@ export async function deleteCaracteristica(id: number) {
 // === Funções Auxiliares ===
 
 /**
- * Associa as tags respectivas de cada característica criando um objeto 
+ * Associa as tags respectivas de cada característica criando um objeto
  * CaracteristicaWithTags e o retorna
  *
  * @param {Caracteristica[]} caracteristicas
