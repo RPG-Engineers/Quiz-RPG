@@ -1,7 +1,44 @@
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { CardResultado, CardType } from "../components/CardResultado";
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Container, Row } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { CardResultado } from '../components/CardResultado';
+import { CaracteristicaWithTags } from '../types';
+import { calcularResultado, getCardType } from '../utils/util';
 
 export const Resultado: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [resultado, setResultado] = useState<{
+    TopClasse: [CaracteristicaWithTags, number][];
+    TopRaca: [CaracteristicaWithTags, number][];
+    TopBackground: [CaracteristicaWithTags, number][];
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!location.state || !location.state.respostas) {
+        // Redireciona para a página inicial se o estado não estiver disponível
+        navigate('/');
+        return;
+      }
+
+      // Obtém os dados necessários
+      const respostas = new Map<number, number>(location.state.respostas);
+      const resultado = await calcularResultado(respostas);
+
+      setResultado(resultado);
+    };
+
+    fetchData();
+  }, [location.state, navigate]);
+
+  if (!resultado) {
+    // Exibe um carregamento ou um estado alternativo enquanto os dados estão sendo carregados
+    return <div>Carregando...</div>;
+  }
+
+  const { TopClasse, TopRaca, TopBackground } = resultado;
+
   return (
     <>
       <div className="mt-5">
@@ -10,27 +47,15 @@ export const Resultado: React.FC = () => {
         </Container>
         <Container className="h-100">
           <Row>
-            <Col xs={4}>
-              <CardResultado
-                title="Bárbaro"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
-                type={CardType.Bronze}
-              />
-            </Col>
-            <Col xs={4}>
-              <CardResultado
-                title="Bardo"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/369/420/618/636272705936709430.png"
-                type={CardType.Gold}
-              />
-            </Col>
-            <Col xs={4}>
-              <CardResultado
-                title="Clérigo"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/371/420/618/636272706155064423.png"
-                type={CardType.Silver}
-              />
-            </Col>
+            {TopClasse.map((item, index) => (
+              <Col xs={4} key={index}>
+                <CardResultado
+                  title={item[0].nome}
+                  imageSrc={item[0].url_imagem}
+                  type={getCardType(index)}
+                />
+              </Col>
+            ))}
           </Row>
         </Container>
       </div>
@@ -41,27 +66,15 @@ export const Resultado: React.FC = () => {
         </div>
         <Container className="h-100">
           <Row>
-            <Col xs={4}>
-              <CardResultado
-                title="Bárbaro"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
-                type={CardType.Bronze}
-              />
-            </Col>
-            <Col xs={4}>
-              <CardResultado
-                title="Bardo"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/369/420/618/636272705936709430.png"
-                type={CardType.Gold}
-              />
-            </Col>
-            <Col xs={4}>
-              <CardResultado
-                title="Clérigo"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/371/420/618/636272706155064423.png"
-                type={CardType.Silver}
-              />
-            </Col>
+            {TopRaca.map((item, index) => (
+              <Col xs={4} key={index}>
+                <CardResultado
+                  title={item[0].nome}
+                  imageSrc={item[0].url_imagem}
+                  type={getCardType(index)}
+                />
+              </Col>
+            ))}
           </Row>
         </Container>
       </Container>
@@ -72,27 +85,15 @@ export const Resultado: React.FC = () => {
         </div>
         <Container className="h-100">
           <Row>
-            <Col xs={4}>
-              <CardResultado
-                title="Bárbaro"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/342/420/618/636272680339895080.png"
-                type={CardType.Bronze}
-              />
-            </Col>
-            <Col xs={4}>
-              <CardResultado
-                title="Bardo"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/369/420/618/636272705936709430.png"
-                type={CardType.Gold}
-              />
-            </Col>
-            <Col xs={4}>
-              <CardResultado
-                title="Clérigo"
-                imageSrc="https://www.dndbeyond.com/avatars/thumbnails/6/371/420/618/636272706155064423.png"
-                type={CardType.Silver}
-              />
-            </Col>
+            {TopBackground.map((item, index) => (
+              <Col xs={4} key={index}>
+                <CardResultado
+                  title={item[0].nome}
+                  imageSrc={item[0].url_imagem}
+                  type={getCardType(index)}
+                />
+              </Col>
+            ))}
           </Row>
         </Container>
       </Container>
