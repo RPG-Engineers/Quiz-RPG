@@ -66,5 +66,10 @@ export interface AlternativaWithTags extends Alternativa {
 }
 
 export interface QuestionarioWithPerguntas extends Questionario {
-  perguntas: Pergunta[]
+  perguntas: Pergunta[];
+}
+
+export interface AggregationPergunta {
+  pergunta: Pergunta;
+  alternativas: AlternativaWithTags[];
 }
