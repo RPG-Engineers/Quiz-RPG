@@ -6,11 +6,12 @@ import { Questionario } from "../types";
 interface CardQuizProps {
   questionario: Questionario
   onSelect: () => void;
+  handleStart: (id: number) => void;
   handleEdit: (id: number) => void;
   handleDelete: (id: number) => Promise<void>;
 }
 
-export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, handleEdit, handleDelete }) => {
+export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, handleStart, handleEdit, handleDelete }) => {
   return (
     <Container className="h-100 mt-3">
       <Row className="align-items-center h-100">
@@ -26,7 +27,7 @@ export const CardQuiz: React.FC<CardQuizProps> = ({ questionario, onSelect, hand
                 onChange={onSelect}
               />
               <div className="d-flex gap-1">
-                <Button variant="dark" className="mt-2">
+                <Button variant="dark" className="mt-2" onClick={() => handleStart(questionario.id_questionario!)}>
                   Iniciar
                 </Button>
                 <Button variant="warning" className="mt-2 text-white" onClick={() => handleEdit(questionario.id_questionario!)}>
