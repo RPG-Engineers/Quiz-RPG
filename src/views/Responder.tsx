@@ -1,41 +1,92 @@
 import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
 import QuestionCard from "../components/QuestionCard";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { AggregationPergunta } from "../types";
+import { getPerguntasByQuestionarioId } from "../database/pergunta";
+import { getAlternativasByPerguntaId } from "../database/alternativa";
 
 export const Responder: React.FC = () => {
-  return (
-<Container className="h-100 mt-3">
-      {/* Barra de progresso no topo */}
-      <ProgressBar now={75} label="75%" className="mb-4" />
+  const { id } = useParams<{ id: string }>();
+  const [perguntas, setPerguntas] = useState<AggregationPergunta[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
+  const [respostas, setRespostas] = useState<Map<number, number>>(new Map());
 
+  const PERGUNTAS_POR_PAGINA = 2;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const perguntasFromDB = await getPerguntasByQuestionarioId(Number(id));
+      const perguntasAggregation: AggregationPergunta[] = [];
+      for (const pergunta of perguntasFromDB) {
+        const perguntaAggregation: AggregationPergunta = {
+          pergunta: pergunta,
+          alternativas: await getAlternativasByPerguntaId(pergunta.id_pergunta!),
+        };
+        perguntasAggregation.push(perguntaAggregation);
+      }
+      setPerguntas(perguntasAggregation);
+    };
+    fetchData();
+  }, [id]);
+
+  // Atualiza o progresso conforme a página atual muda
+  useEffect(() => {
+    const totalPaginas = Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA);
+    setProgress(((currentPage + 1) / totalPaginas) * 100);
+  }, [currentPage, perguntas.length]);
+
+  // Função para alterar para a próxima página
+  const handleNext = () => {
+    if (currentPage < Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA) - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Função para voltar para a página anterior
+  const handlePrev = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleAlternativeSelect = (perguntaId: number, alternativaId: number) => {
+    setRespostas(prevRespostas => {
+      const newRespostas = new Map(prevRespostas);
+      newRespostas.set(perguntaId, alternativaId);
+      return newRespostas;
+    });
+    console.log(respostas)
+  };
+
+  const perguntasExibir = perguntas.slice(currentPage * PERGUNTAS_POR_PAGINA, (currentPage + 1) * PERGUNTAS_POR_PAGINA);
+
+  return (
+    <Container className="h-100 mt-3">
+      <ProgressBar now={progress} label={`${Math.round(progress)}%`} className="mb-4" />
       <Row className="align-items-center h-100">
         <Col xs={6} className="mx-auto">
-          {/* Pergunta 1 */}
-          <QuestionCard 
-            title="Pergunta 1"
-            name="alternativas1"
-            alternativas={[
-              { id: "alternativa1", label: "Alternativa 1" },
-              { id: "alternativa2", label: "Alternativa 2" },
-              { id: "alternativa3", label: "Alternativa 3" },
-              { id: "alternativa4", label: "Alternativa 4" }
-            ]}
-          />
-
-          {/* Pergunta 2 */}
-          <QuestionCard
-            title="Pergunta 2"
-            name="alternativas2"
-            alternativas={[
-              { id: "alternativa5", label: "Alternativa 1" },
-              { id: "alternativa6", label: "Alternativa 2" },
-              { id: "alternativa7", label: "Alternativa 3" },
-              { id: "alternativa8", label: "Alternativa 4" }
-            ]}
-          />
-
-          {/* Botões de Navegação */}
-          <Button variant="primary" className="float-start mt-4">Voltar</Button>
-          <Button variant="primary" className="float-end mt-4">Próximo</Button>
+          {perguntasExibir.map((pergunta) => (
+            <QuestionCard
+              key={pergunta.pergunta.id_pergunta}
+              pergunta={pergunta.pergunta}
+              alternativas={pergunta.alternativas}
+              selectedAlternativeId={respostas.get(pergunta.pergunta.id_pergunta!)}
+              onSelect={handleAlternativeSelect}
+            />
+          ))}
+          <Button variant="primary" className="float-start mt-4" onClick={handlePrev} disabled={currentPage === 0}>
+            Voltar
+          </Button>
+          <Button
+            variant="primary"
+            className="float-end mt-4"
+            onClick={handleNext}
+            disabled={currentPage >= Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA) - 1}
+          >
+            Próximo
+          </Button>
         </Col>
       </Row>
     </Container>
