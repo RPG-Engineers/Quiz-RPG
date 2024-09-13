@@ -38,6 +38,10 @@ const Questionarios: React.FC = () => {
     }
   };
 
+  const handleStart = (id: number) => {
+    navigate(`/responder/${id}`);
+  }
+
   const handleEdit = (id: number) => {
     navigate(`/editar-questionario/${id}`);
   };
@@ -66,6 +70,7 @@ const Questionarios: React.FC = () => {
           key={questionario.id_questionario}
           questionario={questionario}
           onSelect={() => handleSelect(questionario.id_questionario!)}
+          handleStart={handleStart}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
         />
