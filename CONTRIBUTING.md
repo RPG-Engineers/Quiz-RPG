@@ -26,14 +26,49 @@ Para uma medição de tempo mais precisa para o tempo gasto nas tarefas recomend
   - Exemplo: `feat(scope): adiciona funcionalidade` ou `fix(scope): corrige bug`
   - **Mais informações**: [Conventional Commits](https://www.conventionalcommits.org/pt-br/)
   - **Extensão do VScode**: [Conventional Commits](https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits)
-- Usar sempre rebase para combinar commits da develop na main
 
-### Problemas com o git
+- Usar sempre **rebase** ao combinar commits da `develop` na `main`, para manter o histórico linear e claro.
 
-Caso ocorra um conflito entre sua branch local e a branch remota devido a um rebase ou situação semelhante, você pode usar o seguinte comando para resetar sua branch local para o estado da branch remota:
+- **Evitar merge commits:** Quando integrar suas mudanças, use `git pull --rebase` para garantir que o histórico continue linear e evitar merges automáticos com múltiplos pais.
+
+- Quando necessário, utilize `git commit --amend` para ajustar o commit mais recente (correções de última hora, por exemplo).
+
+### Como Trabalhar com Histórico Linear
+
+Para garantir um histórico linear, ao trabalhar com branches e rebases, siga as seguintes práticas:
+
+- **Rebase antes de enviar mudanças para o repositório remoto:**
+  
+  Sempre rebase suas mudanças no branch principal (`main` ou `develop`) antes de fazer o push:
+
+  ```bash
+  git fetch origin
+  git rebase origin/main
+  ```
+
+  Isso aplicará suas alterações em cima das mais recentes no branch principal, mantendo o histórico limpo e linear.
+
+- **Forçar push com cuidado:** Se você alterou o histórico de commits localmente, por exemplo, após um rebase ou *amend*, será necessário um *force push* para sobrescrever o histórico remoto:
+
+  ```bash
+  git push --force-with-lease
+  ```
+
+  > **Nota:** Use sempre `--force-with-lease` ao invés de `--force`, pois ele protege contra sobrescrever commits de outras pessoas, garantindo que seu *force push* só ocorra se ninguém tiver feito push de mudanças no mesmo branch.
+
+- **Resolvendo conflitos pós-rebase:** Se ocorrerem conflitos durante o rebase, resolva-os manualmente, adicione os arquivos corrigidos e continue o rebase:
+
+  ```bash
+  git add .
+  git rebase --continue
+  ```
+
+### Problemas com o Git
+
+Caso ocorra um conflito entre sua branch local e a branch remota devido a um rebase ou situação semelhante, você pode usar essa solução alternativa, usando o seguinte comando para resetar sua branch local para o estado da branch remota:
 
 > [!CAUTION]
-> Antes de executar este comando, certifique-se de que todas as suas alterações locais foram salvas ou commitadas remotamente, pois este comando irá **sobrescrever** todas as alterações da sua branch local pela branch remota main.
+> Antes de executar este comando, certifique-se de que todas as suas alterações locais foram salvas ou commitadas remotamente, pois este comando irá **sobrescrever** todas as alterações da sua branch local pela branch remota `main`.
 
 ```bash
 git fetch origin
@@ -52,7 +87,9 @@ git reset --hard origin/main
 git stash apply
 ```
 
-Depois de resolvido o conflito pode prosseguir com o commitando normalmente.
+Depois de resolvido o conflito, você pode prosseguir normalmente com os commits e o fluxo de trabalho.
+
+---
 
 ### Dicas
 
