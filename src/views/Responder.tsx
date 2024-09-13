@@ -1,6 +1,6 @@
 import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
 import QuestionCard from "../components/QuestionCard";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AggregationPergunta } from "../types";
 import { getPerguntasByQuestionarioId } from "../database/pergunta";
@@ -12,6 +12,7 @@ export const Responder: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   const [respostas, setRespostas] = useState<Map<number, number>>(new Map());
+  const navigate = useNavigate();
 
   const PERGUNTAS_POR_PAGINA = 2;
 
@@ -52,12 +53,17 @@ export const Responder: React.FC = () => {
   };
 
   const handleAlternativeSelect = (perguntaId: number, alternativaId: number) => {
-    setRespostas(prevRespostas => {
+    setRespostas((prevRespostas) => {
       const newRespostas = new Map(prevRespostas);
       newRespostas.set(perguntaId, alternativaId);
       return newRespostas;
     });
-    console.log(respostas)
+  };
+
+  const handleResult = () => {
+    navigate("/resultado", {
+      state: { respostas: Array.from(respostas.entries()) }
+    })
   };
 
   const perguntasExibir = perguntas.slice(currentPage * PERGUNTAS_POR_PAGINA, (currentPage + 1) * PERGUNTAS_POR_PAGINA);
@@ -79,14 +85,15 @@ export const Responder: React.FC = () => {
           <Button variant="primary" className="float-start mt-4" onClick={handlePrev} disabled={currentPage === 0}>
             Voltar
           </Button>
-          <Button
-            variant="primary"
-            className="float-end mt-4"
-            onClick={handleNext}
-            disabled={currentPage >= Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA) - 1}
-          >
-            Próximo
-          </Button>
+          {currentPage >= Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA) - 1 ? (
+            <Button variant="primary" className="float-end mt-4" onClick={handleResult} disabled={respostas.size !== perguntas.length}>
+              Ver Resultado
+            </Button>
+          ) : (
+            <Button variant="primary" className="float-end mt-4" onClick={handleNext}>
+              Próximo
+            </Button>
+          )}
         </Col>
       </Row>
     </Container>
