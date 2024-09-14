@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Col, Container, Row } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { CardResultado } from '../components/CardResultado';
-import { CaracteristicaWithTags } from '../types';
-import { calcularResultado, getCardType } from '../utils/util';
+import React, { useEffect, useState } from "react";
+import { Button, Container } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import Podio from "../components/Podio";
+import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
+import { calcularResultado } from "../utils/util";
 
 export const Resultado: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [resultado, setResultado] = useState<{
-    TopClasse: [CaracteristicaWithTags, number][];
-    TopRaca: [CaracteristicaWithTags, number][];
-    TopBackground: [CaracteristicaWithTags, number][];
-  } | null>(null);
+  const [resultado, setResultado] = useState<[CaracteristicaWithTags, number][]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!location.state || !location.state.respostas) {
         // Redireciona para a página inicial se o estado não estiver disponível
-        navigate('/');
+        navigate("/");
         return;
       }
 
@@ -32,12 +28,12 @@ export const Resultado: React.FC = () => {
     fetchData();
   }, [location.state, navigate]);
 
-  if (!resultado) {
-    // Exibe um carregamento ou um estado alternativo enquanto os dados estão sendo carregados
-    return <div>Carregando...</div>;
-  }
-
-  const { TopClasse, TopRaca, TopBackground } = resultado;
+  const getTopByCategory = (resultado: [CaracteristicaWithTags, number][], tipo: TipoCaracteristica, n: number) => {
+    return resultado
+      .filter(([caracteristica]) => caracteristica.tipo === tipo)
+      .slice(0, n)
+      .map((item) => item[0]); // Pega os 3 primeiros já ordenados
+  };
 
   return (
     <>
@@ -45,57 +41,21 @@ export const Resultado: React.FC = () => {
         <Container fluid className="d-flex justify-content-center">
           <h3 className="text-white mt-3">Classes</h3>
         </Container>
-        <Container className="h-100">
-          <Row>
-            {TopClasse.map((item, index) => (
-              <Col xs={4} key={index}>
-                <CardResultado
-                  title={item[0].nome}
-                  imageSrc={item[0].url_imagem}
-                  type={getCardType(index)}
-                />
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        <Podio top3={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 3)} />
       </div>
 
       <Container fluid className="mt-5">
         <div className="d-flex justify-content-center">
           <h3 className="text-white mt-3">Raças</h3>
         </div>
-        <Container className="h-100">
-          <Row>
-            {TopRaca.map((item, index) => (
-              <Col xs={4} key={index}>
-                <CardResultado
-                  title={item[0].nome}
-                  imageSrc={item[0].url_imagem}
-                  type={getCardType(index)}
-                />
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        <Podio top3={getTopByCategory(resultado, TipoCaracteristica.RACA, 3)} />
       </Container>
 
       <Container fluid className="mt-5">
         <div className="d-flex justify-content-center">
           <h3 className="text-white mt-3">Backgrounds</h3>
         </div>
-        <Container className="h-100">
-          <Row>
-            {TopBackground.map((item, index) => (
-              <Col xs={4} key={index}>
-                <CardResultado
-                  title={item[0].nome}
-                  imageSrc={item[0].url_imagem}
-                  type={getCardType(index)}
-                />
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        <Podio top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3)} />
       </Container>
 
       <Container fluid className="mt-5 mb-5">
