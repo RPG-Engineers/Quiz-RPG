@@ -1,5 +1,5 @@
 <div align='center'>
-  <img src='Images\presentation cover.jpeg' width=300></img>
+  <img src='Images\presentation cover.jpeg' width=500></img>
 <div>
 <h1 align='center'>QUIZ-RPG</h1>
 
