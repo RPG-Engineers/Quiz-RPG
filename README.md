@@ -20,7 +20,7 @@ Live site: https://rpg-engineers.github.io/Quiz-RPG/
 * <font size="3">Precisão no Resultado</font>
     * É usado tags nas perguntas para calcular a resposta final, aumentando a precisão e coerência.
 * <font size="3">Hanking</font>
-    * Ao final do Quiz, é mostrado os três personagens que mais se adequam às suas respostas.
+    * Ao final do Quiz, é mostrado os três personagens que mais se adequam às suas respostas em cada tipo de categoria.
 
 <br><br>
 
