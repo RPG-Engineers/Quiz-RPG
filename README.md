@@ -1,4 +1,6 @@
-<img src='Images\presentation cover.jpeg'></img>
+<div align='center'>
+  <img src='Images\presentation cover.jpeg' width=300></img>
+<div>
 <h1 align='center'>QUIZ-RPG</h1>
 
 Live site: https://rpg-engineers.github.io/Quiz-RPG/
