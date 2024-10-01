@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "weekly" # Verificar atualizações semanalmente
     commit-message:
-      prefix: "chore"
+      prefix: "chore: ⬆️"
     open-pull-requests-limit: 5
 
     groups:
