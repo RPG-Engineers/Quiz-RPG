@@ -5,7 +5,7 @@ import { TagSelection } from "./TagSelection";
 import { useState, useEffect } from "react";
 import { Tag } from "../types";
 
-export interface CreateAlternativaProps {
+export interface AlternativeCreateProps {
   id: string;
   placeholder: string;
   eventKey: string;
@@ -17,7 +17,7 @@ export interface CreateAlternativaProps {
   initialTags?: Set<number>;
 }
 
-export const CreateAlternativa: React.FC<CreateAlternativaProps> = ({ 
+export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({ 
   id, 
   tags, 
   eventKey, 

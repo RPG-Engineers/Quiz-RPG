@@ -1,5 +1,5 @@
 import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
-import QuestionCard from "../components/QuestionCard";
+import AnswerCard from "../components/AnswerCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AggregationPergunta } from "../types";
@@ -74,7 +74,7 @@ export const Responder: React.FC = () => {
       <Row className="align-items-center h-100">
         <Col xs={6} className="mx-auto">
           {perguntasExibir.map((pergunta) => (
-            <QuestionCard
+            <AnswerCard
               key={pergunta.pergunta.id_pergunta}
               pergunta={pergunta.pergunta}
               alternativas={pergunta.alternativas}

@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
-import CaracteristicaEditor from "../components/CaracteristicaEditor";
+import TraitEdit from "../components/TraitEdit";
 import { TipoCaracteristica } from "../types";
 
 const EditarClasse: React.FC = () => {
     const { id } = useParams<{ id: string }>();
 
     return (
-        <CaracteristicaEditor id={Number(id)} tipo={TipoCaracteristica.CLASSE} navigationDestiny="/classes" ></CaracteristicaEditor>
+        <TraitEdit id={Number(id)} tipo={TipoCaracteristica.CLASSE} navigationDestiny="/classes" ></TraitEdit>
     );
 };
 

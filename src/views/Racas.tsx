@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import CaracteristicaCreator from "../components/CaracteristicaCreator";
+import TraitCreate from "../components/TraitCreate";
 import { TipoCaracteristica } from "../types";
 
 const Racas: React.FC = () => {
@@ -9,7 +9,7 @@ const Racas: React.FC = () => {
     navigate(`/editar-raca/${id}`); // Navegar para a tela de edição
   };
 
-  return <CaracteristicaCreator tipo={TipoCaracteristica.RACA} handleEdit={handleEdit}></CaracteristicaCreator>;
+  return <TraitCreate tipo={TipoCaracteristica.RACA} handleEdit={handleEdit}></TraitCreate>;
 };
 
 export default Racas;

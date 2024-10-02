@@ -1,12 +1,12 @@
 import React from "react";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 
-interface CaracteristicaCardsProps {
+interface TraitCardProps {
   tipo: TipoCaracteristica;
   caracteristicas: CaracteristicaWithTags[];
 }
 
-const CaracteristicaCards: React.FC<CaracteristicaCardsProps> = ({ tipo, caracteristicas }) => {
+const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
   return (
     <div className="container mt-5">
       <div className="row">
@@ -53,4 +53,4 @@ const CaracteristicaCards: React.FC<CaracteristicaCardsProps> = ({ tipo, caracte
   );
 };
 
-export default CaracteristicaCards;
+export default TraitCard;

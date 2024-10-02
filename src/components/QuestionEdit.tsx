@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
-import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
+import { AlternativeCreate, AlternativeCreateProps } from "./AlternativeCreate";
 import { v4 as uuidv4 } from "uuid";
 import { getAlternativasByPerguntaId } from "../database/alternativa";
 import { getPerguntaById, updateAssociationPerguntaToAlternativas, updatePergunta } from "../database/pergunta";
 import { AlternativaWithTags, Pergunta, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
 
-interface PerguntaEditorProps {
+interface QuestionEditProps {
   id: number;
   tags: Tag[];
   navigationDestiny: string;
 }
 
-export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, navigationDestiny }) => {
-  const [alternativaProps, setAlternativaProps] = useState<CreateAlternativaProps[]>([]);
+export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigationDestiny }) => {
+  const [alternativaProps, setAlternativaProps] = useState<AlternativeCreateProps[]>([]);
   const [questionText, setQuestionText] = useState("");
   const [alternativaTexts, setAlternativaTexts] = useState<{ [key: string]: string }>({});
   const [alternativaTags, setAlternativaTags] = useState<{ [key: string]: Set<number> }>({});
@@ -71,7 +71,7 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
       const alternativasWithTags = await getAlternativasByPerguntaId(id);
       const alternativasTexts: { [key: string]: string } = {};
       const alternativasTags: { [key: string]: Set<number> } = {};
-      const alternativasProps: CreateAlternativaProps[] = [];
+      const alternativasProps: AlternativeCreateProps[] = [];
 
       for (const alternativa of alternativasWithTags) {
         if (alternativa.id_alternativa) {
@@ -143,7 +143,7 @@ export const PerguntaEditor: React.FC<PerguntaEditorProps> = ({ id, tags, naviga
                   <Card.Title className="mt-3">Alternativas</Card.Title>
                   <Accordion className="d-flex flex-column gap-2">
                     {alternativaProps.map((alternativa) => (
-                      <CreateAlternativa
+                      <AlternativeCreate
                         key={alternativa.id}
                         id={alternativa.id}
                         placeholder={alternativa.placeholder}

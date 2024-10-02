@@ -1,19 +1,14 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
+import { CardType } from '../types';
 
-enum CardType {
-  Bronze = 'bronze',
-  Silver = 'silver',
-  Gold = 'gold',
-}
-
-interface CardResultadoProps {
+interface ResultCardProps {
   title: string;
   imageSrc: string;
   type: CardType;
 }
 
-const CardResultado: React.FC<CardResultadoProps> = ({ title, imageSrc, type }) => {
+export const ResultCard: React.FC<ResultCardProps> = ({ title, imageSrc, type }) => {
   return (
     <Card className={`text-center card-resultado ${type}`}>
       <Card.Body>
@@ -24,4 +19,3 @@ const CardResultado: React.FC<CardResultadoProps> = ({ title, imageSrc, type }) 
   );
 };
 
-export { CardResultado, CardType };

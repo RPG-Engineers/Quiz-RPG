@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { PerguntaEditor } from "../components/PerguntaEditor";
+import { QuestionEdit } from "../components/QuestionEdit";
 import { getTags } from "../database/tag";
 import { Tag } from "../types";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ const EditarPergunta: React.FC = () => {
       }, []);
 
     return (
-        <PerguntaEditor id={Number(id)} tags={tags} navigationDestiny="/perguntas"></PerguntaEditor>
+        <QuestionEdit id={Number(id)} tags={tags} navigationDestiny="/perguntas"></QuestionEdit>
     );
 };
 

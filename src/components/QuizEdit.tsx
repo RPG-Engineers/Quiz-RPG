@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getPerguntas } from "../database/pergunta";
-import { addQuestionario, associateQuestionarioToPerguntas } from "../database/questionario";
-import { Pergunta, Questionario } from "../types";
+import { getPerguntas, getPerguntasByQuestionarioId } from "../database/pergunta";
+import {
+  getQuestionarioById,
+  updateAssociationQuestionarioToPerguntas,
+  updateQuestionario,
+} from "../database/questionario";
+import { Pergunta, Questionario, QuestionarioWithPerguntas } from "../types";
 
-export const CreateQuiz: React.FC = () => {
-  const [quizName, setQuizName] = useState("");
+interface QuizEditProps {
+  id: number;
+  navigationDestiny: string;
+}
+
+export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => {
+  const [quiz, setQuiz] = useState<Questionario>();
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [selectedPerguntas, setSelectedPerguntas] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
-
 
   const handleCheckboxChange = (id: number) => {
     setSelectedPerguntas((prevSelected) => {
@@ -27,24 +35,34 @@ export const CreateQuiz: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const quiz: Questionario = {
-      nome: quizName,
-      default: false
+    const updatedQuiz: QuestionarioWithPerguntas = {
+      nome: quiz!.nome,
+      default: quiz!.default,
+      perguntas: perguntas.filter((pergunta) => selectedPerguntas.has(pergunta.id_pergunta!)),
     };
 
-    const id = await addQuestionario(quiz);
-    await associateQuestionarioToPerguntas(id, selectedPerguntas)
-    navigate(`/questionarios`);
-  };
-
-  const fetchPerguntas = async () => {
-    const perguntasFromDB = await getPerguntas();
-    setPerguntas(perguntasFromDB);
+    await updateQuestionario(id, updatedQuiz);
+    await updateAssociationQuestionarioToPerguntas(id, selectedPerguntas);
+    navigate(navigationDestiny);
   };
 
   useEffect(() => {
-    fetchPerguntas();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const perguntasFromDB = await getPerguntas();
+        setPerguntas(perguntasFromDB);
+
+        const questionario = await getQuestionarioById(id);
+        const perguntas = await getPerguntasByQuestionarioId(id);
+        setQuiz(questionario);
+        setSelectedPerguntas(new Set(perguntas.map((pergunta) => pergunta.id_pergunta!)));
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   return (
     <Container className="h-100 mt-3">
@@ -58,7 +76,8 @@ export const CreateQuiz: React.FC = () => {
                   <Form.Control
                     type="text"
                     placeholder="Digite o nome do questionário"
-                    onChange={(e) => setQuizName(e.target.value)}
+                    value={quiz?.nome || ""}
+                    onChange={(e) => setQuiz((prev) => prev && { ...prev, nome: e.target.value })}
                   />
                 </Form.Group>
                 <Form.Group className="mt-3">
@@ -69,13 +88,14 @@ export const CreateQuiz: React.FC = () => {
                         type="checkbox"
                         id={pergunta.id_pergunta!.toString()}
                         label={pergunta.pergunta}
+                        checked={selectedPerguntas.has(pergunta.id_pergunta!)}
                         onChange={() => handleCheckboxChange(pergunta.id_pergunta!)}
                       />
                     </div>
                   ))}
                 </Form.Group>
                 <Button variant="success" type="submit" className="mt-3">
-                  Criar
+                  Salvar
                 </Button>
               </Form>
             </Card.Body>

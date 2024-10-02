@@ -1,18 +1,18 @@
 import React, { useCallback, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
-import { CreateAlternativa, CreateAlternativaProps } from "./CreateAlternativa";
+import { AlternativeCreate, AlternativeCreateProps } from "./AlternativeCreate";
 import { Alternativa, Pergunta, Tag } from "../types";
 import { addAlternativa, associateAlternativaToTags } from "../database/alternativa";
 import { addPergunta } from "../database/pergunta";
 import { v4 as uuidv4 } from "uuid";
 
-interface CreatePerguntaProps {
+interface QuestionCreateProps {
   tags: Tag[]
   fetchData: () => Promise<void>
 }
 
-export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags, fetchData }) => {
-  const [alternativaProps, setAlternativaProps] = useState<CreateAlternativaProps[]>([
+export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData }) => {
+  const [alternativaProps, setAlternativaProps] = useState<AlternativeCreateProps[]>([
     {
       id: uuidv4(),
       placeholder: "Opção 1",
@@ -128,7 +128,7 @@ export const CreatePergunta: React.FC<CreatePerguntaProps> = ({ tags, fetchData 
                   <Card.Title className="mt-3">Alternativas</Card.Title>
                   <Accordion className="d-flex flex-column gap-2">
                     {alternativaProps.map((alternativa) => (
-                      <CreateAlternativa
+                      <AlternativeCreate
                         key={alternativa.id}
                         id={alternativa.id}
                         placeholder={alternativa.placeholder}
