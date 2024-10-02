@@ -1,31 +1,31 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { CardResultado, CardType } from "./CardResultado";
-import { CaracteristicaWithTags } from "../types";
+import { ResultCard } from "./ResultCard";
+import { CaracteristicaWithTags, CardType } from "../types";
 
-interface PodioProps {
+interface PodiumProps {
   top3: CaracteristicaWithTags[];
 }
 
-const Podio: React.FC<PodioProps> = ({ top3 }) => {
+const Podium: React.FC<PodiumProps> = ({ top3 }) => {
   return (
     <Container className="h-100">
       <Row>
         <Col xs={4}>
-          <CardResultado
+          <ResultCard
             title={top3[2]?.nome}
             imageSrc={top3[2]?.url_imagem}
             type={CardType.Bronze}
           />
         </Col>
         <Col xs={4}>
-          <CardResultado
+          <ResultCard
             title={top3[0]?.nome}
             imageSrc={top3[0]?.url_imagem}
             type={CardType.Gold}
           />
         </Col>
         <Col xs={4}>
-          <CardResultado
+          <ResultCard
             title={top3[1]?.nome}
             imageSrc={top3[1]?.url_imagem}
             type={CardType.Silver}
@@ -36,4 +36,4 @@ const Podio: React.FC<PodioProps> = ({ top3 }) => {
   );
 };
 
-export default Podio;
+export default Podium;

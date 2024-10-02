@@ -3,7 +3,7 @@ import { Button, Container } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 import { calcularResultado } from "../utils/util";
-import Podio from "../components/Podio";
+import Podium from "../components/Podium";
 import BarChart from "../components/BarChart";
 
 export const Resultado: React.FC = () => {
@@ -37,7 +37,7 @@ export const Resultado: React.FC = () => {
       <div className="mt-5">
         <Container fluid className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Classes</h3>
-          <Podio top3={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 3).map((item) => item[0])} />
+          <Podium top3={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 3).map((item) => item[0])} />
           <BarChart
             labels={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 10).map(([caracteristica]) => caracteristica.nome)}
             dataPoints={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 10).map(([, pontuacao]) => pontuacao)}
@@ -48,7 +48,7 @@ export const Resultado: React.FC = () => {
       <Container fluid className="mt-5">
         <div className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Raças</h3>
-          <Podio top3={getTopByCategory(resultado, TipoCaracteristica.RACA, 3).map((item) => item[0])} />
+          <Podium top3={getTopByCategory(resultado, TipoCaracteristica.RACA, 3).map((item) => item[0])} />
           <BarChart
             labels={getTopByCategory(resultado, TipoCaracteristica.RACA, 10).map(([caracteristica]) => caracteristica.nome)}
             dataPoints={getTopByCategory(resultado, TipoCaracteristica.RACA, 10).map(([, pontuacao]) => pontuacao)}
@@ -59,7 +59,7 @@ export const Resultado: React.FC = () => {
       <Container fluid className="mt-5">
         <div className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Backgrounds</h3>
-          <Podio top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3).map((item) => item[0])} />
+          <Podium top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3).map((item) => item[0])} />
           <BarChart
             labels={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(([caracteristica]) => caracteristica.nome)}
             dataPoints={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(([, pontuacao]) => pontuacao)}

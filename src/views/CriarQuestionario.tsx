@@ -1,9 +1,9 @@
-import { CreateQuiz } from "../components/CreateQuiz";
+import { QuizCreate } from "../components/QuizCreate";
 
 const CriarQuestionario: React.FC = () => {
 
     return (
-       <CreateQuiz></CreateQuiz>
+       <QuizCreate></QuizCreate>
     );
 };
 

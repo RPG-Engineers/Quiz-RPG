@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container, Form, FormControl, InputGroup, Row } from "react-bootstrap";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
-import CaracteristicaCards from "../components/CaracteristicaCards";
+import TraitCard from "../components/TraitCard";
 import "../assets/styles/SearchBarStyles.css";
 import { filtrarCaracteristicas, getCaracteristicas } from "../database/caracteristica";
 
@@ -53,7 +53,7 @@ const Caracteristicas: React.FC = () => {
         <hr />
       </div>
 
-      <CaracteristicaCards
+      <TraitCard
         tipo={TipoCaracteristica.CLASSE}
         caracteristicas={filtrarPorTipo(TipoCaracteristica.CLASSE)}
       />
@@ -65,7 +65,7 @@ const Caracteristicas: React.FC = () => {
         <hr />
       </div>
 
-      <CaracteristicaCards tipo={TipoCaracteristica.RACA} caracteristicas={filtrarPorTipo(TipoCaracteristica.RACA)} />
+      <TraitCard tipo={TipoCaracteristica.RACA} caracteristicas={filtrarPorTipo(TipoCaracteristica.RACA)} />
 
       <div className="container-fluid d-flex justify-content-start">
         <h3 className="text-white mt-3">Backgrounds</h3>
@@ -74,7 +74,7 @@ const Caracteristicas: React.FC = () => {
         <hr />
       </div>
 
-      <CaracteristicaCards
+      <TraitCard
         tipo={TipoCaracteristica.BACKGROUND}
         caracteristicas={filtrarPorTipo(TipoCaracteristica.BACKGROUND)}
       />

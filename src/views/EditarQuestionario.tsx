@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import { QuizEditor } from "../components/QuizEditor";
+import { QuizEdit } from "../components/QuizEdit";
 
 const EditarQuestionario: React.FC = () => {
     const { id } = useParams<{ id: string }>();
 
     return (
-        <QuizEditor id={Number(id)} navigationDestiny="/questionarios"></QuizEditor>
+        <QuizEdit id={Number(id)} navigationDestiny="/questionarios"></QuizEdit>
     );
 };
 

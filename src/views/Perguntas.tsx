@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { CardPergunta } from "../components/CardPergunta";
-import { CreatePergunta } from "../components/CreatePergunta";
+import { QuestionCard } from "../components/QuestionCard";
+import { QuestionCreate } from "../components/QuestionCreate";
 import { getTags } from "../database/tag";
 import { deletePergunta, getPerguntas } from "../database/pergunta";
 import { Pergunta, Tag } from "../types";
@@ -33,9 +33,9 @@ const Perguntas: React.FC = () => {
 
   return (
     <>
-      <CreatePergunta tags={tags} fetchData={fetchData} />
+      <QuestionCreate tags={tags} fetchData={fetchData} />
       {perguntas.map((pergunta) => (
-        <CardPergunta key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} handleDelete={handleDelete}/>
+        <QuestionCard key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} handleDelete={handleDelete}/>
       ))}
     </>
   );

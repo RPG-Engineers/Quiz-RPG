@@ -73,3 +73,11 @@ export interface AggregationPergunta {
   pergunta: Pergunta;
   alternativas: AlternativaWithTags[];
 }
+
+// Enum do pódio
+
+export enum CardType {
+  Bronze = 'bronze',
+  Silver = 'silver',
+  Gold = 'gold',
+}

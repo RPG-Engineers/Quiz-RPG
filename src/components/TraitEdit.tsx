@@ -12,13 +12,13 @@ import { Tag, Caracteristica, TipoCaracteristica } from "../types";
 import { useNavigate } from "react-router-dom";
 import { TagSelection } from "./TagSelection";
 
-interface CaracteristicaEditorProps {
+interface TraitEditProps {
   id: number;
   tipo: TipoCaracteristica;
   navigationDestiny: string;
 }
 
-const CaracteristicaEditor: React.FC<CaracteristicaEditorProps> = ({ id, tipo, navigationDestiny }) => {
+const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) => {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [urlImagem, setUrlImagem] = useState("");
@@ -143,4 +143,4 @@ const CaracteristicaEditor: React.FC<CaracteristicaEditorProps> = ({ id, tipo, n
   );
 };
 
-export default CaracteristicaEditor;
+export default TraitEdit;

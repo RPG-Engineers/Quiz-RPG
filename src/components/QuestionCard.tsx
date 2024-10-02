@@ -1,39 +1,35 @@
-import React from 'react';
-import { Card, Form } from 'react-bootstrap';
-import { AlternativaWithTags, Pergunta } from '../types';
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Pergunta } from "../types";
 
 interface QuestionCardProps {
   pergunta: Pergunta;
-  alternativas: AlternativaWithTags[];
-  onSelect: (perguntaId: number, alternativaId: number) => void;
-  selectedAlternativeId?: number; 
+  handleEdit: (id: number) => void;
+  handleDelete: (id: number) => Promise<void>;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ pergunta, alternativas, onSelect, selectedAlternativeId }) => {
-  const handleSelectionChange = (altId: number) => {
-    onSelect(pergunta.id_pergunta!, altId);
-  };
-
+export const QuestionCard: React.FC<QuestionCardProps> = ({ pergunta, handleEdit, handleDelete }) => {
   return (
-    <Card className="mt-4">
-      <Card.Body>
-        <Card.Title>{pergunta.pergunta}</Card.Title>
-        <Form.Group>
-          {alternativas.map((alt) => (
-            <Form.Check
-              key={alt.id_alternativa!}
-              type="radio"
-              id={alt.id_alternativa!.toString()}
-              label={alt.alternativa}
-              name={`pergunta-${pergunta.id_pergunta}`}
-              checked={alt.id_alternativa === selectedAlternativeId}
-              onChange={() => handleSelectionChange(alt.id_alternativa!)}
-            />
-          ))}
-        </Form.Group>
-      </Card.Body>
-    </Card>
+    <Container className="mt-3">
+      <Row>
+        <Col md={{ span: 6, offset: 3 }}>
+          <Card>
+            <Card.Body className="d-flex align-items-center justify-content-between">
+              <h1 className="fs-5 text-break">{pergunta.pergunta}</h1>
+              <div className="d-flex gap-2">
+                <Button variant="warning" className="text-white">
+                  <FontAwesomeIcon icon={faPen} onClick={() => handleEdit(pergunta.id_pergunta!)} />
+                </Button>
+                <Button variant="danger">
+                  <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(pergunta.id_pergunta!)}/>
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
-
-export default QuestionCard;

@@ -12,12 +12,12 @@ import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getTipo } from "../utils/util";
 import { TagSelection } from "./TagSelection";
 
-interface CaracteristicaCreatorProps {
+interface TraitCreateProps {
   tipo: TipoCaracteristica;
   handleEdit: (id: number) => void;
 }
 
-const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, handleEdit }) => {
+const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [urlImagem, setUrlImagem] = useState("");
@@ -189,4 +189,4 @@ const CaracteristicaCreator: React.FC<CaracteristicaCreatorProps> = ({ tipo, han
   );
 };
 
-export default CaracteristicaCreator;
+export default TraitCreate;
