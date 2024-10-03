@@ -4,13 +4,13 @@ import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { Pergunta } from "../types";
 
-interface QuestionCardProps {
+interface QuestionMasterCardProps {
   pergunta: Pergunta;
   handleEdit: (id: number) => void;
   handleDelete: (id: number) => Promise<void>;
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({ pergunta, handleEdit, handleDelete }) => {
+export const QuestionMasterCard: React.FC<QuestionMasterCardProps> = ({ pergunta, handleEdit, handleDelete }) => {
   return (
     <Container className="mt-3">
       <Row>

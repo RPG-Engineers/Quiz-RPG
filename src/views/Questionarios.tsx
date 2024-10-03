@@ -1,7 +1,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { QuizCard } from "../components/QuizCard";
+import { QuizMasterCard } from "../components/QuizMasterCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { deleteQuestionario, getQuestionarios, updateQuestionario } from "../database/questionario";
@@ -66,7 +66,7 @@ const Questionarios: React.FC = () => {
         </Row>
       </Container>
       {questionarios.map((questionario) => (
-        <QuizCard
+        <QuizMasterCard
           key={questionario.id_questionario}
           questionario={questionario}
           onSelect={() => handleSelect(questionario.id_questionario!)}
