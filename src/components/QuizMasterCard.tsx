@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Questionario } from "../types";
 
-interface QuizCardProps {
+interface QuizMasterCardProps {
   questionario: Questionario
   onSelect: () => void;
   handleStart: (id: number) => void;
@@ -11,7 +11,7 @@ interface QuizCardProps {
   handleDelete: (id: number) => Promise<void>;
 }
 
-export const QuizCard: React.FC<QuizCardProps> = ({ questionario, onSelect, handleStart, handleEdit, handleDelete }) => {
+export const QuizMasterCard: React.FC<QuizMasterCardProps> = ({ questionario, onSelect, handleStart, handleEdit, handleDelete }) => {
   return (
     <Container className="h-100 mt-3">
       <Row className="align-items-center h-100">

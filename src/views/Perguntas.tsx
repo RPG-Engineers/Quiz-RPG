@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { QuestionCard } from "../components/QuestionCard";
+import { QuestionMasterCard } from "../components/QuestionMasterCard";
 import { QuestionCreate } from "../components/QuestionCreate";
 import { getTags } from "../database/tag";
 import { deletePergunta, getPerguntas } from "../database/pergunta";
@@ -35,7 +35,7 @@ const Perguntas: React.FC = () => {
     <>
       <QuestionCreate tags={tags} fetchData={fetchData} />
       {perguntas.map((pergunta) => (
-        <QuestionCard key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} handleDelete={handleDelete}/>
+        <QuestionMasterCard key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} handleDelete={handleDelete}/>
       ))}
     </>
   );
