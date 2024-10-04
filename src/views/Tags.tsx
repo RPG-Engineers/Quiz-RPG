@@ -1,8 +1,7 @@
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import TagMasterCard from "../components/TagMasterCard";
 import { addTag, deleteTag, getTags } from "../database/tag";
 import { Tag } from "../types";
 
@@ -87,21 +86,7 @@ const Tags: React.FC = () => {
         <Row className="align-items-center h-100 mt-3">
           <Col xs={12} md={6} className="mx-auto">
             {tags.map((tag) => (
-              <Card key={tag.id_tag} className="mb-3">
-                <Card.Body className="d-flex align-items-center justify-content-between">
-                  <span className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
-                    {tag.nome}
-                  </span>
-                  <div>
-                    <Button variant="warning" className="text-white" onClick={() => handleEdit(tag.id_tag!)}>
-                      <FontAwesomeIcon icon={faPen} />
-                    </Button>
-                    <Button variant="danger" className="ml-2" onClick={() => handleDelete(tag.id_tag!)}>
-                      <FontAwesomeIcon icon={faTrash} />
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
+              <TagMasterCard key={tag.id_tag} tag={tag} handleEdit={handleEdit} handleDelete={handleDelete}/>
             ))}
           </Col>
         </Row>
