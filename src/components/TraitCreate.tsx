@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import {
   addCaracteristica,
-  deleteCaracteristica,
   associateCaracteristicaToTags,
+  deleteCaracteristica,
   getCaracteristicasByTipo,
 } from "../database/caracteristica";
 import { getTags } from "../database/tag";
-import { Tag, Caracteristica, TipoCaracteristica, CaracteristicaWithTags } from "../types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Caracteristica, CaracteristicaWithTags, Tag, TipoCaracteristica } from "../types";
 import { getTipo } from "../utils/util";
+import { TagComponent } from "./TagComponent";
 import { TagSelection } from "./TagSelection";
 
 interface TraitCreateProps {
@@ -80,111 +82,107 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
   };
 
   return (
-    <div className="container h-100 mt-4">
-      <div className="row align-items-center h-100">
-        <div className="col-6 mx-auto">
-          <div className="card">
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="form-group mt-2">
-                  <label htmlFor="nome">Nome</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="nome"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    placeholder={"Digite o nome d" + stringTipo}
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label htmlFor="descricao">Breve Descrição</label>
-                  <textarea
-                    className="form-control"
-                    id="descricao"
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
-                    rows={2}
-                    placeholder={"Breve descrição d" + stringTipo}
-                  ></textarea>
-                </div>
-                <div className="form-group mt-2">
-                  <label htmlFor="urlImagem">URL da Imagem</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="urlImagem"
-                    value={urlImagem}
-                    onChange={(e) => setUrlImagem(e.target.value)}
-                    placeholder="Digite a URL da imagem"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label htmlFor="urlReferencia">URL para Referência</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="urlReferencia"
-                    value={urlReferencia}
-                    onChange={(e) => setUrlReferencia(e.target.value)}
-                    placeholder="Digite a URL para referência"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label>Tags para Selecionar</label>
-                  <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
-                </div>
-                <button type="submit" className="btn btn-success mt-3">
-                  Criar
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="container h-100 mt-4">
-        <div className="row align-items-center h-100">
-          <div className="col-6 mx-auto">
-            {caracteristicas.map((caracteristica) => (
-              <div key={caracteristica.id_caracteristica} className="card mb-3">
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="card-body">
-                      <h5 className="card-title">{caracteristica.nome}</h5>
-                      <p className="card-text">{caracteristica.descricao}</p>
-                      {caracteristica.tags.map((tag) => (
-                        <span key={tag.id_tag} className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
-                          {tag.nome}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <img src={caracteristica.url_imagem} className="card-img" alt={caracteristica.nome} />
-                  </div>
+    <div className="h-100 mt-4">
+      <Container className="h-100">
+        <Row className="align-items-center h-100">
+          <Col xs={12} md={6} className="mx-auto">
+            <Card>
+              <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="nome" className="mt-2">
+                    <Form.Label>Nome</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      placeholder={`Digite o nome d${stringTipo}`}
+                    />
+                  </Form.Group>
 
-                  <div className="col-md-2">
-                    <button
-                      type="button"
-                      className="btn btn-warning mt-3 text-white"
+                  <Form.Group controlId="descricao" className="mt-2">
+                    <Form.Label>Breve Descrição</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={2}
+                      value={descricao}
+                      onChange={(e) => setDescricao(e.target.value)}
+                      placeholder={`Breve descrição d${stringTipo}`}
+                    />
+                  </Form.Group>
+
+                  <Form.Group controlId="urlImagem" className="mt-2">
+                    <Form.Label>URL da Imagem</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={urlImagem}
+                      onChange={(e) => setUrlImagem(e.target.value)}
+                      placeholder="Digite a URL da imagem"
+                    />
+                  </Form.Group>
+
+                  <Form.Group controlId="urlReferencia" className="mt-2">
+                    <Form.Label>URL para Referência</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={urlReferencia}
+                      onChange={(e) => setUrlReferencia(e.target.value)}
+                      placeholder="Digite a URL para referência"
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mt-2">
+                    <Form.Label>Tags para Selecionar</Form.Label>
+                    <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
+                  </Form.Group>
+
+                  <Button type="submit" variant="success" className="mt-3">
+                    Criar
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row className="align-items-center h-100 mt-4">
+          <Col xs={12} md={6} className="mx-auto">
+            {caracteristicas.map((caracteristica) => (
+              <Card key={caracteristica.id_caracteristica} className="mb-3">
+                <Row>
+                  <Col md={6}>
+                    <Card.Body>
+                      <Card.Title>{caracteristica.nome}</Card.Title>
+                      <Card.Text>{caracteristica.descricao}</Card.Text>
+                      {caracteristica.tags.map((tag) => (
+                        <TagComponent key={tag.id_tag} selectable={false} tag={tag} />
+                      ))}
+                    </Card.Body>
+                  </Col>
+                  <Col md={4}>
+                    <Card.Img src={caracteristica.url_imagem} alt={caracteristica.nome} />
+                  </Col>
+                  <Col md={2} className="d-flex flex-column justify-content-center align-items-center">
+                    <Button
+                      variant="warning"
+                      className="mt-3 text-white"
                       onClick={() => handleEdit(caracteristica.id_caracteristica ?? -1)}
                     >
                       <FontAwesomeIcon icon={faPen} />
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger mt-3"
+                    </Button>
+                    <Button
+                      variant="danger"
+                      className="mt-3"
                       onClick={() => handleDelete(caracteristica.id_caracteristica ?? -1)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                </div>
-              </div>
+                    </Button>
+                  </Col>
+                </Row>
+              </Card>
             ))}
-          </div>
-        </div>
-      </div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
