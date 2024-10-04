@@ -1,5 +1,3 @@
-import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import {
@@ -11,8 +9,8 @@ import {
 import { getTags } from "../database/tag";
 import { Caracteristica, CaracteristicaWithTags, Tag, TipoCaracteristica } from "../types";
 import { getTipo } from "../utils/util";
-import { TagComponent } from "./TagComponent";
 import { TagSelection } from "./TagSelection";
+import TraitMasterCard from "./TraitMasterCard";
 
 interface TraitCreateProps {
   tipo: TipoCaracteristica;
@@ -147,38 +145,12 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
         <Row className="align-items-center h-100 mt-4">
           <Col xs={12} md={6} className="mx-auto">
             {caracteristicas.map((caracteristica) => (
-              <Card key={caracteristica.id_caracteristica} className="mb-3">
-                <Row>
-                  <Col md={6}>
-                    <Card.Body>
-                      <Card.Title>{caracteristica.nome}</Card.Title>
-                      <Card.Text>{caracteristica.descricao}</Card.Text>
-                      {caracteristica.tags.map((tag) => (
-                        <TagComponent key={tag.id_tag} selectable={false} tag={tag} />
-                      ))}
-                    </Card.Body>
-                  </Col>
-                  <Col md={4}>
-                    <Card.Img src={caracteristica.url_imagem} alt={caracteristica.nome} />
-                  </Col>
-                  <Col md={2} className="d-flex flex-column justify-content-center align-items-center">
-                    <Button
-                      variant="warning"
-                      className="mt-3 text-white"
-                      onClick={() => handleEdit(caracteristica.id_caracteristica ?? -1)}
-                    >
-                      <FontAwesomeIcon icon={faPen} />
-                    </Button>
-                    <Button
-                      variant="danger"
-                      className="mt-3"
-                      onClick={() => handleDelete(caracteristica.id_caracteristica ?? -1)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </Button>
-                  </Col>
-                </Row>
-              </Card>
+              <TraitMasterCard
+                key={caracteristica.id_caracteristica}
+                caracteristica={caracteristica}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
             ))}
           </Col>
         </Row>
