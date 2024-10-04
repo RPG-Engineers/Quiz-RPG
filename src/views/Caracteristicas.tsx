@@ -46,38 +46,32 @@ const Caracteristicas: React.FC = () => {
         </Form>
       </Container>
 
-      <div className="container-fluid d-flex justify-content-start">
+      <Container fluid className="d-flex justify-content-start">
         <h3 className="text-white mt-3">Classes</h3>
-      </div>
+      </Container>
       <div className="bg-secondary">
         <hr />
       </div>
 
-      <TraitCard
-        tipo={TipoCaracteristica.CLASSE}
-        caracteristicas={filtrarPorTipo(TipoCaracteristica.CLASSE)}
-      />
+      <TraitCard tipo={TipoCaracteristica.CLASSE} caracteristicas={filtrarPorTipo(TipoCaracteristica.CLASSE)} />
 
-      <div className="container-fluid d-flex justify-content-start">
+      <Container fluid className="d-flex justify-content-start">
         <h3 className="text-white mt-3">Raças</h3>
-      </div>
+      </Container>
       <div className="bg-secondary">
         <hr />
       </div>
 
       <TraitCard tipo={TipoCaracteristica.RACA} caracteristicas={filtrarPorTipo(TipoCaracteristica.RACA)} />
 
-      <div className="container-fluid d-flex justify-content-start">
+      <Container fluid className="d-flex justify-content-start">
         <h3 className="text-white mt-3">Backgrounds</h3>
-      </div>
+      </Container>
       <div className="bg-secondary">
         <hr />
       </div>
 
-      <TraitCard
-        tipo={TipoCaracteristica.BACKGROUND}
-        caracteristicas={filtrarPorTipo(TipoCaracteristica.BACKGROUND)}
-      />
+      <TraitCard tipo={TipoCaracteristica.BACKGROUND} caracteristicas={filtrarPorTipo(TipoCaracteristica.BACKGROUND)} />
     </>
   );
 };

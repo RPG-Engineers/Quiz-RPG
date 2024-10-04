@@ -1,126 +1,113 @@
-import React, { useState, useEffect } from "react";
-import { addTag, getTags, deleteTag } from "../database/tag";
-import { Tag } from "../types";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { addTag, deleteTag, getTags } from "../database/tag";
+import { Tag } from "../types";
 
 const Tags: React.FC = () => {
-    const [nome, setNome] = useState("");
-    const [cor, setCor] = useState("#000000");
-    const [tags, setTags] = useState<Tag[]>([]);
-    const navigate = useNavigate();
+  const [nome, setNome] = useState("");
+  const [cor, setCor] = useState("#000000");
+  const [tags, setTags] = useState<Tag[]>([]);
+  const navigate = useNavigate();
 
-    // Função para carregar as tags
-    const fetchTags = async () => {
-        const tagsFromDB = await getTags();
-        setTags(tagsFromDB);
+  // Função para carregar as tags
+  const fetchTags = async () => {
+    const tagsFromDB = await getTags();
+    setTags(tagsFromDB);
+  };
+
+  // Carregar tags na montagem inicial do componente
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const novaTag: Tag = {
+      nome,
+      cor,
     };
 
-    // Carregar tags na montagem inicial do componente
-    useEffect(() => {
-        fetchTags();
-    }, []);
+    await addTag(novaTag);
+    setNome("");
+    setCor("#000000");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const novaTag: Tag = {
-            nome,
-            cor,
-        };
+    // Atualizar a listagem após adicionar uma nova tag
+    fetchTags();
+  };
 
-        await addTag(novaTag);
-        setNome("");
-        setCor("#000000");
+  const handleDelete = async (id: number) => {
+    await deleteTag(id);
+    setTags((prev) => prev.filter((tag) => tag.id_tag !== id));
+  };
 
-        // Atualizar a listagem após adicionar uma nova tag
-        fetchTags();
-    };
+  const handleEdit = (id: number) => {
+    navigate(`/editar-tag/${id}`); // Navegar para a tela de edição
+  };
 
-    const handleDelete = async (id: number) => {
-        await deleteTag(id);
-        setTags((prev) => prev.filter((tag) => tag.id_tag !== id));
-    };
+  return (
+    <div className="h-100 mt-3">
+      <Container className="h-100">
+        <Row className="align-items-center h-100">
+          <Col xs={12} md={6} className="mx-auto">
+            <Card>
+              <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="nome">
+                    <Form.Label>Nome</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      placeholder="Digite o nome da tag"
+                    />
+                  </Form.Group>
 
-    const handleEdit = (id: number) => {
-        navigate(`/editar-tag/${id}`); // Navegar para a tela de edição
-    };
+                  <Form.Group controlId="cor" className="mt-2">
+                    <Form.Label>Cor</Form.Label>
+                    <Form.Control type="color" value={cor} onChange={(e) => setCor(e.target.value)} />
+                  </Form.Group>
 
-    return (
-        <div className="container h-100 mt-3">
-            <div className="row align-items-center h-100">
-                <div className="col-6 mx-auto">
-                    <div className="card">
-                        <div className="card-body">
-                            <form onSubmit={handleSubmit}>
-                                <div className="form-group">
-                                    <label htmlFor="nome">Nome</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="nome"
-                                        value={nome}
-                                        onChange={(e) => setNome(e.target.value)}
-                                        placeholder="Digite o nome da tag"
-                                    />
-                                </div>
-                                <div className="form-group mt-2">
-                                    <label htmlFor="cor">Cor</label>
-                                    <input
-                                        type="color"
-                                        className="form-control"
-                                        id="cor"
-                                        value={cor}
-                                        onChange={(e) => setCor(e.target.value)}
-                                    />
-                                </div>
-                                <button type="submit" className="btn btn-success mt-3">
-                                    Criar
-                                </button>
-                            </form>
-                            <h5 className="mt-4">Pré-visualização:</h5>
-                            <span id="preview" className="badge" style={{ backgroundColor: cor, color: "white" }}>
-                                {nome || "Nome do Badge"}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="container h-100 mt-3">
-                <div className="row align-items-center h-100">
-                    <div className="col-6 mx-auto">
-                        {tags.map((tag) => (
-                            <div key={tag.id_tag} className="card mb-3">
-                                <div className="card-body d-flex align-items-center justify-content-between">
-                                    <span className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
-                                        {tag.nome}
-                                    </span>
-                                    <div>
-                                        <button
-                                            type="button"
-                                            className="btn btn-warning text-white"
-                                            // Se o id for undefined passa -1 senão passa ele mesmo
-                                            onClick={() => handleEdit(tag.id_tag ?? -1)} 
-                                        >
-                                            <FontAwesomeIcon icon={faPen} />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger"
-                                            // Se o id for undefined passa -1 senão passa ele mesmo
-                                            onClick={() => handleDelete(tag.id_tag ?? -1)}  
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+                  <Button type="submit" variant="success" className="mt-3">
+                    Criar
+                  </Button>
+                </Form>
+
+                <h5 className="mt-4">Pré-visualização:</h5>
+                <span id="preview" className="badge" style={{ backgroundColor: cor, color: "white" }}>
+                    {nome || "Nome do Badge"}
+                  </span>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row className="align-items-center h-100 mt-3">
+          <Col xs={12} md={6} className="mx-auto">
+            {tags.map((tag) => (
+              <Card key={tag.id_tag} className="mb-3">
+                <Card.Body className="d-flex align-items-center justify-content-between">
+                  <span className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
+                    {tag.nome}
+                  </span>
+                  <div>
+                    <Button variant="warning" className="text-white" onClick={() => handleEdit(tag.id_tag!)}>
+                      <FontAwesomeIcon icon={faPen} />
+                    </Button>
+                    <Button variant="danger" className="ml-2" onClick={() => handleDelete(tag.id_tag!)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            ))}
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
 };
 
 export default Tags;
