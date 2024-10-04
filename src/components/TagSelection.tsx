@@ -14,8 +14,8 @@ export const TagSelection: React.FC<TagSelectionProps> = ({ tags, selectedTags, 
       {tags.map((tag) => (
         <TagComponent
           key={tag.id_tag}
-          tagId={tag.id_tag!}
-          tagName={tag.nome}
+          tag={tag}
+          selectable={true}
           isSelected={selectedTags.has(tag.id_tag!)}
           onTagToggle={handleTagToggle}
         />
