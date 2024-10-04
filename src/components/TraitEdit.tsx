@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   getCaracteristicaById,
   updateCaracteristica,
-  updateAssociationCaracteristicaToTags
+  updateAssociationCaracteristicaToTags,
 } from "../database/caracteristica";
-import {
-  getTags,
-  getTagsByCaracteristicaId
-} from "../database/tag";
+import { getTags, getTagsByCaracteristicaId } from "../database/tag";
 import { Tag, Caracteristica, TipoCaracteristica } from "../types";
 import { useNavigate } from "react-router-dom";
 import { TagSelection } from "./TagSelection";
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 
 interface TraitEditProps {
   id: number;
@@ -77,68 +75,68 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
   };
 
   return (
-    <div className="container h-100 mt-4">
-      <div className="row align-items-center h-100">
-        <div className="col-6 mx-auto">
-          <div className="card">
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="form-group mt-2">
-                  <label htmlFor="nome">Nome</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="nome"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    placeholder="Digite o nome do background"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label htmlFor="descricao">Breve Descrição</label>
-                  <textarea
-                    className="form-control"
-                    id="descricao"
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
-                    rows={2}
-                    placeholder="Breve descrição do background"
-                  ></textarea>
-                </div>
-                <div className="form-group mt-2">
-                  <label htmlFor="urlImagem">URL da Imagem</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="urlImagem"
-                    value={urlImagem}
-                    onChange={(e) => setUrlImagem(e.target.value)}
-                    placeholder="Digite a URL da imagem"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label htmlFor="urlReferencia">URL para Referência</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="urlReferencia"
-                    value={urlReferencia}
-                    onChange={(e) => setUrlReferencia(e.target.value)}
-                    placeholder="Digite a URL para referência"
-                  />
-                </div>
-                <div className="form-group mt-2">
-                  <label>Tags para Selecionar</label>
-                  <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
-                </div>
-                <button type="submit" className="btn btn-success mt-3">
-                  Salvar
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="h-100 mt-4">
+      <Container className="h-100">
+        <Row className="align-items-center h-100">
+          <Col xs={12} md={6} className="mx-auto">
+            <Card>
+              <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="nome" className="mt-2">
+                    <Form.Label>Nome</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      placeholder="Digite o nome do background"
+                    />
+                  </Form.Group>
+
+                  <Form.Group controlId="descricao" className="mt-2">
+                    <Form.Label>Breve Descrição</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={2}
+                      value={descricao}
+                      onChange={(e) => setDescricao(e.target.value)}
+                      placeholder="Breve descrição do background"
+                    />
+                  </Form.Group>
+
+                  <Form.Group controlId="urlImagem" className="mt-2">
+                    <Form.Label>URL da Imagem</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={urlImagem}
+                      onChange={(e) => setUrlImagem(e.target.value)}
+                      placeholder="Digite a URL da imagem"
+                    />
+                  </Form.Group>
+
+                  <Form.Group controlId="urlReferencia" className="mt-2">
+                    <Form.Label>URL para Referência</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={urlReferencia}
+                      onChange={(e) => setUrlReferencia(e.target.value)}
+                      placeholder="Digite a URL para referência"
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mt-2">
+                    <Form.Label>Tags para Selecionar</Form.Label>
+                    <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
+                  </Form.Group>
+
+                  <Button type="submit" variant="success" className="mt-3">
+                    Salvar
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
