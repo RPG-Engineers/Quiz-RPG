@@ -4,28 +4,31 @@ import { Tag } from "../types";
 interface TagComponentProps {
   tag: Tag;
   selectable: boolean;
-  // Se for selectable essas 2 propertys opcionais devem ser preenchidas
   isSelected?: boolean; 
   onTagToggle?: (tagId: number) => void;
 }
 
 export const TagComponent: React.FC<TagComponentProps> = ({ tag, isSelected, onTagToggle, selectable }) => {
-  if (selectable) {
-    return (
-      <span
-        key={tag.id_tag}
-        className={`badge ${isSelected ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill`}
-        onClick={() => onTagToggle!(tag.id_tag!)}
-        style={{ cursor: "pointer" }}
-      >
-        {tag.nome}
-      </span>
-    );
-  } else {
-    return (
-      <span key={tag.id_tag} className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
-        {tag.nome}
-      </span>
-    );
-  }
+  const handleClick = () => {
+    if (selectable && onTagToggle) {
+      onTagToggle(tag.id_tag!);
+    }
+  };
+
+  const badgeClass = selectable 
+    ? `badge ${isSelected ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill` 
+    : "badge";
+
+  const customStyle = selectable ? { cursor: "pointer" } : { backgroundColor: tag.cor, color: "white" };
+
+  return (
+    <span
+      key={tag.id_tag}
+      className={badgeClass}
+      onClick={handleClick}
+      style={customStyle}
+    >
+      {tag.nome}
+    </span>
+  );
 };

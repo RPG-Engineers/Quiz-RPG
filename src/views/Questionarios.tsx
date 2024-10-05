@@ -11,18 +11,11 @@ const Questionarios: React.FC = () => {
   const [questionarios, setQuestionarios] = useState<Questionario[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const questionariosFromDB = await getQuestionarios();
-      setQuestionarios(questionariosFromDB);
-    };
-    fetchData();
-  }, []);
-
   const handleCreate = () => {
     navigate(`/criar-questionario`);
   };
 
+  // Seleciona o "Default"
   const handleSelect = async (id: number) => {
     // Atualiza todos os questionários, removendo o "default" dos outros
     const updatedQuestionarios = questionarios.map((q) => ({
@@ -31,8 +24,6 @@ const Questionarios: React.FC = () => {
     }));
 
     setQuestionarios(updatedQuestionarios);
-
-    // Atualiza o banco de dados
     for (const questionario of updatedQuestionarios) {
       await updateQuestionario(questionario.id_questionario!, questionario);
     }
@@ -40,7 +31,7 @@ const Questionarios: React.FC = () => {
 
   const handleStart = (id: number) => {
     navigate(`/responder/${id}`);
-  }
+  };
 
   const handleEdit = (id: number) => {
     navigate(`/editar-questionario/${id}`);
@@ -50,6 +41,15 @@ const Questionarios: React.FC = () => {
     await deleteQuestionario(id);
     setQuestionarios((prev) => prev.filter((questionario) => questionario.id_questionario !== id));
   };
+
+  // Construtor do Componente
+  useEffect(() => {
+    const fetchData = async () => {
+      const questionariosFromDB = await getQuestionarios();
+      setQuestionarios(questionariosFromDB);
+    };
+    fetchData();
+  }, []);
 
   return (
     <>

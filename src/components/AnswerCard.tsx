@@ -1,15 +1,16 @@
-import React from 'react';
-import { Card, Form } from 'react-bootstrap';
-import { AlternativaWithTags, Pergunta } from '../types';
+import React from "react";
+import { Card, Form } from "react-bootstrap";
+import { AlternativaWithTags, Pergunta } from "../types";
 
 interface AnswerCardProps {
   pergunta: Pergunta;
   alternativas: AlternativaWithTags[];
   onSelect: (perguntaId: number, alternativaId: number) => void;
-  selectedAlternativeId?: number; 
+  selectedAlternativeId?: number;
 }
 
 const AnswerCard: React.FC<AnswerCardProps> = ({ pergunta, alternativas, onSelect, selectedAlternativeId }) => {
+  // Seleciona Alternativa
   const handleSelectionChange = (altId: number) => {
     onSelect(pergunta.id_pergunta!, altId);
   };

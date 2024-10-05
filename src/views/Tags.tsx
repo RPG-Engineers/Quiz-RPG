@@ -9,7 +9,15 @@ const Tags: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const navigate = useNavigate();
 
-  // Função para carregar as tags
+  const handleEdit = (id: number) => {
+    navigate(`/editar-tag/${id}`);
+  };
+
+  const handleDelete = async (id: number) => {
+    await deleteTag(id);
+    setTags((prev) => prev.filter((tag) => tag.id_tag !== id));
+  };
+
   const fetchData = async () => {
     const tagsFromDB = await getTags();
     setTags(tagsFromDB);
@@ -19,15 +27,6 @@ const Tags: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleEdit = (id: number) => {
-    navigate(`/editar-tag/${id}`); // Navegar para a tela de edição
-  };
-
-  const handleDelete = async (id: number) => {
-    await deleteTag(id);
-    setTags((prev) => prev.filter((tag) => tag.id_tag !== id));
-  };
 
   return (
     <>

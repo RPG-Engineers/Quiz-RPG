@@ -27,6 +27,7 @@ const Perguntas: React.FC = () => {
     setPerguntas(perguntasFromDB);
   };
 
+  // Construtor do Componente
   useEffect(() => {
     fetchData();
   }, []);

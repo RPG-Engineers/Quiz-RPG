@@ -7,8 +7,8 @@ import { addPergunta } from "../database/pergunta";
 import { v4 as uuidv4 } from "uuid";
 
 interface QuestionCreateProps {
-  tags: Tag[]
-  fetchData: () => Promise<void>
+  tags: Tag[];
+  fetchData: () => Promise<void>;
 }
 
 export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData }) => {
@@ -27,31 +27,32 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
   const [alternativaTexts, setAlternativaTexts] = useState<{ [key: string]: string }>({});
   const [alternativaTags, setAlternativaTags] = useState<{ [key: string]: Set<number> }>({});
 
-  const handleAddOption = () => {
-    const newOptionId = uuidv4();
+  // Funções de Manipulação de Alternativas
+  const handleAddAlternative = () => {
+    const newAlternativeId = uuidv4();
     setAlternativaProps((prev) => [
       ...prev,
       {
-        id: newOptionId,
+        id: newAlternativeId,
         placeholder: `Opção ${prev.length + 1}`,
-        eventKey: newOptionId,
+        eventKey: newAlternativeId,
         tags: [],
-        onRemove: () => handleRemoveOption(newOptionId),
-        onTextChange: handleAlternativaTextChange,
-        onTagChange: handleAlternativaTagChange,
+        onRemove: () => handleRemoveAlternative(newAlternativeId),
+        onTextChange: handleAlternativeTextChange,
+        onTagChange: handleAlternativeTagChange,
       },
     ]);
   };
 
-  const handleAlternativaTextChange = (id: string, text: string) => {
+  const handleAlternativeTextChange = (id: string, text: string) => {
     setAlternativaTexts((prev) => ({ ...prev, [id]: text }));
   };
 
-  const handleAlternativaTagChange = useCallback((id: string, selectedTags: Set<number>) => {
+  const handleAlternativeTagChange = useCallback((id: string, selectedTags: Set<number>) => {
     setAlternativaTags((prev) => ({ ...prev, [id]: selectedTags }));
   }, []);
 
-  const handleRemoveOption = (idToRemove: string) => {
+  const handleRemoveAlternative = (idToRemove: string) => {
     setAlternativaProps((prev) =>
       prev
         .filter((alt) => alt.id !== idToRemove)
@@ -59,18 +60,17 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
     );
 
     setAlternativaTexts((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
 
     setAlternativaTags((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
   };
 
+  // Salvar pergunta
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -90,7 +90,6 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
       await associateAlternativaToTags(id_alternativa, alternativaTags[alternativa.id]);
     }
 
-    // Limpar os campos após adicionar uma nova pergunta
     setQuestionText("");
     setAlternativaProps([
       {
@@ -99,8 +98,8 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
         eventKey: "0",
         tags: [],
         onRemove: () => {},
-        onTextChange: handleAlternativaTextChange,
-        onTagChange: handleAlternativaTagChange,
+        onTextChange: handleAlternativeTextChange,
+        onTagChange: handleAlternativeTagChange,
       },
     ]);
     setAlternativaTexts({});
@@ -133,14 +132,14 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
                         id={alternativa.id}
                         placeholder={alternativa.placeholder}
                         eventKey={alternativa.eventKey}
-                        onRemove={() => handleRemoveOption(alternativa.id)}
+                        onRemove={() => handleRemoveAlternative(alternativa.id)}
                         tags={tags}
-                        onTextChange={handleAlternativaTextChange}
-                        onTagChange={handleAlternativaTagChange}
+                        onTextChange={handleAlternativeTextChange}
+                        onTagChange={handleAlternativeTagChange}
                       />
                     ))}
                   </Accordion>
-                  <Button variant="light" className="mt-3" id="addOptionButton" onClick={handleAddOption}>
+                  <Button variant="light" className="mt-3" id="addAlternativeButton" onClick={handleAddAlternative}>
                     Adicionar opção
                   </Button>
                 </Form.Group>

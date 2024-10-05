@@ -12,27 +12,29 @@ const TagEdit: React.FC<TagEditProps> = ({ id }) => {
   const [nome, setNome] = useState("");
   const [cor, setCor] = useState("#000000");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchTagData = async () => {
-      const tag = await getTagById(id);
-      setNome(tag.nome);
-      setCor(tag.cor);
-    };
-
-    fetchTagData();
-  }, [id]);
-
+  
+  // Salvar Tag
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedTag: Tag = {
       nome,
       cor,
     };
-
+    
     await updateTag(id, updatedTag);
     navigate("/tags");
   };
+  
+  // Construtor do Componente
+  useEffect(() => {
+    const fetchData = async () => {
+      const tag = await getTagById(id);
+      setNome(tag.nome);
+      setCor(tag.cor);
+    };
+
+    fetchData();
+  }, [id]);
 
   return (
     <Container className="h-100 mt-3">

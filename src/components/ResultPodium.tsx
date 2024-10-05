@@ -2,11 +2,11 @@ import { Col, Container, Row } from "react-bootstrap";
 import { ResultCard } from "./ResultCard";
 import { CaracteristicaWithTags, CardType } from "../types";
 
-interface PodiumProps {
+interface ResultPodiumProps {
   top3: CaracteristicaWithTags[];
 }
 
-const Podium: React.FC<PodiumProps> = ({ top3 }) => {
+const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
   return (
     <Container className="h-100">
       <Row>
@@ -36,4 +36,4 @@ const Podium: React.FC<PodiumProps> = ({ top3 }) => {
   );
 };
 
-export default Podium;
+export default ResultPodium;

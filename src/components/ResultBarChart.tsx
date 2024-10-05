@@ -5,12 +5,12 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 // Registrar componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-interface BarChartProps {
+interface ResultBarChartProps {
   labels: string[];
   dataPoints: number[];
 }
 
-const BarChart: React.FC<BarChartProps> = ({ labels, dataPoints }) => {
+const ResultBarChart: React.FC<ResultBarChartProps> = ({ labels, dataPoints }) => {
   // Cores para as barras
   const colors = [
     'rgba(255, 99, 132, 0.6)',
@@ -83,4 +83,4 @@ const BarChart: React.FC<BarChartProps> = ({ labels, dataPoints }) => {
   );
 };
 
-export default BarChart;
+export default ResultBarChart;

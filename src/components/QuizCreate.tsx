@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getPerguntas } from "../database/pergunta";
 import { addQuestionario, associateQuestionarioToPerguntas } from "../database/questionario";
 import { Pergunta, Questionario } from "../types";
 
-export const QuizCreate: React.FC = () => {
+interface QuizCreateProps {
+  perguntas: Pergunta[];
+}
+
+export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
   const [quizName, setQuizName] = useState("");
-  const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [selectedPerguntas, setSelectedPerguntas] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
 
-
+  // Selecionar Pergunta
   const handleCheckboxChange = (id: number) => {
     setSelectedPerguntas((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -24,27 +26,19 @@ export const QuizCreate: React.FC = () => {
     });
   };
 
+  // Salvar Questionário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const quiz: Questionario = {
       nome: quizName,
-      default: false
+      default: false,
     };
 
     const id = await addQuestionario(quiz);
-    await associateQuestionarioToPerguntas(id, selectedPerguntas)
+    await associateQuestionarioToPerguntas(id, selectedPerguntas);
     navigate(`/questionarios`);
   };
-
-  const fetchPerguntas = async () => {
-    const perguntasFromDB = await getPerguntas();
-    setPerguntas(perguntasFromDB);
-  };
-
-  useEffect(() => {
-    fetchPerguntas();
-  }, []);
 
   return (
     <Container className="h-100 mt-3">

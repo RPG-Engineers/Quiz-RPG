@@ -20,6 +20,7 @@ export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => 
   const [selectedPerguntas, setSelectedPerguntas] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
 
+  // Selecionar Pergunta
   const handleCheckboxChange = (id: number) => {
     setSelectedPerguntas((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -32,6 +33,7 @@ export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => 
     });
   };
 
+  // Salvar Questionário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -46,6 +48,7 @@ export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => 
     navigate(navigationDestiny);
   };
 
+  // Construtor do Componente
   useEffect(() => {
     const fetchData = async () => {
       try {
