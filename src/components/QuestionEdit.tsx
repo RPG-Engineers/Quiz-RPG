@@ -10,26 +10,26 @@ import { useNavigate } from "react-router-dom";
 interface QuestionEditProps {
   id: number;
   tags: Tag[];
-  navigationDestiny: string;
 }
 
-export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigationDestiny }) => {
+export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
   const [alternativaProps, setAlternativaProps] = useState<AlternativeCreateProps[]>([]);
   const [questionText, setQuestionText] = useState("");
   const [alternativaTexts, setAlternativaTexts] = useState<{ [key: string]: string }>({});
   const [alternativaTags, setAlternativaTags] = useState<{ [key: string]: Set<number> }>({});
   const navigate = useNavigate();
 
-  const handleAddOption = () => {
-    const newOptionId = uuidv4();
+  // Funções de Manipulação de Alternativas
+  const handleAddAlternative = () => {
+    const newAlternativeId = uuidv4();
     setAlternativaProps((prev) => [
       ...prev,
       {
-        id: newOptionId,
+        id: newAlternativeId,
         placeholder: `Opção ${prev.length + 1}`,
-        eventKey: newOptionId,
+        eventKey: newAlternativeId,
         tags: [],
-        onRemove: () => handleRemoveOption(newOptionId),
+        onRemove: () => handleRemoveAlternative(newAlternativeId),
         onTextChange: handleAlternativaTextChange,
         onTagChange: handleAlternativaTagChange,
       },
@@ -44,7 +44,7 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigation
     setAlternativaTags((prev) => ({ ...prev, [id]: selectedTags }));
   }, []);
 
-  const handleRemoveOption = (idToRemove: string) => {
+  const handleRemoveAlternative = (idToRemove: string) => {
     setAlternativaProps((prev) =>
       prev
         .filter((alt) => alt.id !== idToRemove)
@@ -52,20 +52,42 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigation
     );
 
     setAlternativaTexts((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
 
     setAlternativaTags((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
   };
 
+  // Salvar pergunta
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const updatedPegunta: Pergunta = {
+      pergunta: questionText,
+    };
+
+    const alternativas: AlternativaWithTags[] = alternativaProps.map((alt) => {
+      const id_alternativa = isNaN(Number(alt.id)) ? undefined : Number(alt.id);
+      return {
+        id_alternativa,
+        id_pergunta: id,
+        alternativa: alternativaTexts[alt.id],
+        tagsIds: alternativaTags[alt.id],
+      };
+    });
+
+    await updatePergunta(id, updatedPegunta);
+    await updateAssociationPerguntaToAlternativas(id, alternativas);
+    navigate("/perguntas");
+  };
+
+  // Construtor do Componente
   useEffect(() => {
-    const fetchPerguntaData = async () => {
+    const fetchData = async () => {
       const pergunta = await getPerguntaById(id);
       setQuestionText(pergunta.pergunta);
       const alternativasWithTags = await getAlternativasByPerguntaId(id);
@@ -83,7 +105,7 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigation
             placeholder: `Opção ${alternativasProps.length + 1}`,
             eventKey: alternativa.id_alternativa.toString(),
             tags: tags,
-            onRemove: () => handleRemoveOption(alternativa.id_alternativa!.toString()),
+            onRemove: () => handleRemoveAlternative(alternativa.id_alternativa!.toString()),
             onTextChange: handleAlternativaTextChange,
             onTagChange: handleAlternativaTagChange,
             initialText: alternativa.alternativa,
@@ -97,31 +119,8 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigation
       setAlternativaTags(alternativasTags);
     };
 
-    fetchPerguntaData();
+    fetchData();
   }, [id, handleAlternativaTagChange, tags]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const updatedPegunta: Pergunta = {
-      pergunta: questionText
-    }
-
-    const alternativas: AlternativaWithTags[] = alternativaProps.map((alt) => {
-      const id_alternativa = isNaN(Number(alt.id)) ? undefined : Number(alt.id);
-      return {
-        id_alternativa,
-        id_pergunta: id,
-        alternativa: alternativaTexts[alt.id],
-        tagsIds: alternativaTags[alt.id],
-      };
-    });
-    
-
-    await updatePergunta(id, updatedPegunta);
-    await updateAssociationPerguntaToAlternativas(id, alternativas);
-    navigate(navigationDestiny);
-  };
 
   return (
     <Container className="mt-3">
@@ -148,7 +147,7 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigation
                         id={alternativa.id}
                         placeholder={alternativa.placeholder}
                         eventKey={alternativa.eventKey}
-                        onRemove={() => handleRemoveOption(alternativa.id)}
+                        onRemove={() => handleRemoveAlternative(alternativa.id)}
                         tags={tags}
                         onTextChange={handleAlternativaTextChange}
                         onTagChange={handleAlternativaTagChange}
@@ -157,7 +156,7 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags, navigation
                       />
                     ))}
                   </Accordion>
-                  <Button variant="light" className="mt-3" id="addOptionButton" onClick={handleAddOption}>
+                  <Button variant="light" className="mt-3" id="addAlternativeButton" onClick={handleAddAlternative}>
                     Adicionar opção
                   </Button>
                 </Form.Group>

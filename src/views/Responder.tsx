@@ -15,7 +15,39 @@ export const Responder: React.FC = () => {
   const navigate = useNavigate();
 
   const PERGUNTAS_POR_PAGINA = 2;
+  const perguntasExibir = perguntas.slice(currentPage * PERGUNTAS_POR_PAGINA, (currentPage + 1) * PERGUNTAS_POR_PAGINA);
 
+  // Função para voltar para a página anterior
+  const handlePrev = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Função para seleciona a alternativa
+  const handleAlternativeSelect = (perguntaId: number, alternativaId: number) => {
+    setRespostas((prevRespostas) => {
+      const newRespostas = new Map(prevRespostas);
+      newRespostas.set(perguntaId, alternativaId);
+      return newRespostas;
+    });
+  };
+
+  // Função para alterar para a próxima página
+  const handleNext = () => {
+    if (currentPage < Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA) - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Função para mostrar o resultado
+  const handleResult = () => {
+    navigate("/resultado", {
+      state: { respostas: Array.from(respostas.entries()) }
+    })
+  };
+
+  // Construtor do Componente
   useEffect(() => {
     const fetchData = async () => {
       const perguntasFromDB = await getPerguntasByQuestionarioId(Number(id));
@@ -32,41 +64,11 @@ export const Responder: React.FC = () => {
     fetchData();
   }, [id]);
 
-  // Atualiza o progresso conforme a página atual muda
+  // Construtor do Componente (Atualiza o progresso conforme a página atual muda)
   useEffect(() => {
     const totalPaginas = Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA);
     setProgress(((currentPage + 1) / totalPaginas) * 100);
   }, [currentPage, perguntas.length]);
-
-  // Função para alterar para a próxima página
-  const handleNext = () => {
-    if (currentPage < Math.ceil(perguntas.length / PERGUNTAS_POR_PAGINA) - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  // Função para voltar para a página anterior
-  const handlePrev = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleAlternativeSelect = (perguntaId: number, alternativaId: number) => {
-    setRespostas((prevRespostas) => {
-      const newRespostas = new Map(prevRespostas);
-      newRespostas.set(perguntaId, alternativaId);
-      return newRespostas;
-    });
-  };
-
-  const handleResult = () => {
-    navigate("/resultado", {
-      state: { respostas: Array.from(respostas.entries()) }
-    })
-  };
-
-  const perguntasExibir = perguntas.slice(currentPage * PERGUNTAS_POR_PAGINA, (currentPage + 1) * PERGUNTAS_POR_PAGINA);
 
   return (
     <Container className="h-100 mt-3">

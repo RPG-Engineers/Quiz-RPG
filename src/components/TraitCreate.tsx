@@ -27,19 +27,15 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
   const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);
   const stringTipo = getTipo(tipo) == "background" ? "o background" : "a " + getTipo(tipo);
 
-  // Função para carregar tags e características
-  const fetchTagsAndCaracteristicas = async (tipo: TipoCaracteristica) => {
+  // Função para carregar tags e características pelo tipo
+  const fetchData = async (tipo: TipoCaracteristica) => {
     const tagsFromDB = await getTags();
     const caracteristicasFromDB = await getCaracteristicasByTipo(tipo);
     setTags(tagsFromDB);
     setCaracteristicas(caracteristicasFromDB);
   };
 
-  // Carregar tags e características na montagem inicial do componente
-  useEffect(() => {
-    fetchTagsAndCaracteristicas(tipo);
-  }, [tipo]);
-
+  // Manipulação da Tag
   const handleTagToggle = (id: number) => {
     setSelectedTags((prev) => {
       const newSelectedTags = new Set(prev);
@@ -51,7 +47,8 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
       return newSelectedTags;
     });
   };
-
+  
+  // Salvar Característica
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const novaCaracteristica: Caracteristica = {
@@ -61,7 +58,7 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
       url_referencia: urlReferencia,
       tipo: tipo,
     };
-
+    
     const id = await addCaracteristica(novaCaracteristica);
     await associateCaracteristicaToTags(id, selectedTags);
     setNome("");
@@ -69,15 +66,20 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, handleEdit }) => {
     setUrlImagem("");
     setUrlReferencia("");
     setSelectedTags(new Set());
-
-    // Atualizar a listagem após adicionar um novo background
-    fetchTagsAndCaracteristicas(tipo);
+    
+    fetchData(tipo);
   };
-
+  
+  // Deletar Característica
   const handleDelete = async (id: number) => {
     await deleteCaracteristica(id);
     setCaracteristicas((prev) => prev.filter((caracteristica) => caracteristica.id_caracteristica !== id));
   };
+
+  // Construtor do Componente
+  useEffect(() => {
+    fetchData(tipo);
+  }, [tipo]);
 
   return (
     <div className="h-100 mt-4">

@@ -9,6 +9,17 @@ const Caracteristicas: React.FC = () => {
   const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);
   const [termoBusca, setTermoBusca] = useState("");
 
+  // Pesquisar Característica
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTermoBusca(event.target.value);
+  };
+  
+  // Filtra pelo Tipo
+  const filtrarPorTipo = (tipo: TipoCaracteristica) => {
+    return caracteristicas.filter((caracteristica) => caracteristica.tipo === tipo);
+  };
+  
+  // Construtor do Componente
   useEffect(() => {
     const fetchCaracteristicas = async () => {
       try {
@@ -24,14 +35,6 @@ const Caracteristicas: React.FC = () => {
 
     fetchCaracteristicas();
   }, [termoBusca]);
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTermoBusca(event.target.value);
-  };
-
-  const filtrarPorTipo = (tipo: TipoCaracteristica) => {
-    return caracteristicas.filter((caracteristica) => caracteristica.tipo === tipo);
-  };
 
   return (
     <>

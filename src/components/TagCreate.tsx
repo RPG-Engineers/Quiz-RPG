@@ -11,6 +11,7 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
   const [nome, setNome] = useState("");
   const [cor, setCor] = useState("#000000");
 
+  // Salvar Tag
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const novaTag: Tag = {

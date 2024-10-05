@@ -3,14 +3,20 @@ import { Button, Container } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 import { calcularResultado } from "../utils/util";
-import Podium from "../components/Podium";
-import BarChart from "../components/BarChart";
+import ResultPodium from "../components/ResultPodium";
+import ResultBarChart from "../components/ResultBarChart";
 
 export const Resultado: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [resultado, setResultado] = useState<[CaracteristicaWithTags, number][]>([]);
 
+  // Filtrar os top N para uma categoria específica
+  const getTopByCategory = (resultado: [CaracteristicaWithTags, number][], tipo: TipoCaracteristica, n: number) => {
+    return resultado.filter(([caracteristica]) => caracteristica.tipo === tipo).slice(0, n);
+  };
+
+  // Construtor do Componente
   useEffect(() => {
     const fetchData = async () => {
       if (!location.state || !location.state.respostas) {
@@ -27,19 +33,16 @@ export const Resultado: React.FC = () => {
     fetchData();
   }, [location.state, navigate]);
 
-  // Filtrar os top N para uma categoria específica
-  const getTopByCategory = (resultado: [CaracteristicaWithTags, number][], tipo: TipoCaracteristica, n: number) => {
-    return resultado.filter(([caracteristica]) => caracteristica.tipo === tipo).slice(0, n);
-  };
-
   return (
     <>
       <div className="mt-5">
         <Container fluid className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Classes</h3>
-          <Podium top3={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 3).map((item) => item[0])} />
-          <BarChart
-            labels={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 10).map(([caracteristica]) => caracteristica.nome)}
+          <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 3).map((item) => item[0])} />
+          <ResultBarChart
+            labels={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 10).map(
+              ([caracteristica]) => caracteristica.nome
+            )}
             dataPoints={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 10).map(([, pontuacao]) => pontuacao)}
           />
         </Container>
@@ -48,9 +51,11 @@ export const Resultado: React.FC = () => {
       <Container fluid className="mt-5">
         <div className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Raças</h3>
-          <Podium top3={getTopByCategory(resultado, TipoCaracteristica.RACA, 3).map((item) => item[0])} />
-          <BarChart
-            labels={getTopByCategory(resultado, TipoCaracteristica.RACA, 10).map(([caracteristica]) => caracteristica.nome)}
+          <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.RACA, 3).map((item) => item[0])} />
+          <ResultBarChart
+            labels={getTopByCategory(resultado, TipoCaracteristica.RACA, 10).map(
+              ([caracteristica]) => caracteristica.nome
+            )}
             dataPoints={getTopByCategory(resultado, TipoCaracteristica.RACA, 10).map(([, pontuacao]) => pontuacao)}
           />
         </div>
@@ -59,10 +64,14 @@ export const Resultado: React.FC = () => {
       <Container fluid className="mt-5">
         <div className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Backgrounds</h3>
-          <Podium top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3).map((item) => item[0])} />
-          <BarChart
-            labels={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(([caracteristica]) => caracteristica.nome)}
-            dataPoints={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(([, pontuacao]) => pontuacao)}
+          <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3).map((item) => item[0])} />
+          <ResultBarChart
+            labels={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(
+              ([caracteristica]) => caracteristica.nome
+            )}
+            dataPoints={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(
+              ([, pontuacao]) => pontuacao
+            )}
           />
         </div>
       </Container>

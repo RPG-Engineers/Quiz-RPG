@@ -5,20 +5,19 @@ import { Tag } from "../types";
 import { useEffect, useState } from "react";
 
 const EditarPergunta: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [tags, setTags] = useState<Tag[]>([]);
+  const { id } = useParams<{ id: string }>();
+  const [tags, setTags] = useState<Tag[]>([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-          const tagsFromDB = await getTags();
-          setTags(tagsFromDB);
-        };
-        fetchData();
-      }, []);
+  // Construtor do Componente
+  useEffect(() => {
+    const fetchData = async () => {
+      const tagsFromDB = await getTags();
+      setTags(tagsFromDB);
+    };
+    fetchData();
+  }, []);
 
-    return (
-        <QuestionEdit id={Number(id)} tags={tags} navigationDestiny="/perguntas"></QuestionEdit>
-    );
+  return <QuestionEdit id={Number(id)} tags={tags}></QuestionEdit>;
 };
 
 export default EditarPergunta;

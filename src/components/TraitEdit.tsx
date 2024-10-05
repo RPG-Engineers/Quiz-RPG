@@ -25,6 +25,36 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
 
+  // Manipulação da Tag
+  const handleTagToggle = (id: number) => {
+    setSelectedTags((prev) => {
+      const newSelectedTags = new Set(prev);
+      if (newSelectedTags.has(id)) {
+        newSelectedTags.delete(id);
+      } else {
+        newSelectedTags.add(id);
+      }
+      return newSelectedTags;
+    });
+  };
+
+  // Salvar Característica
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const updatedCaracteristica: Caracteristica = {
+      nome: nome,
+      descricao: descricao,
+      url_imagem: urlImagem,
+      url_referencia: urlReferencia,
+      tipo: tipo,
+    };
+
+    await updateCaracteristica(id, updatedCaracteristica);
+    await updateAssociationCaracteristicaToTags(id, selectedTags);
+    navigate(navigationDestiny);
+  };
+
+  // Construtor do Componente
   useEffect(() => {
     const fetchBackgroundData = async () => {
       const caracteristica = await getCaracteristicaById(id);
@@ -46,33 +76,6 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
 
     fetchBackgroundData();
   }, [id]);
-
-  const handleTagToggle = (id: number) => {
-    setSelectedTags((prev) => {
-      const newSelectedTags = new Set(prev);
-      if (newSelectedTags.has(id)) {
-        newSelectedTags.delete(id);
-      } else {
-        newSelectedTags.add(id);
-      }
-      return newSelectedTags;
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const updatedCaracteristica: Caracteristica = {
-      nome: nome,
-      descricao: descricao,
-      url_imagem: urlImagem,
-      url_referencia: urlReferencia,
-      tipo: tipo,
-    };
-
-    await updateCaracteristica(id, updatedCaracteristica);
-    await updateAssociationCaracteristicaToTags(id, selectedTags);
-    navigate(navigationDestiny);
-  };
 
   return (
     <div className="h-100 mt-4">

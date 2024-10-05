@@ -17,23 +17,30 @@ export interface AlternativeCreateProps {
   initialTags?: Set<number>;
 }
 
-export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({ 
-  id, 
-  tags, 
-  eventKey, 
-  placeholder, 
-  onRemove, 
-  onTextChange, 
-  onTagChange, 
+export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
+  id,
+  tags,
+  eventKey,
+  placeholder,
+  onRemove,
+  onTextChange,
+  onTagChange,
   initialText = "",
-  initialTags = new Set()
+  initialTags = new Set(),
 }) => {
-  const [selectedTags, setSelectedTags] = useState<Set<number>>(initialTags);
   const [text, setText] = useState(initialText);
+  const [selectedTags, setSelectedTags] = useState<Set<number>>(initialTags);
 
+  // Construtor do Componente
   useEffect(() => {
     onTagChange(id, selectedTags);
   }, [id, selectedTags, onTagChange]);
+
+  // Funções de Manipulação da Alternativa
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setText(event.target.value);
+    onTextChange(id, event.target.value);
+  };
 
   const handleTagToggle = (tagId: number) => {
     setSelectedTags((prev) => {
@@ -47,21 +54,11 @@ export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
     });
   };
 
-  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setText(event.target.value);
-    onTextChange(id, event.target.value);
-  };
-
   return (
     <Card>
       <Card.Header>
         <Form.Group className="d-flex gap-1">
-          <Form.Control 
-            type="text" 
-            placeholder={placeholder} 
-            value={text} 
-            onChange={handleTextChange} 
-          />
+          <Form.Control type="text" placeholder={placeholder} value={text} onChange={handleTextChange} />
           <CustomToggle eventKey={eventKey}></CustomToggle>
           <Button variant="danger" className="ml-2" onClick={onRemove}>
             <FontAwesomeIcon icon={faTrash} />
@@ -72,11 +69,7 @@ export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
         <Container className="mt-2">
           <Form.Group>
             <Form.Label>Tags para Selecionar</Form.Label>
-            <TagSelection 
-              tags={tags} 
-              selectedTags={selectedTags} 
-              handleTagToggle={handleTagToggle} 
-            />
+            <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
           </Form.Group>
         </Container>
       </Accordion.Collapse>
