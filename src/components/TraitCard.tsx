@@ -20,29 +20,46 @@ const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
               <Card className="mb-3" style={{ maxWidth: "540px", height: "300px" }}>
                 <Row noGutters style={{ height: "100%" }}>
                   <Col md={7} className="d-flex flex-column">
-                    <Card.Body>
-                      <Card.Title>{caracteristica.nome}</Card.Title>
-                      <h6>Descrição</h6>
+                    <Card.Body className="d-flex flex-column justify-content-between">
+                      <div>
+                        <Card.Title>{caracteristica.nome}</Card.Title>
+                        <h6>Descrição</h6>
+                        <div
+                          style={{
+                            overflowY: "auto",
+                            maxHeight: "150px",
+                            scrollbarWidth: "thin", // Firefox
+                            msOverflowStyle: "none", // IE and Edge
+                          }}
+                        >
+                          <Card.Text>{caracteristica.descricao}</Card.Text>
+                        </div>
+                      </div>
                       <div
                         style={{
+                          maxHeight: "50px",
                           overflowY: "auto",
-                          maxHeight: "200px",
-                          scrollbarWidth: "none", // Firefox
-                          msOverflowStyle: "none", // IE and Edge
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "5px",
                         }}
                       >
-                        <Card.Text>{caracteristica.descricao}</Card.Text>
+                        {caracteristica.tags.map((tag) => (
+                          <TagComponent key={tag.id_tag} selectable={false} tag={tag} />
+                        ))}
                       </div>
-                      {caracteristica.tags.map((tag) => (
-                        <TagComponent key={tag.id_tag} selectable={false} tag={tag} />
-                      ))}
                     </Card.Body>
                   </Col>
                   <Col md={5}>
                     <Card.Img
                       src={caracteristica.url_imagem || silhueta}
                       alt={caracteristica.nome}
-                      style={{ objectFit: "cover", height: "100%"}}
+                      style={{
+                        objectFit: "cover",
+                        height: "100%",
+                        width: "100%",
+                        overflow: "hidden",
+                      }}
                     />
                   </Col>
                 </Row>
