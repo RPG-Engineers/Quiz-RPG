@@ -2,6 +2,7 @@ import React from "react";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { TagComponent } from "./TagComponent";
+import silhueta from "../assets/img/silhueta.png";
 
 interface TraitCardProps {
   tipo: TipoCaracteristica;
@@ -18,7 +19,7 @@ const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
             <Col key={caracteristica.id_caracteristica} md={4} className="mb-4">
               <Card className="mb-3" style={{ maxWidth: "540px", height: "300px" }}>
                 <Row noGutters style={{ height: "100%" }}>
-                  <Col md={8} className="d-flex flex-column">
+                  <Col md={7} className="d-flex flex-column">
                     <Card.Body>
                       <Card.Title>{caracteristica.nome}</Card.Title>
                       <h6>Descrição</h6>
@@ -37,11 +38,11 @@ const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
                       ))}
                     </Card.Body>
                   </Col>
-                  <Col md={4}>
+                  <Col md={5}>
                     <Card.Img
-                      src={caracteristica.url_imagem}
+                      src={caracteristica.url_imagem || silhueta}
                       alt={caracteristica.nome}
-                      style={{ objectFit: "cover", height: "100%" }}
+                      style={{ objectFit: "cover", height: "100%"}}
                     />
                   </Col>
                 </Row>
