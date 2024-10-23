@@ -1,6 +1,7 @@
 .search-bar {
-  border-radius: 50px;
+  width: 80%;
   /* Bordas arredondadas */
+  border-radius: 50px;
 }
 
 .search-bar .form-control {
