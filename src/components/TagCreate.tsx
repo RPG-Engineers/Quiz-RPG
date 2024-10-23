@@ -1,6 +1,6 @@
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Tag } from "../types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { addTag } from "../database/tag";
 
 interface TagCreateProps {
@@ -10,6 +10,16 @@ interface TagCreateProps {
 const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
   const [nome, setNome] = useState("");
   const [cor, setCor] = useState("#000000");
+
+  // Gera cor aleatória
+  const generateRandomColor = (): string => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
 
   // Salvar Tag
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,10 +31,15 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
 
     await addTag(novaTag);
     setNome("");
-    setCor("#000000");
+    setCor(generateRandomColor()); // Gera nova cor após criação
 
     fetchData();
   };
+  
+  // Construtor do componente
+  useEffect(() => {
+    setCor(generateRandomColor());
+  }, []);
 
   return (
     <Container className="h-100 mt-3">
