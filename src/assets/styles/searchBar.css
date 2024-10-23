@@ -1,0 +1,19 @@
+.search-bar {
+  border-radius: 50px;
+  /* Bordas arredondadas */
+}
+
+.search-bar .form-control {
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+
+.search-bar .btn {
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  color: white;
+  background-color: black;
+  border-color: black;
+  opacity: 1;
+  pointer-events: none;
+}

@@ -1,9 +1,10 @@
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form, FormControl, InputGroup, Row } from "react-bootstrap";
-import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
+import { Button, Container, FormControl, InputGroup, Row } from "react-bootstrap";
 import TraitCard from "../components/TraitCard";
-import "../assets/styles/SearchBarStyles.css";
 import { filtrarCaracteristicas, getCaracteristicas } from "../database/caracteristica";
+import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 
 const Caracteristicas: React.FC = () => {
   const [caracteristicas, setCaracteristicas] = useState<CaracteristicaWithTags[]>([]);
@@ -13,12 +14,12 @@ const Caracteristicas: React.FC = () => {
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTermoBusca(event.target.value);
   };
-  
+
   // Filtra pelo Tipo
   const filtrarPorTipo = (tipo: TipoCaracteristica) => {
     return caracteristicas.filter((caracteristica) => caracteristica.tipo === tipo);
   };
-  
+
   // Construtor do Componente
   useEffect(() => {
     const fetchCaracteristicas = async () => {
@@ -38,15 +39,18 @@ const Caracteristicas: React.FC = () => {
 
   return (
     <>
-      <Container>
-        <Form className="my-4">
-          <Row className="align-items-center justify-content-center">
-            <InputGroup className="search-bar">
-              <FormControl type="text" placeholder="Digite sua pesquisa" value={termoBusca} onChange={handleSearch} />
-              <Button variant="outline-secondary">Pesquisar</Button>
-            </InputGroup>
-          </Row>
-        </Form>
+      <Container className="my-4">
+        <Row className="align-items-center justify-content-center">
+          <InputGroup className="search-bar">
+            <Button disabled><FontAwesomeIcon color="white" stroke="white" strokeWidth={20} icon={faMagnifyingGlass} /></Button>
+            <FormControl
+              type="text"
+              placeholder="Digite uma Tag ou uma Característica para pesquisar"
+              value={termoBusca}
+              onChange={handleSearch}
+            />
+          </InputGroup>
+        </Row>
       </Container>
 
       <Container fluid className="d-flex justify-content-start">
