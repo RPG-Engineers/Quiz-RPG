@@ -2,6 +2,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { Tag } from "../types";
 import { useState, useEffect } from "react";
 import { addTag } from "../database/tag";
+import { useToast } from "../context/ToastContext";
 
 interface TagCreateProps {
   fetchData: () => Promise<void>;
@@ -10,6 +11,7 @@ interface TagCreateProps {
 const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
   const [nome, setNome] = useState("");
   const [cor, setCor] = useState("#000000");
+  const { showToast } = useToast();
 
   // Gera cor aleatória
   const generateRandomColor = (): string => {
@@ -29,13 +31,23 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
       cor,
     };
 
-    await addTag(novaTag);
-    setNome("");
-    setCor(generateRandomColor()); // Gera nova cor após criação
+    if (nome.trim() === "") {
+      showToast("Nome da tag não pode ser vazio!", "danger");
+    } else {
+      try {
+        await addTag(novaTag);
+        showToast("Tag adicionada com sucesso!", "success");
+      } catch (error) {
+        showToast("Não foi possível adicionar, a tag já existe", "danger");
+      }
 
-    fetchData();
+      setNome("");
+      setCor(generateRandomColor());
+
+      fetchData();
+    }
   };
-  
+
   // Construtor do componente
   useEffect(() => {
     setCor(generateRandomColor());
@@ -70,7 +82,7 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
 
               <h5 className="mt-4">Pré-visualização:</h5>
               <span id="preview" className="badge" style={{ backgroundColor: cor, color: "white" }}>
-                {nome || "Nome do Badge"}
+                {nome || "Nome da Tag"}
               </span>
             </Card.Body>
           </Card>
