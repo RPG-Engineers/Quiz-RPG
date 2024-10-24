@@ -91,3 +91,9 @@ export interface ToastType {
 }
 
 export type ToastVariant = 'success' | 'warning' | 'danger';
+
+// Form Errors
+
+export interface FormErrors {
+  [key: string]: boolean;
+}

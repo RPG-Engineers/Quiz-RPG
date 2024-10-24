@@ -1,16 +1,22 @@
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import { Tag } from "../types";
+import { FormErrors, Tag } from "../types";
 import { useState, useEffect } from "react";
 import { addTag } from "../database/tag";
 import { useToast } from "../context/ToastContext";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface TagCreateProps {
   fetchData: () => Promise<void>;
 }
 
 const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
-  const [nome, setNome] = useState("");
-  const [cor, setCor] = useState("#000000");
+  const [newTag, setNewTag] = useState<Tag>({
+    nome: "",
+    cor: "#000000",
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    nome: false,
+  });
   const { showToast } = useToast();
 
   // Gera cor aleatória
@@ -26,31 +32,27 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
   // Salvar Tag
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const novaTag: Tag = {
-      nome,
-      cor,
-    };
 
-    if (nome.trim() === "") {
+    // Validação dos campos
+    if (newTag.nome.trim() === "") {
+      setFormErrors({ ...formErrors, nome: true }); // Marca o campo do nome com erro
       showToast("Nome da tag não pode ser vazio!", "danger");
     } else {
       try {
-        await addTag(novaTag);
+        await addTag(newTag);
         showToast("Tag adicionada com sucesso!", "success");
+        setNewTag({ nome: "", cor: generateRandomColor() });
+        fetchData();
       } catch (error) {
+        setFormErrors({ ...formErrors, nome: true });
         showToast("Não foi possível adicionar, a tag já existe", "danger");
       }
-
-      setNome("");
-      setCor(generateRandomColor());
-
-      fetchData();
     }
   };
 
   // Construtor do componente
   useEffect(() => {
-    setCor(generateRandomColor());
+    setNewTag((prevTag) => ({ ...prevTag, cor: generateRandomColor() }));
   }, []);
 
   return (
@@ -60,19 +62,30 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
           <Card>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="nome">
-                  <Form.Label>Nome</Form.Label>
+                <Form.Group controlId="tagNome">
+                  <Form.Label>Nome da Tag</Form.Label>
                   <Form.Control
                     type="text"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
+                    name="nome"
+                    value={newTag.nome}
+                    onChange={(e) =>
+                      handleInputChange(e as React.ChangeEvent<HTMLInputElement>, newTag, setNewTag, formErrors, setFormErrors)
+                    }
                     placeholder="Digite o nome da tag"
+                    className={formErrors.nome ? "is-invalid" : ""}
                   />
                 </Form.Group>
 
-                <Form.Group controlId="cor" className="mt-2">
-                  <Form.Label>Cor</Form.Label>
-                  <Form.Control type="color" value={cor} onChange={(e) => setCor(e.target.value)} />
+                <Form.Group controlId="tagCor" className="mt-2">
+                  <Form.Label>Cor da Tag</Form.Label>
+                  <Form.Control
+                    type="color"
+                    name="cor"
+                    value={newTag.cor}
+                    onChange={(e) =>
+                      handleInputChange(e as React.ChangeEvent<HTMLInputElement>, newTag, setNewTag, formErrors, setFormErrors)
+                    }
+                  />
                 </Form.Group>
 
                 <Button type="submit" variant="success" className="mt-3">
@@ -81,8 +94,8 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
               </Form>
 
               <h5 className="mt-4">Pré-visualização:</h5>
-              <span id="preview" className="badge" style={{ backgroundColor: cor, color: "white" }}>
-                {nome || "Nome da Tag"}
+              <span id="preview" className="badge" style={{ backgroundColor: newTag.cor, color: "white" }}>
+                {newTag.nome || "Nome da Tag"}
               </span>
             </Card.Body>
           </Card>
