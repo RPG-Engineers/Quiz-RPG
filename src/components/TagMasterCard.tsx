@@ -20,11 +20,11 @@ const TagMasterCard: React.FC<TagMasterCardProps> = ({ tag, handleEdit, handleDe
               <span className="badge" style={{ backgroundColor: tag.cor, color: "white" }}>
                 {tag.nome}
               </span>
-              <div>
+              <div className="d-flex gap-2">
                 <Button variant="warning" className="text-white" onClick={() => handleEdit(tag.id_tag!)}>
                   <FontAwesomeIcon icon={faPen} />
                 </Button>
-                <Button variant="danger" className="ml-2" onClick={() => handleDelete(tag.id_tag!)}>
+                <Button variant="danger" onClick={() => handleDelete(tag.id_tag!)}>
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
               </div>

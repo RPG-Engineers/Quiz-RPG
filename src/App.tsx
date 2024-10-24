@@ -19,35 +19,39 @@ import EditarPergunta from "./views/EditarPergunta";
 import EditarQuestionario from "./views/EditarQuestionario";
 import { Resultado } from "./views/Resultado";
 import CriarQuestionario from "./views/CriarQuestionario";
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   useEffect(() => {
     importDefaultData().catch((err) => console.error(err));
   }, []);
+
   return (
-    <Router basename="/Quiz-RPG">
-      <NavbarRPG />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/caracteristicas" element={<Caracteristicas />} />
-        <Route path="/classes" element={<Classes />} />
-        <Route path="/racas" element={<Racas />} />
-        <Route path="/backgrounds" element={<Backgrounds />} />
-        <Route path="/tags" element={<Tags />} />
-        <Route path="/perguntas" element={<Perguntas />} />
-        <Route path="/questionarios" element={<Questionarios />} />
-        <Route path="/responder/:id" element={<Responder />} />
-        <Route path="/editar-tag/:id" element={<EditarTag />} />
-        <Route path="/editar-background/:id" element={<EditarBackground />} />
-        <Route path="/editar-classe/:id" element={<EditarClasse />} />
-        <Route path="/editar-raca/:id" element={<EditarRaca />} />
-        <Route path="/editar-pergunta/:id" element={<EditarPergunta />} />
-        <Route path="/editar-questionario/:id" element={<EditarQuestionario />} />
-        <Route path="/criar-questionario" element={<CriarQuestionario />} />
-        <Route path="/resultado" element={<Resultado />} />
-      </Routes>
-    </Router>
+    <ToastProvider>
+      <Router basename="/Quiz-RPG">
+        <NavbarRPG />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/caracteristicas" element={<Caracteristicas />} />
+          <Route path="/classes" element={<Classes />} />
+          <Route path="/racas" element={<Racas />} />
+          <Route path="/backgrounds" element={<Backgrounds />} />
+          <Route path="/tags" element={<Tags />} />
+          <Route path="/perguntas" element={<Perguntas />} />
+          <Route path="/questionarios" element={<Questionarios />} />
+          <Route path="/responder/:id" element={<Responder />} />
+          <Route path="/editar-tag/:id" element={<EditarTag />} />
+          <Route path="/editar-background/:id" element={<EditarBackground />} />
+          <Route path="/editar-classe/:id" element={<EditarClasse />} />
+          <Route path="/editar-raca/:id" element={<EditarRaca />} />
+          <Route path="/editar-pergunta/:id" element={<EditarPergunta />} />
+          <Route path="/editar-questionario/:id" element={<EditarQuestionario />} />
+          <Route path="/criar-questionario" element={<CriarQuestionario />} />
+          <Route path="/resultado" element={<Resultado />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }
 

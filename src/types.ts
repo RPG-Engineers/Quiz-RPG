@@ -81,3 +81,13 @@ export enum CardType {
   Silver = 'silver',
   Gold = 'gold',
 }
+
+// Toast
+
+export interface ToastType {
+  id: string;
+  message: string;
+  variant: ToastVariant;
+}
+
+export type ToastVariant = 'success' | 'warning' | 'danger';
