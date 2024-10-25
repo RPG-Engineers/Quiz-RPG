@@ -45,31 +45,29 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validação dos campos
+    // Validação do nome
     newTrait.nome = newTrait.nome.trim();
     if (newTrait.nome === "") {
       setFormErrors({ ...formErrors, nome: true });
       showToast(`Nome d${stringTipo} não pode ser vazio!`, "danger");
-    } else {
-      try {
-        const id = await addCaracteristica(newTrait);
-        await associateCaracteristicaToTags(id, selectedTags);
-        setNewTrait({
-          nome: "",
-          descricao: "",
-          url_imagem: "",
-          url_referencia: "",
-          tipo: tipo,
-        });
-        setSelectedTags(new Set());
-        showToast(
-          `${getTipo(tipo).charAt(0).toUpperCase() + getTipo(tipo).slice(1)} adicionada com sucesso!`,
-          "success"
-        );
-        fetchData(tipo);
-      } catch (error) {
-        showToast(`Não foi possível adicionar, erro: ${error}`, "danger");
-      }
+      return;
+    }
+
+    try {
+      const id = await addCaracteristica(newTrait);
+      await associateCaracteristicaToTags(id, selectedTags);
+      setNewTrait({
+        nome: "",
+        descricao: "",
+        url_imagem: "",
+        url_referencia: "",
+        tipo: tipo,
+      });
+      setSelectedTags(new Set());
+      showToast(`${getTipo(tipo).charAt(0).toUpperCase() + getTipo(tipo).slice(1)} adicionada com sucesso!`, "success");
+      fetchData(tipo);
+    } catch (error) {
+      showToast(`Não foi possível adicionar, erro: ${error}`, "danger");
     }
   };
 

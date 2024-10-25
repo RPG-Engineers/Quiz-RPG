@@ -33,21 +33,22 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validação dos campos
+    // Validação do nome
     newTag.nome = newTag.nome.trim();
     if (newTag.nome === "") {
-      setFormErrors({ ...formErrors, nome: true }); // Marca o campo do nome com erro
+      setFormErrors({ ...formErrors, nome: true });
       showToast("Nome da tag não pode ser vazio!", "danger");
-    } else {
-      try {
-        await addTag(newTag);
-        showToast("Tag adicionada com sucesso!", "success");
-        setNewTag({ nome: "", cor: generateRandomColor() });
-        fetchData();
-      } catch (error) {
-        setFormErrors({ ...formErrors, nome: true });
-        showToast("Não foi possível adicionar, a tag já existe", "danger");
-      }
+      return;
+    }
+
+    try {
+      await addTag(newTag);
+      showToast("Tag adicionada com sucesso!", "success");
+      setNewTag({ nome: "", cor: generateRandomColor() });
+      fetchData();
+    } catch (error) {
+      setFormErrors({ ...formErrors, nome: true });
+      showToast("Não foi possível adicionar, a tag já existe", "danger");
     }
   };
 
@@ -70,7 +71,13 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
                     name="nome"
                     value={newTag.nome}
                     onChange={(e) =>
-                      handleInputChange(e as React.ChangeEvent<HTMLInputElement>, newTag, setNewTag, formErrors, setFormErrors)
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        newTag,
+                        setNewTag,
+                        formErrors,
+                        setFormErrors
+                      )
                     }
                     placeholder="Digite o nome da tag"
                     className={formErrors.nome ? "is-invalid" : ""}
@@ -84,7 +91,13 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
                     name="cor"
                     value={newTag.cor}
                     onChange={(e) =>
-                      handleInputChange(e as React.ChangeEvent<HTMLInputElement>, newTag, setNewTag, formErrors, setFormErrors)
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        newTag,
+                        setNewTag,
+                        formErrors,
+                        setFormErrors
+                      )
                     }
                   />
                 </Form.Group>
