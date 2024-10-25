@@ -38,22 +38,28 @@ export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
   // Salvar Questionário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validação do nome do questionário
     newQuiz.nome = newQuiz.nome.trim();
     if (newQuiz.nome === "") {
       setFormErrors({ ...formErrors, nome: true });
       showToast(`Nome do questionário não pode ser vazio!`, "danger");
-    } else {
-      try {
-        const id = await addQuestionario(newQuiz);
-        await associateQuestionarioToPerguntas(id, selectedPerguntas);
-        showToast(
-          "Questionário criado com sucesso",
-          "success"
-        );
-        navigate(`/questionarios`);
-      } catch (error) {
-        showToast(`Não foi possível criar, erro: ${error}`, "danger");
-      }
+      return;
+    }
+
+    // Validação do número de perguntas
+    if (selectedPerguntas.size < 1) {
+      showToast("O questionário deve ter pelo menos uma pergunta.", "danger");
+      return;
+    }
+
+    try {
+      const id = await addQuestionario(newQuiz);
+      await associateQuestionarioToPerguntas(id, selectedPerguntas);
+      showToast("Questionário criado com sucesso", "success");
+      navigate(`/questionarios`);
+    } catch (error) {
+      showToast(`Não foi possível criar, erro: ${error}`, "danger");
     }
   };
 
