@@ -52,13 +52,13 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
   // Salvar Característica
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedName = updatedTrait.nome.trim();
-    if (trimmedName === "") {
+    updatedTrait.nome = updatedTrait.nome.trim();
+    if (updatedTrait.nome === "") {
       setFormErrors({ ...formErrors, nome: true });
       showToast(`Nome d${stringTipo} não pode ser vazio!`, "danger");
     } else {
       try {
-        await updateCaracteristica(id, { ...updatedTrait, nome: trimmedName });
+        await updateCaracteristica(id, updatedTrait);
         await updateAssociationCaracteristicaToTags(id, selectedTags);
         showToast(
           `${getTipo(tipo).charAt(0).toUpperCase() + getTipo(tipo).slice(1)} atualizada com sucesso!`,
@@ -66,7 +66,7 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
         );
         navigate(navigationDestiny);
       } catch (error) {
-        showToast(`Não foi possível adicionar, erro: ${error}`, "danger");
+        showToast(`Não foi possível atualizar, erro: ${error}`, "danger");
       }
     }
   };
