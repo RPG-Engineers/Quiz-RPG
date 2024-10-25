@@ -10,7 +10,7 @@ interface TagSelectionProps {
 
 export const TagSelection: React.FC<TagSelectionProps> = ({ tags, selectedTags, handleTagToggle }) => {
   return (
-    <div className="d-flex gap-1 badge-container mt-1">
+    <div className="d-flex gap-1 flex-wrap badge-container m-1">
       {tags.map((tag) => (
         <TagComponent
           key={tag.id_tag}
