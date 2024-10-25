@@ -46,12 +46,13 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
     e.preventDefault();
 
     // Validação dos campos
-    if (newTrait.nome.trim() === "") {
+    const trimmedName = newTrait.nome.trim();
+    if (trimmedName === "") {
       setFormErrors({ ...formErrors, nome: true });
       showToast(`Nome d${stringTipo} não pode ser vazio!`, "danger");
     } else {
       try {
-        const id = await addCaracteristica(newTrait);
+        const id = await addCaracteristica({ ...newTrait, nome: trimmedName });
         await associateCaracteristicaToTags(id, selectedTags);
         setNewTrait({
           nome: "",
@@ -60,11 +61,11 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
           url_referencia: "",
           tipo: tipo,
         });
+        setSelectedTags(new Set());
         showToast(
           `${getTipo(tipo).charAt(0).toUpperCase() + getTipo(tipo).slice(1)} adicionada com sucesso!`,
           "success"
         );
-        setSelectedTags(new Set());
         fetchData(tipo);
       } catch (error) {
         showToast(`Não foi possível adicionar, erro: ${error}`, "danger");
@@ -112,7 +113,8 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                       setNewTrait,
                       formErrors,
                       setFormErrors
-                    )}
+                    )
+                  }
                   placeholder={`Breve descrição d${stringTipo}`}
                 />
               </Form.Group>
@@ -130,7 +132,8 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                       setNewTrait,
                       formErrors,
                       setFormErrors
-                    )}
+                    )
+                  }
                   placeholder="Digite a URL da imagem"
                 />
               </Form.Group>
@@ -148,7 +151,8 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                       setNewTrait,
                       formErrors,
                       setFormErrors
-                    )}
+                    )
+                  }
                   placeholder="Digite a URL para referência"
                 />
               </Form.Group>

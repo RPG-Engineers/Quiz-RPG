@@ -34,12 +34,13 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
     e.preventDefault();
 
     // Validação dos campos
-    if (newTag.nome.trim() === "") {
+    const trimmedName = newTag.nome.trim();
+    if (trimmedName === "") {
       setFormErrors({ ...formErrors, nome: true }); // Marca o campo do nome com erro
       showToast("Nome da tag não pode ser vazio!", "danger");
     } else {
       try {
-        await addTag(newTag);
+        await addTag({ ...newTag, nome: trimmedName });
         showToast("Tag adicionada com sucesso!", "success");
         setNewTag({ nome: "", cor: generateRandomColor() });
         fetchData();

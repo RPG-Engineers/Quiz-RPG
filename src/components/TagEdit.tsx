@@ -1,36 +1,50 @@
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import { Tag } from "../types";
+import { FormErrors, Tag } from "../types";
 import { useEffect, useState } from "react";
 import { getTagById, updateTag } from "../database/tag";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface TagEditProps {
   id: number;
 }
 
 const TagEdit: React.FC<TagEditProps> = ({ id }) => {
-  const [nome, setNome] = useState("");
-  const [cor, setCor] = useState("#000000");
+  const [updatedTag, setUpdatedTag] = useState<Tag>({
+    nome: "",
+    cor: "#000000",
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    nome: false,
+  });
   const navigate = useNavigate();
-  
+  const { showToast } = useToast();
+
   // Salvar Tag
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedTag: Tag = {
-      nome,
-      cor,
-    };
-    
-    await updateTag(id, updatedTag);
-    navigate("/tags");
+    const trimmedName = updatedTag.nome.trim();
+    if (trimmedName === "") {
+      setFormErrors({ ...formErrors, nome: true });
+      showToast("Nome da tag não pode ser vazio!", "danger");
+    } else {
+      try {
+        await updateTag(id, { ...updatedTag, nome: trimmedName });
+        showToast("Tag atualizada com sucesso!", "success");
+        navigate("/tags");
+      } catch (error) {
+        setFormErrors({ ...formErrors, nome: true });
+        showToast("Não foi possível adicionar, a tag já existe", "danger");
+      }
+    }
   };
-  
+
   // Construtor do Componente
   useEffect(() => {
     const fetchData = async () => {
       const tag = await getTagById(id);
-      setNome(tag.nome);
-      setCor(tag.cor);
+      setUpdatedTag(tag);
     };
 
     fetchData();
@@ -47,15 +61,38 @@ const TagEdit: React.FC<TagEditProps> = ({ id }) => {
                   <Form.Label>Nome</Form.Label>
                   <Form.Control
                     type="text"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
+                    name="nome"
+                    value={updatedTag.nome}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        updatedTag,
+                        setUpdatedTag,
+                        formErrors,
+                        setFormErrors
+                      )
+                    }
                     placeholder="Digite o nome da tag"
+                    className={formErrors.nome ? "is-invalid" : ""}
                   />
                 </Form.Group>
 
                 <Form.Group controlId="cor" className="mt-2">
                   <Form.Label>Cor</Form.Label>
-                  <Form.Control type="color" value={cor} onChange={(e) => setCor(e.target.value)} />
+                  <Form.Control
+                    type="color"
+                    name="cor"
+                    value={updatedTag.cor}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        updatedTag,
+                        setUpdatedTag,
+                        formErrors,
+                        setFormErrors
+                      )
+                    }
+                  />
                 </Form.Group>
 
                 <Button type="submit" variant="success" className="mt-3">
@@ -64,8 +101,8 @@ const TagEdit: React.FC<TagEditProps> = ({ id }) => {
               </Form>
 
               <h5 className="mt-4">Pré-visualização:</h5>
-              <span id="preview" className="badge" style={{ backgroundColor: cor, color: "white" }}>
-                {nome || "Nome do Badge"}
+              <span id="preview" className="badge" style={{ backgroundColor: updatedTag.cor, color: "white" }}>
+                {updatedTag.nome || "Nome do Badge"}
               </span>
             </Card.Body>
           </Card>

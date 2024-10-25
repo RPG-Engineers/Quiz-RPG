@@ -5,10 +5,13 @@ import {
   updateAssociationCaracteristicaToTags,
 } from "../database/caracteristica";
 import { getTags, getTagsByCaracteristicaId } from "../database/tag";
-import { Tag, Caracteristica, TipoCaracteristica } from "../types";
+import { Tag, Caracteristica, TipoCaracteristica, FormErrors } from "../types";
 import { useNavigate } from "react-router-dom";
 import { TagSelection } from "./TagSelection";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { useToast } from "../context/ToastContext";
+import { getTipo } from "../utils/util";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface TraitEditProps {
   id: number;
@@ -17,13 +20,21 @@ interface TraitEditProps {
 }
 
 const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) => {
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [urlImagem, setUrlImagem] = useState("");
-  const [urlReferencia, setUrlReferencia] = useState("");
+  const [updatedTrait, setUpdatedTrait] = useState<Caracteristica>({
+    nome: "",
+    descricao: "",
+    url_imagem: "",
+    url_referencia: "",
+    tipo: tipo,
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    nome: false,
+  });
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
+  const stringTipo = getTipo(tipo) == "background" ? "o background" : "a " + getTipo(tipo);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   // Manipulação da Tag
   const handleTagToggle = (id: number) => {
@@ -41,27 +52,30 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
   // Salvar Característica
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedCaracteristica: Caracteristica = {
-      nome: nome,
-      descricao: descricao,
-      url_imagem: urlImagem,
-      url_referencia: urlReferencia,
-      tipo: tipo,
-    };
-
-    await updateCaracteristica(id, updatedCaracteristica);
-    await updateAssociationCaracteristicaToTags(id, selectedTags);
-    navigate(navigationDestiny);
+    const trimmedName = updatedTrait.nome.trim();
+    if (trimmedName === "") {
+      setFormErrors({ ...formErrors, nome: true });
+      showToast(`Nome d${stringTipo} não pode ser vazio!`, "danger");
+    } else {
+      try {
+        await updateCaracteristica(id, { ...updatedTrait, nome: trimmedName });
+        await updateAssociationCaracteristicaToTags(id, selectedTags);
+        showToast(
+          `${getTipo(tipo).charAt(0).toUpperCase() + getTipo(tipo).slice(1)} atualizada com sucesso!`,
+          "success"
+        );
+        navigate(navigationDestiny);
+      } catch (error) {
+        showToast(`Não foi possível adicionar, erro: ${error}`, "danger");
+      }
+    }
   };
 
   // Construtor do Componente
   useEffect(() => {
-    const fetchBackgroundData = async () => {
+    const fetchData = async () => {
       const caracteristica = await getCaracteristicaById(id);
-      setNome(caracteristica.nome);
-      setDescricao(caracteristica.descricao);
-      setUrlImagem(caracteristica.url_imagem);
-      setUrlReferencia(caracteristica.url_referencia);
+      setUpdatedTrait(caracteristica);
       const caracteristicaTags = await getTagsByCaracteristicaId(id);
       const tagIds = new Set(
         caracteristicaTags
@@ -74,7 +88,7 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
       setTags(tagsFromDB);
     };
 
-    fetchBackgroundData();
+    fetchData();
   }, [id]);
 
   return (
@@ -89,9 +103,19 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
                     <Form.Label>Nome</Form.Label>
                     <Form.Control
                       type="text"
-                      value={nome}
-                      onChange={(e) => setNome(e.target.value)}
-                      placeholder="Digite o nome do background"
+                      name="nome"
+                      value={updatedTrait.nome}
+                      onChange={(e) =>
+                        handleInputChange(
+                          e as React.ChangeEvent<HTMLInputElement>,
+                          updatedTrait,
+                          setUpdatedTrait,
+                          formErrors,
+                          setFormErrors
+                        )
+                      }
+                      className={formErrors.nome ? "is-invalid" : ""}
+                      placeholder={`Digite o nome d${stringTipo}`}
                     />
                   </Form.Group>
 
@@ -100,8 +124,17 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
                     <Form.Control
                       as="textarea"
                       rows={2}
-                      value={descricao}
-                      onChange={(e) => setDescricao(e.target.value)}
+                      name="descricao"
+                      value={updatedTrait.descricao}
+                      onChange={(e) =>
+                        handleInputChange(
+                          e as React.ChangeEvent<HTMLInputElement>,
+                          updatedTrait,
+                          setUpdatedTrait,
+                          formErrors,
+                          setFormErrors
+                        )
+                      }
                       placeholder="Breve descrição do background"
                     />
                   </Form.Group>
@@ -110,8 +143,17 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
                     <Form.Label>URL da Imagem</Form.Label>
                     <Form.Control
                       type="text"
-                      value={urlImagem}
-                      onChange={(e) => setUrlImagem(e.target.value)}
+                      name="url_imagem"
+                      value={updatedTrait.url_imagem}
+                      onChange={(e) =>
+                        handleInputChange(
+                          e as React.ChangeEvent<HTMLInputElement>,
+                          updatedTrait,
+                          setUpdatedTrait,
+                          formErrors,
+                          setFormErrors
+                        )
+                      }
                       placeholder="Digite a URL da imagem"
                     />
                   </Form.Group>
@@ -120,8 +162,17 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
                     <Form.Label>URL para Referência</Form.Label>
                     <Form.Control
                       type="text"
-                      value={urlReferencia}
-                      onChange={(e) => setUrlReferencia(e.target.value)}
+                      name="url_referencia"
+                      value={updatedTrait.url_referencia}
+                      onChange={(e) =>
+                        handleInputChange(
+                          e as React.ChangeEvent<HTMLInputElement>,
+                          updatedTrait,
+                          setUpdatedTrait,
+                          formErrors,
+                          setFormErrors
+                        )
+                      }
                       placeholder="Digite a URL para referência"
                     />
                   </Form.Group>
