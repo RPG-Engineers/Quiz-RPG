@@ -1,7 +1,8 @@
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { Questionario } from "../types";
+import { useState } from "react";
 
 interface QuizMasterCardProps {
   questionario: Questionario
@@ -12,6 +13,20 @@ interface QuizMasterCardProps {
 }
 
 export const QuizMasterCard: React.FC<QuizMasterCardProps> = ({ questionario, onSelect, handleStart, handleEdit, handleDelete }) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Função para abrir o modal
+  const openDeleteModal = () => setShowDeleteModal(true);
+
+  // Função para fechar o modal
+  const closeDeleteModal = () => setShowDeleteModal(false);
+
+  // Função para confirmar a exclusão
+  const confirmDelete = async () => {
+    await handleDelete(questionario.id_questionario!);
+    closeDeleteModal(); // Fecha o modal após a exclusão
+  };
+
   return (
     <Container className="h-100 mt-3">
       <Row className="align-items-center h-100">
@@ -33,7 +48,7 @@ export const QuizMasterCard: React.FC<QuizMasterCardProps> = ({ questionario, on
                 <Button variant="warning" className="mt-2 text-white" onClick={() => handleEdit(questionario.id_questionario!)}>
                   <FontAwesomeIcon icon={faPen} />
                 </Button>
-                <Button variant="danger" className="mt-2" onClick={() => handleDelete(questionario.id_questionario!)}>
+                <Button variant="danger" className="mt-2" onClick={openDeleteModal}>
                   <FontAwesomeIcon icon={faTrash} />
                 </Button>
               </div>
@@ -41,6 +56,24 @@ export const QuizMasterCard: React.FC<QuizMasterCardProps> = ({ questionario, on
           </Card>
         </Col>
       </Row>
+
+      {/* Modal de Confirmação de Exclusão */}
+      <Modal show={showDeleteModal} onHide={closeDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmação de Exclusão</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Tem certeza que deseja excluir o questionário "{questionario.nome}"?<br/><b>Esta ação não pode ser desfeita.</b>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeDeleteModal}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Excluir
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
