@@ -34,7 +34,7 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({ toasts, removeToa
           onClose={() => handleClose(toast.id)}
           className={`mb-3 rounded ${animateOut[toast.id] ? "toast-animate-out" : "toast-animate-in"}`}
           autohide
-          delay={3000}
+          delay={5000}
         >
           <Toast.Header className={`bg-${toast.variant} text-white`}>
             <strong className="me-auto">
