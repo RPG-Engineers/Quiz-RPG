@@ -82,9 +82,9 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
   // Salvar pergunta
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    newQuestion.pergunta = newQuestion.pergunta.trim();
 
     // Verificação se a pergunta está vazia
+    newQuestion.pergunta = newQuestion.pergunta.trim();
     if (newQuestion.pergunta === "") {
       setFormErrors({ ...formErrors, pergunta: true });
       showToast("A pergunta não pode ser vazia!", "danger");
@@ -158,24 +158,22 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
               <Card.Title>Sua Pergunta</Card.Title>
               <Form id="questionForm" onSubmit={handleSubmit}>
                 <Form.Group>
-                  <Form.Group controlId="questionInput">
-                    <Form.Control
-                      type="text"
-                      placeholder="Escreva a pergunta aqui..."
-                      name="pergunta"
-                      value={newQuestion.pergunta}
-                      onChange={(e) =>
-                        handleInputChange(
-                          e as React.ChangeEvent<HTMLInputElement>,
-                          newQuestion,
-                          setNewQuestion,
-                          formErrors,
-                          setFormErrors
-                        )
-                      }
-                      className={formErrors.pergunta ? "is-invalid" : ""}
-                    />
-                  </Form.Group>
+                  <Form.Control
+                    type="text"
+                    placeholder="Escreva a pergunta aqui..."
+                    name="pergunta"
+                    value={newQuestion.pergunta}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        newQuestion,
+                        setNewQuestion,
+                        formErrors,
+                        setFormErrors
+                      )
+                    }
+                    className={formErrors.pergunta ? "is-invalid" : ""}
+                  />
                   <Card.Title className="mt-3">Alternativas</Card.Title>
                   <Accordion className="d-flex flex-column gap-2">
                     {alternativaProps.map((alternativa) => (
@@ -209,9 +207,7 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
         <Modal.Header closeButton>
           <Modal.Title>Alternativas sem Tags</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Algumas alternativas estão sem tags associadas. Deseja continuar?
-        </Modal.Body>
+        <Modal.Body>Algumas alternativas estão sem tags associadas. Deseja continuar?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
