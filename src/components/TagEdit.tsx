@@ -24,18 +24,18 @@ const TagEdit: React.FC<TagEditProps> = ({ id }) => {
   // Salvar Tag
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedName = updatedTag.nome.trim();
-    if (trimmedName === "") {
+    updatedTag.nome = updatedTag.nome.trim();
+    if (updatedTag.nome === "") {
       setFormErrors({ ...formErrors, nome: true });
       showToast("Nome da tag não pode ser vazio!", "danger");
     } else {
       try {
-        await updateTag(id, { ...updatedTag, nome: trimmedName });
+        await updateTag(id, updatedTag);
         showToast("Tag atualizada com sucesso!", "success");
         navigate("/tags");
       } catch (error) {
         setFormErrors({ ...formErrors, nome: true });
-        showToast("Não foi possível adicionar, a tag já existe", "danger");
+        showToast("Não foi possível atualizar, a tag já existe", "danger");
       }
     }
   };

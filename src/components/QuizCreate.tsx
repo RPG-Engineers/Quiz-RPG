@@ -2,16 +2,25 @@ import { useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { addQuestionario, associateQuestionarioToPerguntas } from "../database/questionario";
-import { Pergunta, Questionario } from "../types";
+import { FormErrors, Pergunta, Questionario } from "../types";
+import { useToast } from "../context/ToastContext";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface QuizCreateProps {
   perguntas: Pergunta[];
 }
 
 export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
-  const [quizName, setQuizName] = useState("");
+  const [newQuiz, setNewQuiz] = useState<Questionario>({
+    nome: "",
+    default: false,
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    nome: false,
+  });
   const [selectedPerguntas, setSelectedPerguntas] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   // Selecionar Pergunta
   const handleCheckboxChange = (id: number) => {
@@ -29,15 +38,23 @@ export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
   // Salvar Questionário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const quiz: Questionario = {
-      nome: quizName,
-      default: false,
-    };
-
-    const id = await addQuestionario(quiz);
-    await associateQuestionarioToPerguntas(id, selectedPerguntas);
-    navigate(`/questionarios`);
+    newQuiz.nome = newQuiz.nome.trim();
+    if (newQuiz.nome === "") {
+      setFormErrors({ ...formErrors, nome: true });
+      showToast(`Nome do questionário não pode ser vazio!`, "danger");
+    } else {
+      try {
+        const id = await addQuestionario(newQuiz);
+        await associateQuestionarioToPerguntas(id, selectedPerguntas);
+        showToast(
+          "Questionário criado com sucesso",
+          "success"
+        );
+        navigate(`/questionarios`);
+      } catch (error) {
+        showToast(`Não foi possível criar, erro: ${error}`, "danger");
+      }
+    }
   };
 
   return (
@@ -52,7 +69,18 @@ export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
                   <Form.Control
                     type="text"
                     placeholder="Digite o nome do questionário"
-                    onChange={(e) => setQuizName(e.target.value)}
+                    name="nome"
+                    value={newQuiz.nome}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        newQuiz,
+                        setNewQuiz,
+                        formErrors,
+                        setFormErrors
+                      )
+                    }
+                    className={formErrors.nome ? "is-invalid" : ""}
                   />
                 </Form.Group>
                 <Form.Group className="mt-3">

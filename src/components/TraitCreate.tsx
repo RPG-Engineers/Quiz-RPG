@@ -46,13 +46,13 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
     e.preventDefault();
 
     // Validação dos campos
-    const trimmedName = newTrait.nome.trim();
-    if (trimmedName === "") {
+    newTrait.nome = newTrait.nome.trim();
+    if (newTrait.nome === "") {
       setFormErrors({ ...formErrors, nome: true });
       showToast(`Nome d${stringTipo} não pode ser vazio!`, "danger");
     } else {
       try {
-        const id = await addCaracteristica({ ...newTrait, nome: trimmedName });
+        const id = await addCaracteristica(newTrait);
         await associateCaracteristicaToTags(id, selectedTags);
         setNewTrait({
           nome: "",

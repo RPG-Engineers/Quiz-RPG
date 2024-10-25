@@ -7,18 +7,26 @@ import {
   updateAssociationQuestionarioToPerguntas,
   updateQuestionario,
 } from "../database/questionario";
-import { Pergunta, Questionario, QuestionarioWithPerguntas } from "../types";
+import { FormErrors, Pergunta, Questionario, QuestionarioWithPerguntas } from "../types";
+import { useToast } from "../context/ToastContext";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface QuizEditProps {
   id: number;
-  navigationDestiny: string;
 }
 
-export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => {
-  const [quiz, setQuiz] = useState<Questionario>();
+export const QuizEdit: React.FC<QuizEditProps> = ({ id }) => {
+  const [quiz, setQuiz] = useState<Questionario>({
+    nome: "",
+    default: false,
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    nome: false,
+  });
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [selectedPerguntas, setSelectedPerguntas] = useState<Set<number>>(new Set());
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   // Selecionar Pergunta
   const handleCheckboxChange = (id: number) => {
@@ -38,14 +46,23 @@ export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => 
     e.preventDefault();
 
     const updatedQuiz: QuestionarioWithPerguntas = {
-      nome: quiz!.nome,
-      default: quiz!.default,
+      nome: quiz.nome.trim(),
+      default: quiz.default,
       perguntas: perguntas.filter((pergunta) => selectedPerguntas.has(pergunta.id_pergunta!)),
     };
-
-    await updateQuestionario(id, updatedQuiz);
-    await updateAssociationQuestionarioToPerguntas(id, selectedPerguntas);
-    navigate(navigationDestiny);
+    if (updatedQuiz.nome === "") {
+      setFormErrors({ ...formErrors, nome: true });
+      showToast(`Nome do questionário não pode ser vazio!`, "danger");
+    } else {
+      try {
+        await updateQuestionario(id, updatedQuiz);
+        await updateAssociationQuestionarioToPerguntas(id, selectedPerguntas);
+        showToast("Questionário atualizado com sucesso", "success");
+        navigate("/questionarios");
+      } catch (error) {
+        showToast(`Não foi possível atualizar, erro: ${error}`, "danger");
+      }
+    }
   };
 
   // Construtor do Componente
@@ -79,8 +96,18 @@ export const QuizEdit: React.FC<QuizEditProps> = ({ id, navigationDestiny }) => 
                   <Form.Control
                     type="text"
                     placeholder="Digite o nome do questionário"
-                    value={quiz?.nome || ""}
-                    onChange={(e) => setQuiz((prev) => prev && { ...prev, nome: e.target.value })}
+                    name="nome"
+                    value={quiz.nome}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        quiz,
+                        setQuiz,
+                        formErrors,
+                        setFormErrors
+                      )
+                    }
+                    className={formErrors.nome ? "is-invalid" : ""}
                   />
                 </Form.Group>
                 <Form.Group className="mt-3">
