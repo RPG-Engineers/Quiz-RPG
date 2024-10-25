@@ -14,7 +14,7 @@ const Racas: React.FC = () => {
 
   // Editar Característica
   const handleEdit = (id: number) => {
-    navigate(`/editar-background/${id}`);
+    navigate(`/editar-raca/${id}`);
   };
 
   // Deletar Característica
