@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Container, Row, Col, Card, Form, Button, Accordion } from "react-bootstrap";
+import { Container, Row, Col, Card, Form, Button, Accordion, Modal } from "react-bootstrap";
 import { AlternativeCreate, AlternativeCreateProps } from "./AlternativeCreate";
 import { v4 as uuidv4 } from "uuid";
 import { getAlternativasByPerguntaId } from "../database/alternativa";
 import { getPerguntaById, updateAssociationPerguntaToAlternativas, updatePergunta } from "../database/pergunta";
-import { AlternativaWithTags, Pergunta, Tag } from "../types";
+import { AlternativaWithTags, FormErrors, Pergunta, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface QuestionEditProps {
   id: number;
@@ -14,10 +16,13 @@ interface QuestionEditProps {
 
 export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
   const [alternativaProps, setAlternativaProps] = useState<AlternativeCreateProps[]>([]);
-  const [questionText, setQuestionText] = useState("");
+  const [updatedQuestion, setUpdatedQuestion] = useState<Pergunta>({ pergunta: "" });
+  const [formErrors, setFormErrors] = useState<FormErrors>({ pergunta: false });
   const [alternativaTexts, setAlternativaTexts] = useState<{ [key: string]: string }>({});
   const [alternativaTags, setAlternativaTags] = useState<{ [key: string]: Set<number> }>({});
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   // Funções de Manipulação de Alternativas
   const handleAddAlternative = () => {
@@ -62,14 +67,37 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
     });
   };
 
-  // Salvar pergunta
+  // Função para salvar a pergunta
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const updatedPegunta: Pergunta = {
-      pergunta: questionText,
-    };
+    // Verificação se a pergunta está vazia
+    updatedQuestion.pergunta = updatedQuestion.pergunta.trim();
+    if (updatedQuestion.pergunta === "") {
+      setFormErrors({ ...formErrors, pergunta: true });
+      showToast("A pergunta não pode ser vazia!", "danger");
+      return;
+    }
 
+    // Verificação se há pelo menos duas alternativas com texto
+    const filledAlternatives = alternativaProps.filter((alt) => alternativaTexts[alt.id]?.trim() ?? "" !== "");
+    if (filledAlternatives.length < 2) {
+      showToast("A pergunta deve ter pelo menos duas alternativas com texto.", "danger");
+      return;
+    }
+
+    // Verificação se existem alternativas sem tags
+    const hasTaglessAlternatives = filledAlternatives.some((alt) => alternativaTags[alt.id]?.size === 0);
+    if (hasTaglessAlternatives) {
+      setShowConfirmation(true);
+      return;
+    }
+
+    submitQuestion();
+  };
+
+  // Função para submeter a pergunta e as alternativas
+  const submitQuestion = async () => {
     const alternativas: AlternativaWithTags[] = alternativaProps.map((alt) => {
       const id_alternativa = isNaN(Number(alt.id)) ? undefined : Number(alt.id);
       return {
@@ -80,16 +108,17 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
       };
     });
 
-    await updatePergunta(id, updatedPegunta);
+    await updatePergunta(id, updatedQuestion);
     await updateAssociationPerguntaToAlternativas(id, alternativas);
     navigate("/perguntas");
+    setShowConfirmation(false);
   };
 
   // Construtor do Componente
   useEffect(() => {
     const fetchData = async () => {
       const pergunta = await getPerguntaById(id);
-      setQuestionText(pergunta.pergunta);
+      setUpdatedQuestion(pergunta);
       const alternativasWithTags = await getAlternativasByPerguntaId(id);
       const alternativasTexts: { [key: string]: string } = {};
       const alternativasTags: { [key: string]: Set<number> } = {};
@@ -131,14 +160,22 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
               <Card.Title>Sua Pergunta</Card.Title>
               <Form id="questionForm" onSubmit={handleSubmit}>
                 <Form.Group>
-                  <Form.Group controlId="questionInput">
-                    <Form.Control
-                      type="text"
-                      placeholder="Escreva a pergunta aqui..."
-                      value={questionText}
-                      onChange={(e) => setQuestionText(e.target.value)}
-                    />
-                  </Form.Group>
+                  <Form.Control
+                    type="text"
+                    placeholder="Escreva a pergunta aqui..."
+                    name="pergunta"
+                    value={updatedQuestion.pergunta}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        updatedQuestion,
+                        setUpdatedQuestion,
+                        formErrors,
+                        setFormErrors
+                      )
+                    }
+                    className={formErrors.pergunta ? "is-invalid" : ""}
+                  />
                   <Card.Title className="mt-3">Alternativas</Card.Title>
                   <Accordion className="d-flex flex-column gap-2">
                     {alternativaProps.map((alternativa) => (
@@ -156,7 +193,7 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
                       />
                     ))}
                   </Accordion>
-                  <Button variant="light" className="mt-3" id="addAlternativeButton" onClick={handleAddAlternative}>
+                  <Button variant="light" className="mt-3" onClick={handleAddAlternative}>
                     Adicionar opção
                   </Button>
                 </Form.Group>
@@ -168,6 +205,21 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
           </Card>
         </Col>
       </Row>
+
+      <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Alternativas sem Tags</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Algumas alternativas estão sem tags associadas. Deseja continuar?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmation(false)}>
+            Cancelar
+          </Button>
+          <Button variant="success" onClick={submitQuestion}>
+            Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
