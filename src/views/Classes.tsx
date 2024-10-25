@@ -14,7 +14,7 @@ const Classes: React.FC = () => {
 
   // Editar Característica
   const handleEdit = (id: number) => {
-    navigate(`/editar-background/${id}`);
+    navigate(`/editar-classe/${id}`);
   };
 
   // Deletar Característica

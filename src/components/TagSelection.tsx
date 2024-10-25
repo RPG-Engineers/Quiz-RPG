@@ -10,12 +10,11 @@ interface TagSelectionProps {
 
 export const TagSelection: React.FC<TagSelectionProps> = ({ tags, selectedTags, handleTagToggle }) => {
   return (
-    <div className="badge-container mt-1">
+    <div className="d-flex gap-1 badge-container mt-1">
       {tags.map((tag) => (
         <TagComponent
           key={tag.id_tag}
           tag={tag}
-          selectable={true}
           isSelected={selectedTags.has(tag.id_tag!)}
           onTagToggle={handleTagToggle}
         />

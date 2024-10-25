@@ -1,7 +1,7 @@
 import React from "react";
-import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { TagComponent } from "./TagComponent";
+import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
+import TagList from "./TagList";
 import silhueta from "../assets/img/silhueta.png";
 
 interface TraitCardProps {
@@ -28,26 +28,14 @@ const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
                           style={{
                             overflowY: "auto",
                             maxHeight: "150px",
-                            scrollbarWidth: "thin", // Firefox
-                            msOverflowStyle: "none", // IE and Edge
+                            scrollbarWidth: "thin",
+                            msOverflowStyle: "none",
                           }}
                         >
                           <Card.Text>{caracteristica.descricao}</Card.Text>
                         </div>
                       </div>
-                      <div
-                        style={{
-                          maxHeight: "50px",
-                          overflowY: "auto",
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "5px",
-                        }}
-                      >
-                        {caracteristica.tags.map((tag) => (
-                          <TagComponent key={tag.id_tag} selectable={false} tag={tag} />
-                        ))}
-                      </div>
+                      <TagList tags={caracteristica.tags} />
                     </Card.Body>
                   </Col>
                   <Col md={5}>

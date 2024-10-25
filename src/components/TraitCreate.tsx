@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { addCaracteristica, associateCaracteristicaToTags } from "../database/caracteristica";
-import { Caracteristica, Tag, TipoCaracteristica } from "../types";
+import { Caracteristica, FormErrors, Tag, TipoCaracteristica } from "../types";
 import { getTipo } from "../utils/util";
 import { TagSelection } from "./TagSelection";
+import { useToast } from "../context/ToastContext";
+import { handleInputChange } from "../utils/formHelpers";
 
 interface TraitCreateProps {
   tags: Tag[];
@@ -12,12 +14,19 @@ interface TraitCreateProps {
 }
 
 const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [urlImagem, setUrlImagem] = useState("");
-  const [urlReferencia, setUrlReferencia] = useState("");
+  const [newTrait, setNewTrait] = useState<Caracteristica>({
+    nome: "",
+    descricao: "",
+    url_imagem: "",
+    url_referencia: "",
+    tipo: tipo,
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    nome: false,
+  });
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
   const stringTipo = getTipo(tipo) == "background" ? "o background" : "a " + getTipo(tipo);
+  const { showToast } = useToast();
 
   // Manipulação da Tag
   const handleTagToggle = (id: number) => {
@@ -35,23 +44,32 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
   // Salvar Característica
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const novaCaracteristica: Caracteristica = {
-      nome: nome,
-      descricao: descricao,
-      url_imagem: urlImagem,
-      url_referencia: urlReferencia,
-      tipo: tipo,
-    };
 
-    const id = await addCaracteristica(novaCaracteristica);
-    await associateCaracteristicaToTags(id, selectedTags);
-    setNome("");
-    setDescricao("");
-    setUrlImagem("");
-    setUrlReferencia("");
-    setSelectedTags(new Set());
-
-    fetchData(tipo);
+    // Validação dos campos
+    if (newTrait.nome.trim() === "") {
+      setFormErrors({ ...formErrors, nome: true });
+      showToast(`Nome d${stringTipo} não pode ser vazio!`, "danger");
+    } else {
+      try {
+        const id = await addCaracteristica(newTrait);
+        await associateCaracteristicaToTags(id, selectedTags);
+        setNewTrait({
+          nome: "",
+          descricao: "",
+          url_imagem: "",
+          url_referencia: "",
+          tipo: tipo,
+        });
+        showToast(
+          `${getTipo(tipo).charAt(0).toUpperCase() + getTipo(tipo).slice(1)} adicionada com sucesso!`,
+          "success"
+        );
+        setSelectedTags(new Set());
+        fetchData(tipo);
+      } catch (error) {
+        showToast(`Não foi possível adicionar, erro: ${error}`, "danger");
+      }
+    }
   };
 
   return (
@@ -64,8 +82,18 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                 <Form.Label>Nome</Form.Label>
                 <Form.Control
                   type="text"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
+                  name="nome"
+                  value={newTrait.nome}
+                  onChange={(e) =>
+                    handleInputChange(
+                      e as React.ChangeEvent<HTMLInputElement>,
+                      newTrait,
+                      setNewTrait,
+                      formErrors,
+                      setFormErrors
+                    )
+                  }
+                  className={formErrors.nome ? "is-invalid" : ""}
                   placeholder={`Digite o nome d${stringTipo}`}
                 />
               </Form.Group>
@@ -74,9 +102,17 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                 <Form.Label>Breve Descrição</Form.Label>
                 <Form.Control
                   as="textarea"
+                  name="descricao"
                   rows={2}
-                  value={descricao}
-                  onChange={(e) => setDescricao(e.target.value)}
+                  value={newTrait.descricao}
+                  onChange={(e) =>
+                    handleInputChange(
+                      e as React.ChangeEvent<HTMLInputElement>,
+                      newTrait,
+                      setNewTrait,
+                      formErrors,
+                      setFormErrors
+                    )}
                   placeholder={`Breve descrição d${stringTipo}`}
                 />
               </Form.Group>
@@ -85,8 +121,16 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                 <Form.Label>URL da Imagem</Form.Label>
                 <Form.Control
                   type="text"
-                  value={urlImagem}
-                  onChange={(e) => setUrlImagem(e.target.value)}
+                  name="url_imagem"
+                  value={newTrait.url_imagem}
+                  onChange={(e) =>
+                    handleInputChange(
+                      e as React.ChangeEvent<HTMLInputElement>,
+                      newTrait,
+                      setNewTrait,
+                      formErrors,
+                      setFormErrors
+                    )}
                   placeholder="Digite a URL da imagem"
                 />
               </Form.Group>
@@ -95,8 +139,16 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                 <Form.Label>URL para Referência</Form.Label>
                 <Form.Control
                   type="text"
-                  value={urlReferencia}
-                  onChange={(e) => setUrlReferencia(e.target.value)}
+                  name="url_referencia"
+                  value={newTrait.url_referencia}
+                  onChange={(e) =>
+                    handleInputChange(
+                      e as React.ChangeEvent<HTMLInputElement>,
+                      newTrait,
+                      setNewTrait,
+                      formErrors,
+                      setFormErrors
+                    )}
                   placeholder="Digite a URL para referência"
                 />
               </Form.Group>

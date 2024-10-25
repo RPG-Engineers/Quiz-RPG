@@ -3,23 +3,24 @@ import { Tag } from "../types";
 
 interface TagComponentProps {
   tag: Tag;
-  selectable: boolean;
   isSelected?: boolean; 
   onTagToggle?: (tagId: number) => void;
 }
 
-export const TagComponent: React.FC<TagComponentProps> = ({ tag, isSelected, onTagToggle, selectable }) => {
+export const TagComponent: React.FC<TagComponentProps> = ({ tag, isSelected, onTagToggle }) => {
   const handleClick = () => {
-    if (selectable && onTagToggle) {
+    if (onTagToggle) {
       onTagToggle(tag.id_tag!);
     }
   };
 
-  const badgeClass = selectable 
-    ? `badge ${isSelected ? "text-bg-danger" : "bg-secondary-subtle"} rounded-pill` 
+  const badgeClass = onTagToggle 
+    ? `badge ${isSelected ? "" : "bg-secondary-subtle"} rounded-pill` 
     : "badge";
 
-  const customStyle = selectable ? { cursor: "pointer" } : { backgroundColor: tag.cor, color: "white" };
+  const customStyle = onTagToggle 
+    ? { cursor: "pointer", backgroundColor: tag.cor, color: "white" } 
+    : { backgroundColor: tag.cor, color: "white" };
 
   return (
     <span
