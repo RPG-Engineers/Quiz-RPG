@@ -1,4 +1,3 @@
-// formHelpers.ts
 import { Dispatch, SetStateAction } from "react";
 import { FormErrors } from "../types";
 
