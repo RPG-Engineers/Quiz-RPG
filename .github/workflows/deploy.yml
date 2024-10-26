@@ -1,8 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
-  release:
-    types: [published]  # Aciona o workflow somente quando um release é publicado
+  push:
+    tags:
+      - 'v*'  # Aciona o workflow quando uma tag que começa com 'v' é criada
 
 jobs:
   build-and-deploy:
