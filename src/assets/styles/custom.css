@@ -59,3 +59,12 @@ body {
   animation: fadeOutSlide 0.5s ease-in-out forwards;
 }
 
+.modal-dialog {
+  max-width: 90%; /* Aumenta a largura do modal */
+  margin: 1.75rem auto; /* Centraliza o modal */
+}
+
+.modal-body {
+  max-height: 70vh; /* Limita a altura do corpo do modal */
+  overflow-y: auto; /* Adiciona rolagem se necessário */
+}

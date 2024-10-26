@@ -12,38 +12,85 @@ import Questionarios from "./views/Questionarios";
 import EditarBackground from "./views/EditarBackground";
 import EditarClasse from "./views/EditarClasse";
 import EditarRaca from "./views/EditarRaca";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { importDefaultData } from "./database/db";
 import { Responder } from "./views/Responder";
 import EditarPergunta from "./views/EditarPergunta";
 import EditarQuestionario from "./views/EditarQuestionario";
 import { Resultado } from "./views/Resultado";
 import CriarQuestionario from "./views/CriarQuestionario";
-import { ToastProvider } from "./context/ToastContext";
 import { Modal, Button } from "react-bootstrap";
+import ReactMarkdown from "react-markdown";
+import { useToast } from "./context/ToastContext";
+import remarkGfm from "remark-gfm";
+import EmojiConvertor from 'emoji-js';
+
 
 function App() {
   const [showPatchNotes, setShowPatchNotes] = useState(false);
   const [patchNotes, setPatchNotes] = useState("");
+  const { showToast } = useToast();
+
+  // Inicializa a conversão de emoji
+  const emoji = useMemo(() => {
+    const e = new EmojiConvertor();
+    e.replace_mode = 'unified';
+    return e;
+  }, []);
 
   useEffect(() => {
-    const lastSeenVersion = localStorage.getItem("lastSeenVersion");
-    const currentVersion = process.env.REACT_APP_VERSION;
+    const fetchPatchNotes = async () => {
+      const lastSeenVersion = localStorage.getItem("lastSeenVersion");
+  
+      try {
+        const response = await fetch("/Quiz-RPG/patch-notes.json");
+        
+        if (!response.ok) {
+          throw new Error("Não foi possível consultar as notas de atualização");
+        }
+  
+        const data = await response.json();
+        const currentVersion = data.version;
+  
+        if (currentVersion && currentVersion !== lastSeenVersion) {
+          setPatchNotes(emoji.replace_colons(data.notes));
+          setShowPatchNotes(true);
+        }
+      } catch (error) {
+        showToast(`${error}`, 'danger');
+      }
+    };
+    fetchPatchNotes();
 
-    if (currentVersion && currentVersion !== lastSeenVersion) {
-      setPatchNotes("Aqui vão as notas da versão mais recente...");
-      setShowPatchNotes(true);
-    }
-    importDefaultData().catch((err) => console.error(err));
-  }, []);
+    const importData = async () => {
+      try {
+        await importDefaultData();
+      } catch (error) {
+        showToast(`${error}`, 'danger');
+      }
+    };
+    importData();
+  }, [emoji, showToast]);
+  
 
   const handlePatchNotesClose = () => {
     setShowPatchNotes(false);
-    localStorage.setItem("lastSeenVersion", process.env.REACT_APP_VERSION || "");
+    fetch("/Quiz-RPG/patch-notes.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Não foi possível consultar as notas de atualização");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        localStorage.setItem("lastSeenVersion", data.version);
+        setPatchNotes(emoji.replace_colons(data.notes));
+      })
+      .catch((error) => showToast(`${error}`, 'danger'));
   };
-
+  
   return (
-    <ToastProvider>
+    <>
       <Router basename="/Quiz-RPG">
         <NavbarRPG />
         <Routes>
@@ -74,7 +121,7 @@ function App() {
           <Modal.Title>Novidades da versão</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{patchNotes}</p>
+          <ReactMarkdown children={patchNotes} remarkPlugins={[remarkGfm]} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handlePatchNotesClose}>
@@ -82,7 +129,7 @@ function App() {
           </Button>
         </Modal.Footer>
       </Modal>
-    </ToastProvider>
+    </>
   );
 }
 
