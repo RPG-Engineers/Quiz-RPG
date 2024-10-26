@@ -59,6 +59,8 @@ body {
   animation: fadeOutSlide 0.5s ease-in-out forwards;
 }
 
+/* Modal */
+
 .modal-dialog {
   max-width: 90%; /* Aumenta a largura do modal */
   margin: 1.75rem auto; /* Centraliza o modal */
@@ -67,4 +69,39 @@ body {
 .modal-body {
   max-height: 70vh; /* Limita a altura do corpo do modal */
   overflow-y: auto; /* Adiciona rolagem se necessário */
+}
+
+/* RPG Button */
+
+.rpg-button {
+  font-size: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  color: #ffffff;
+  background-color: #c62b29;
+  border: 2px solid #d4af37; /* Dourado para um toque mais medieval */
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.rpg-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.rpg-button:hover {
+  color: #d4af37; /* Dourado no hover */
+  background-color: #8a1f1d;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3);
 }
