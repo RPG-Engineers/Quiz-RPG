@@ -18,7 +18,7 @@ const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
           .map((caracteristica) => (
             <Col key={caracteristica.id_caracteristica} md={4} className="mb-4">
               <Card className="mb-3" style={{ maxWidth: "540px", height: "300px" }}>
-                <Row noGutters style={{ height: "100%" }}>
+                <Row style={{ height: "100%" }}>
                   <Col md={7} className="d-flex flex-column">
                     <Card.Body className="d-flex flex-column justify-content-between">
                       <div>
