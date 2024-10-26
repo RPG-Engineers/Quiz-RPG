@@ -39,7 +39,7 @@ class AppDB extends Dexie {
 
 /**
  * Função para exportar todos os dados do Dexie para JSON usando file-saver
- * 
+ *
  */
 export const exportDexieToJSON = async () => {
   try {
@@ -85,60 +85,67 @@ export const exportDexieToJSON = async () => {
  * @param {File} file Arquivo JSON aberto pelo usuário
  */
 export const importJSONFromFile = async (file: File) => {
-  try {
-    const reader = new FileReader();
+  const readFileAsText = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    reader.onload = async (event) => {
-      if (event.target?.result) {
-        const data = JSON.parse(event.target.result as string);
-        
-        // Passo 1: Guardar o estado atual
-        const backup = await getBackup();
-
-        try {
-          // Passo 2: Limpar dados
-          await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
-            await db.caracteristica.clear();
-            await db.tag.clear();
-            await db.caracteristica_tag.clear();
-            await db.alternativa.clear();
-          });
-          
-          await db.transaction('rw', db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
-            await db.alternativa_tag.clear();
-            await db.pergunta.clear();
-            await db.questionario.clear();
-            await db.questionario_pergunta.clear();
-          });
-
-          // Passo 3: Adicionar dados
-          await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa,  async () => {
-            await db.caracteristica.bulkAdd(data.caracteristicas);
-            await db.tag.bulkAdd(data.tags);
-            await db.caracteristica_tag.bulkAdd(data.caracteristica_tag);
-            await db.alternativa.bulkAdd(data.alternativa);
-          });
-          
-          await db.transaction('rw', db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
-            await db.alternativa_tag.bulkAdd(data.alternativa_tag);
-            await db.pergunta.bulkAdd(data.pergunta);
-            await db.questionario.bulkAdd(data.questionario);
-            await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
-          });
-
-          console.log('Dados importados com sucesso!');
-        } catch (error) {
-          console.error('Erro ao importar dados, restaurando o estado anterior:', error);
-          // Passo 4: Restaurar dados em caso de falha
-          await restoreBackup(backup);
-          throw error;
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          resolve(event.target.result as string);
+        } else {
+          reject(new Error("Falha ao ler o arquivo"));
         }
-      }
-    };
+      };
 
-    reader.readAsText(file);
+      reader.onerror = () => {
+        reject(new Error("Erro ao ler o arquivo"));
+      };
+
+      reader.readAsText(file);
+    });
+  };
+
+  try {
+    // Ler o conteúdo do arquivo
+    const content = await readFileAsText(file);
+    const data = JSON.parse(content);
+
+    // Passo 1: Guardar o estado atual
+    const backup = await getBackup();
+
+    try {
+      // Passo 2 e 3: Limpar e adicionar dados ao banco de dados
+      await db.transaction("rw", db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
+        await db.caracteristica.clear();
+        await db.tag.clear();
+        await db.caracteristica_tag.clear();
+        await db.alternativa.clear();
+        await db.caracteristica.bulkAdd(data.caracteristicas);
+        await db.tag.bulkAdd(data.tags);
+        await db.caracteristica_tag.bulkAdd(data.caracteristica_tag);
+        await db.alternativa.bulkAdd(data.alternativa);
+      });
+
+      await db.transaction("rw", db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
+        await db.alternativa_tag.clear();
+        await db.pergunta.clear();
+        await db.questionario.clear();
+        await db.questionario_pergunta.clear();
+        await db.alternativa_tag.bulkAdd(data.alternativa_tag);
+        await db.pergunta.bulkAdd(data.pergunta);
+        await db.questionario.bulkAdd(data.questionario);
+        await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
+      });
+
+      console.log("Dados importados com sucesso!");
+    } catch (error) {
+      console.error("Erro ao importar dados, restaurando o estado anterior:", error);
+      await restoreBackup(backup);
+      throw new Error("Falha ao importar dados. Estado anterior restaurado.");
+    }
   } catch (error) {
-    console.error('Erro ao importar dados:', error);
+    console.error("Erro ao processar o arquivo:", error);
+    throw new Error("Erro ao processar o arquivo. Verifique se o JSON está correto.");
   }
 };
 
@@ -147,42 +154,42 @@ export const importJSONFromFile = async (file: File) => {
  *
  */
 export const importDefaultData = async () => {
-    // Verificar se o banco de dados está vazio
-    const counts = await Dexie.Promise.all([
-      db.caracteristica.count(),
-      db.tag.count(),
-      db.caracteristica_tag.count(),
-      db.alternativa.count(),
-      db.alternativa_tag.count(),
-      db.pergunta.count(),
-      db.questionario.count(),
-      db.questionario_pergunta.count()
-    ]);
+  // Verificar se o banco de dados está vazio
+  const counts = await Dexie.Promise.all([
+    db.caracteristica.count(),
+    db.tag.count(),
+    db.caracteristica_tag.count(),
+    db.alternativa.count(),
+    db.alternativa_tag.count(),
+    db.pergunta.count(),
+    db.questionario.count(),
+    db.questionario_pergunta.count(),
+  ]);
 
-    const isEmpty = counts.every(count => count === 0);
+  const isEmpty = counts.every((count) => count === 0);
 
-    if (isEmpty) {
-      const response = await fetch('default-data.json');
-      const data = await response.json();
+  if (isEmpty) {
+    const response = await fetch("default-data.json");
+    const data = await response.json();
 
-      // O banco de dados está vazio, insira os dados padrão
-      await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
-        await db.caracteristica.bulkAdd(data.caracteristicas);
-        await db.tag.bulkAdd(data.tags);
-        await db.caracteristica_tag.bulkAdd(data.caracteristica_tag);
-        await db.alternativa.bulkAdd(data.alternativa);
-      });
+    // O banco de dados está vazio, insira os dados padrão
+    await db.transaction("rw", db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
+      await db.caracteristica.bulkAdd(data.caracteristicas);
+      await db.tag.bulkAdd(data.tags);
+      await db.caracteristica_tag.bulkAdd(data.caracteristica_tag);
+      await db.alternativa.bulkAdd(data.alternativa);
+    });
 
-      await db.transaction('rw', db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
-        await db.alternativa_tag.bulkAdd(data.alternativa_tag);
-        await db.pergunta.bulkAdd(data.pergunta);
-        await db.questionario.bulkAdd(data.questionario);
-        await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
-      });
-      return 1;
-    } else {
-      return 0;
-    }
+    await db.transaction("rw", db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
+      await db.alternativa_tag.bulkAdd(data.alternativa_tag);
+      await db.pergunta.bulkAdd(data.pergunta);
+      await db.questionario.bulkAdd(data.questionario);
+      await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
+    });
+    return 1;
+  } else {
+    return 0;
+  }
 };
 
 /**
@@ -192,7 +199,7 @@ export const importDefaultData = async () => {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const restoreBackup = async (backup: any) => {
-  await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
+  await db.transaction("rw", db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
     await db.caracteristica.clear();
     await db.tag.clear();
     await db.caracteristica_tag.clear();
@@ -202,8 +209,8 @@ const restoreBackup = async (backup: any) => {
     await db.caracteristica_tag.bulkAdd(backup.caracteristica_tag);
     await db.alternativa.bulkAdd(backup.alternativa);
   });
-  
-  await db.transaction('rw', db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
+
+  await db.transaction("rw", db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
     await db.alternativa_tag.clear();
     await db.pergunta.clear();
     await db.questionario.clear();
@@ -228,7 +235,16 @@ const getBackup = async () => {
   const pergunta = await db.pergunta.toArray();
   const questionario = await db.questionario.toArray();
   const questionario_pergunta = await db.questionario_pergunta.toArray();
-  return { caracteristicas, tags, caracteristica_tag, alternativa, alternativa_tag, pergunta, questionario, questionario_pergunta };
+  return {
+    caracteristicas,
+    tags,
+    caracteristica_tag,
+    alternativa,
+    alternativa_tag,
+    pergunta,
+    questionario,
+    questionario_pergunta,
+  };
 };
 
 export const db = new AppDB();

@@ -6,10 +6,12 @@ import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 import { faFileArrowDown, faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { exportDexieToJSON, importJSONFromFile } from "../database/db";
 import React from "react";
+import { useToast } from "../context/ToastContext";
 
 const NavbarRPG: React.FC = () => {
   const navigate = useNavigate();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { showToast } = useToast();
 
   // Função de exportação
   const handleExportClick = async () => {
@@ -25,10 +27,21 @@ const NavbarRPG: React.FC = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      await importJSONFromFile(file);
-      navigate(0);
+      try {
+        await importJSONFromFile(file);
+        showToast("Dados importados com sucesso! Recarregando página em 3 segundos", "success");
+        setTimeout(() => (navigate(0)), 3000);
+      } catch (error) {
+        if (error instanceof Error) {
+          showToast(error.message, "danger");
+        } else {
+          console.error(error);
+          showToast("Ocorreu um erro desconhecido", "danger");
+        }
+      }
     }
   };
+
   return (
     <Navbar expand="md" className="navbar-color custom-nav-link" data-bs-theme="dark">
       <Container fluid>
@@ -85,15 +98,15 @@ const NavbarRPG: React.FC = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
               <Dropdown.Item as="button" onClick={handleExportClick}>
-                <Button variant="button">
+                <div className="px-2 py-1">
                   <FontAwesomeIcon icon={faFileArrowUp} className="fa-xl mx-2" />
-                  Exportar dados
-                </Button>
+                  <span>Exportar dados</span>
+                </div>
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={handleImportClick}>
-                <Button variant="button">
+                <div className="px-2 py-1">
                   <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
-                  Importar dados
+                  <span>Importar dados</span>
                   <input
                     type="file"
                     accept=".json"
@@ -101,7 +114,7 @@ const NavbarRPG: React.FC = () => {
                     style={{ display: "none" }}
                     ref={fileInputRef}
                   />
-                </Button>
+                </div>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

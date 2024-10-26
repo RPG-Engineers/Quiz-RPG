@@ -52,17 +52,17 @@ function App() {
   useEffect(() => {
     const fetchPatchNotes = async () => {
       const lastSeenVersion = localStorage.getItem("lastSeenVersion");
-  
+
       try {
         const response = await fetch("patch-notes.json");
-  
+
         if (!response.ok) {
           throw new Error("Não foi possível consultar as notas de atualização");
         }
-  
+
         const data = await response.json();
         const currentVersion = data.version;
-  
+
         if (currentVersion && currentVersion !== lastSeenVersion) {
           setPatchNotes(emoji.replace_colons(data.notes));
           setShowPatchNotes(true);
@@ -71,11 +71,12 @@ function App() {
         if (error instanceof Error) {
           showToast(error.message, "danger");
         } else {
+          console.error(error);
           showToast("Ocorreu um erro desconhecido", "danger");
         }
       }
     };
-  
+
     const importData = async () => {
       try {
         const status = await importDefaultData();
@@ -91,11 +92,12 @@ function App() {
         if (error instanceof Error) {
           showToast(error.message, "danger");
         } else {
+          console.error(error);
           showToast("Ocorreu um erro desconhecido", "danger");
         }
       }
     };
-  
+
     fetchPatchNotes();
     importData();
   }, [emoji]);
@@ -117,6 +119,7 @@ function App() {
         if (error instanceof Error) {
           showToast(error.message, "danger");
         } else {
+          console.error(error);
           showToast("Ocorreu um erro desconhecido", "danger");
         }
       });
