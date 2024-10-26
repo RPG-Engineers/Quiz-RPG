@@ -1,5 +1,6 @@
 import { getAlternativasByPerguntaId } from "../database/alternativa";
 import { getCaracteristicas } from "../database/caracteristica";
+import { getQuestionarios } from "../database/questionario";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 
 export function getTipo(tipo: TipoCaracteristica) {
@@ -16,6 +17,12 @@ export function getTipo(tipo: TipoCaracteristica) {
   }
 }
 
+export async function getDefaultQuiz() {
+  const questionarios = await getQuestionarios();
+  const defaultQuiz = questionarios.find((quest) => quest.default);
+  return defaultQuiz ? defaultQuiz.id_questionario : null;
+}
+
 export async function calcularResultado(resultsMap: Map<number, number>) {
   // Calcula a pontuação de cada tag
   const tagsMap: Map<number, number> = await calculateTagPontuation(resultsMap);
@@ -30,7 +37,6 @@ export async function calcularResultado(resultsMap: Map<number, number>) {
 
   return resultado;
 }
-
 
 async function calculateTagPontuation(resultsMap: Map<number, number>) {
   const tagsMap: Map<number, number> = new Map();
