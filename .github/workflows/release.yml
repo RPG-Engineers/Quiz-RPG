@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - main  # Aciona quando há um push na branch main
 
 jobs:
   release:
@@ -11,13 +11,34 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          
       - name: Install dependencies
         run: npm ci
+        
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: |
+          npx semantic-release --branches release  # Especifica a branch de release
+
+      - name: Commit changes to release branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b release
+          git add CHANGELOG.md package.json public/patch-notes.json
+          git commit -m "chore: update changelog and patch notes for release"
+          git push --set-upstream origin release
+
+      - name: Create Pull Request to merge release into main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+            -d '{"title":"Release Update","body":"This pull request merges the release branch into main.","head":"release","base":"main"}' \
+            https://api.github.com/repos/${{ github.repository }}/pulls
