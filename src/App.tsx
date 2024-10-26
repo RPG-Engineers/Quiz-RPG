@@ -12,7 +12,7 @@ import Questionarios from "./views/Questionarios";
 import EditarBackground from "./views/EditarBackground";
 import EditarClasse from "./views/EditarClasse";
 import EditarRaca from "./views/EditarRaca";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { importDefaultData } from "./database/db";
 import { Responder } from "./views/Responder";
 import EditarPergunta from "./views/EditarPergunta";
@@ -20,11 +20,27 @@ import EditarQuestionario from "./views/EditarQuestionario";
 import { Resultado } from "./views/Resultado";
 import CriarQuestionario from "./views/CriarQuestionario";
 import { ToastProvider } from "./context/ToastContext";
+import { Modal, Button } from "react-bootstrap";
 
 function App() {
+  const [showPatchNotes, setShowPatchNotes] = useState(false);
+  const [patchNotes, setPatchNotes] = useState("");
+
   useEffect(() => {
+    const lastSeenVersion = localStorage.getItem("lastSeenVersion");
+    const currentVersion = process.env.REACT_APP_VERSION;
+
+    if (currentVersion && currentVersion !== lastSeenVersion) {
+      setPatchNotes("Aqui vão as notas da versão mais recente...");
+      setShowPatchNotes(true);
+    }
     importDefaultData().catch((err) => console.error(err));
   }, []);
+
+  const handlePatchNotesClose = () => {
+    setShowPatchNotes(false);
+    localStorage.setItem("lastSeenVersion", process.env.REACT_APP_VERSION || "");
+  };
 
   return (
     <ToastProvider>
@@ -51,6 +67,21 @@ function App() {
           <Route path="/resultado" element={<Resultado />} />
         </Routes>
       </Router>
+
+      {/* Modal de Patch Notes */}
+      <Modal show={showPatchNotes} onHide={handlePatchNotesClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Novidades da versão</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{patchNotes}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handlePatchNotesClose}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </ToastProvider>
   );
 }
