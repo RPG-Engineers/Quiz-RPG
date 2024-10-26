@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.0.0...v1.1.0) (2024-10-26)
+
+
+### Bug Fixes
+
+* :adhesive_bandage: Ajustado importação e adicionado toasts ([b64844b](https://github.com/RPG-Engineers/Quiz-RPG/commit/b64844b4565e12aabf963de88e0a434979e1195f))
+* :wrench: Corrigido apresentação das notas de atualização ([76068e4](https://github.com/RPG-Engineers/Quiz-RPG/commit/76068e41abcf661d9d8687b238dced581d95edb2))
+* :wrench: Corrigido problema de dependência do Toast em App ([ab5404d](https://github.com/RPG-Engineers/Quiz-RPG/commit/ab5404da2a87d3d5a7efaa9e640ebb80fd774ffa))
+
+
+### Features
+
+* :sparkles: Implementado Home ([ffdf2de](https://github.com/RPG-Engineers/Quiz-RPG/commit/ffdf2de41ce90e5dc13d4fa61361655f2c193347)), closes [#60](https://github.com/RPG-Engineers/Quiz-RPG/issues/60)
+
 # 1.0.0 (2024-10-26)
 
 
