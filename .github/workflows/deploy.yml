@@ -1,9 +1,10 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    tags:
-      - 'v*'  # Aciona o workflow quando uma tag que começa com 'v' é criada
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 
 jobs:
   build-and-deploy:
