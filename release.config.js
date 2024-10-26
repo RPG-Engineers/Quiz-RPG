@@ -25,6 +25,11 @@ export default {
     '@semantic-release/github',
     generatePatchNotes,
     '@semantic-release/changelog',
-    ['@semantic-release/git', { assets: ['CHANGELOG.md', 'package.json', 'public/patch-notes.json'] }],
+    ['@semantic-release/git', {
+      assets: ['CHANGELOG.md', 'package.json', 'public/patch-notes.json'],
+      message: 'chore(release): :bookmark: Update changelog and patch notes',
+      // Aqui você especifica a branch onde deseja que os commits ocorram
+      branch: 'release'
+    }],
   ],
 };
