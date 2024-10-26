@@ -147,11 +147,6 @@ export const importJSONFromFile = async (file: File) => {
  *
  */
 export const importDefaultData = async () => {
-  try {
-    // Adicione o caminho para o seu arquivo JSON com dados padrão
-    const response = await fetch('default-data.json');
-    const data = await response.json();
-
     // Verificar se o banco de dados está vazio
     const counts = await Dexie.Promise.all([
       db.caracteristica.count(),
@@ -167,6 +162,9 @@ export const importDefaultData = async () => {
     const isEmpty = counts.every(count => count === 0);
 
     if (isEmpty) {
+      const response = await fetch('default-data.json');
+      const data = await response.json();
+
       // O banco de dados está vazio, insira os dados padrão
       await db.transaction('rw', db.caracteristica, db.tag, db.caracteristica_tag, db.alternativa, async () => {
         await db.caracteristica.bulkAdd(data.caracteristicas);
@@ -181,14 +179,10 @@ export const importDefaultData = async () => {
         await db.questionario.bulkAdd(data.questionario);
         await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
       });
-
-      console.log('Dados padrão importados com sucesso!');
+      return 1;
     } else {
-      console.log('O banco de dados já contém dados. Dados padrão não foram importados.');
+      return 0;
     }
-  } catch (error) {
-    console.error('Erro ao importar dados padrão:', error);
-  }
 };
 
 /**
