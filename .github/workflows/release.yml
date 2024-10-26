@@ -20,11 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
+      - name: Create or update release branch
+        run: |
+          git checkout -B release
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npx semantic-release --branches main
+        run: npx semantic-release --branches main
 
       - name: Create Pull Request to merge release into main
         env:
