@@ -50,11 +50,6 @@ const ResultBarChart: React.FC<ResultBarChartProps> = ({ labels, dataPoints }) =
           color: '#fff',
         },
       },
-      title: {
-        display: true,
-        text: 'Pontuações por Categoria',
-        color: '#fff',
-      },
     },
     scales: {
       x: {
