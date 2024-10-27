@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import ResultBarChart from "../components/ResultBarChart";
+import ResultPodium from "../components/ResultPodium";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 import { calcularResultado } from "../utils/util";
-import ResultPodium from "../components/ResultPodium";
-import ResultBarChart from "../components/ResultBarChart";
 
 export const Resultado: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export const Resultado: React.FC = () => {
         </div>
       </Container>
 
-      <Container fluid className="mt-5">
+      <Container fluid className="mt-5 mb-5">
         <div className="d-flex flex-column align-items-center">
           <h3 className="text-white mt-3">Backgrounds</h3>
           <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3).map((item) => item[0])} />
@@ -73,14 +73,6 @@ export const Resultado: React.FC = () => {
               ([, pontuacao]) => pontuacao
             )}
           />
-        </div>
-      </Container>
-
-      <Container fluid className="mt-5 mb-5">
-        <div className="d-flex justify-content-center">
-          <Button variant="primary" size="lg" onClick={() => alert("Exportado!!")}>
-            Exportar Resultados
-          </Button>
         </div>
       </Container>
     </>
