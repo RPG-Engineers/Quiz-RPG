@@ -6,6 +6,9 @@ import { getTipo } from "../utils/util";
 import { TagSelection } from "./TagSelection";
 import { useToast } from "../context/ToastContext";
 import { handleInputChange } from "../utils/formHelpers";
+import HintTooltip from "./HintTooltip";
+import HintCard from "./HintCard";
+import { Link } from "react-router-dom";
 
 interface TraitCreateProps {
   tags: Tag[];
@@ -73,6 +76,14 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
 
   return (
     <Row className="align-items-center h-100">
+      <HintCard className="mb-3">
+        Para adicionar uma imagem personalizada você precisará de um link direto (URL) da imagem. Você pode fazer o
+        upload em algum site como o{" "}
+        <a href="https://imgur.com/" target="_blank" rel="noopener noreferrer">
+          Imgur
+        </a>{" "}
+        e obter o link. Em seguida, cole o link no campo de imagem do formulário.
+      </HintCard>
       <Col xs={12} md={6} className="mx-auto">
         <Card>
           <Card.Body>
@@ -118,7 +129,9 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
               </Form.Group>
 
               <Form.Group controlId="urlImagem" className="mt-2">
-                <Form.Label>URL da Imagem</Form.Label>
+                <Form.Label>
+                  URL da Imagem <HintTooltip>Imagem a ser exibida para representar {stringTipo}</HintTooltip>
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="url_imagem"
@@ -137,7 +150,12 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
               </Form.Group>
 
               <Form.Group controlId="urlReferencia" className="mt-2">
-                <Form.Label>URL para Referência</Form.Label>
+                <Form.Label>
+                  URL para Referência{" "}
+                  <HintTooltip>
+                    Link que será usado para redirecionar para um site externo com mais informações
+                  </HintTooltip>
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="url_referencia"
@@ -156,7 +174,9 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
               </Form.Group>
 
               <Form.Group className="mt-2">
-                <Form.Label>Tags para Selecionar</Form.Label>
+                <Form.Label>
+                  Tags para Selecionar <HintTooltip>Selecione as tags que são coerentes com {stringTipo}</HintTooltip>
+                </Form.Label>
                 <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
               </Form.Group>
 

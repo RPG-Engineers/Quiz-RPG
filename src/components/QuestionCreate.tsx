@@ -7,6 +7,7 @@ import { addPergunta } from "../database/pergunta";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "../context/ToastContext";
 import { handleInputChange } from "../utils/formHelpers";
+import HintCard from "./HintCard";
 
 interface QuestionCreateProps {
   tags: Tag[];
@@ -207,7 +208,10 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
         <Modal.Header closeButton>
           <Modal.Title>Alternativas sem Tags</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Algumas alternativas estão sem tags associadas. Deseja continuar?</Modal.Body>
+        <Modal.Body>
+          Algumas alternativas estão sem tags associadas, elas não irão gerar resultados no questionário. Deseja
+          continuar?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar

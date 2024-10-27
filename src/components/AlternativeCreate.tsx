@@ -4,6 +4,7 @@ import { Accordion, Button, Card, Container, Form, useAccordionButton } from "re
 import { TagSelection } from "./TagSelection";
 import { useState, useEffect } from "react";
 import { Tag } from "../types";
+import HintTooltip from "./HintTooltip";
 
 export interface AlternativeCreateProps {
   id: string;
@@ -66,9 +67,11 @@ export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
         </Form.Group>
       </Card.Header>
       <Accordion.Collapse eventKey={eventKey}>
-        <Container className="mt-2">
+        <Container className="mt-2 pb-3">
           <Form.Group>
-            <Form.Label>Tags para Selecionar</Form.Label>
+            <Form.Label>
+              Tags para Selecionar <HintTooltip>Selecione as tags mais coerentes com a alternativa</HintTooltip>
+            </Form.Label>
             <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
           </Form.Group>
         </Container>
