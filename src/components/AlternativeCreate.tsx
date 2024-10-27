@@ -14,8 +14,10 @@ export interface AlternativeCreateProps {
   onRemove: () => void;
   onTextChange: (id: string, text: string) => void;
   onTagChange: (id: string, selectedTags: Set<number>) => void;
+  onEnter: () => void;
   initialText?: string;
   initialTags?: Set<number>;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
 export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
@@ -26,8 +28,10 @@ export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
   onRemove,
   onTextChange,
   onTagChange,
-  initialText = "",
+  onEnter,
+  initialText = "", 
   initialTags = new Set(),
+  inputRef,
 }) => {
   const [text, setText] = useState(initialText);
   const [selectedTags, setSelectedTags] = useState<Set<number>>(initialTags);
@@ -55,11 +59,18 @@ export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
     });
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      onEnter();
+    }
+  };
+
   return (
     <Card>
       <Card.Header>
         <Form.Group className="d-flex gap-1">
-          <Form.Control type="text" placeholder={placeholder} value={text} onChange={handleTextChange} />
+          <Form.Control type="text" placeholder={placeholder} ref={inputRef} value={text} onKeyDown={handleKeyDown} onChange={handleTextChange} />
           <CustomToggle eventKey={eventKey}></CustomToggle>
           <Button variant="danger" className="ml-2" onClick={onRemove}>
             <FontAwesomeIcon icon={faTrash} />
