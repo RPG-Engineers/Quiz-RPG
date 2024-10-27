@@ -5,6 +5,7 @@ import { getTags } from "../database/tag";
 import { deletePergunta, getPerguntas } from "../database/pergunta";
 import { Pergunta, Tag } from "../types";
 import { useNavigate } from "react-router-dom";
+import HintCard from "../components/HintCard";
 
 const Perguntas: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
@@ -34,9 +35,18 @@ const Perguntas: React.FC = () => {
 
   return (
     <>
+      <HintCard>
+        Você pode descrever uma situação do tipo "O que você faria?" e de acordo como o jogador se
+        comportaria diante dela, qualificaria a alternativa escolhida com as tags adequadas.
+      </HintCard>
       <QuestionCreate tags={tags} fetchData={fetchData} />
       {perguntas.map((pergunta) => (
-        <QuestionMasterCard key={pergunta.id_pergunta} pergunta={pergunta} handleEdit={handleEdit} handleDelete={handleDelete}/>
+        <QuestionMasterCard
+          key={pergunta.id_pergunta}
+          pergunta={pergunta}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
       ))}
     </>
   );
