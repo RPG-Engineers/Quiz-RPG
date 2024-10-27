@@ -38,12 +38,11 @@ class AppDB extends Dexie {
 }
 
 /**
- * Função para exportar todos os dados do Dexie para JSON usando file-saver
+ * Função para exportar todos os dados do Dexie para JSON
  *
  */
 export const exportDexieToJSON = async () => {
   try {
-    // Obter todos os dados de cada tabela
     const caracteristicas = await db.caracteristica.toArray();
     const tags = await db.tag.toArray();
     const caracteristicaTag = await db.caracteristica_tag.toArray();
@@ -53,7 +52,6 @@ export const exportDexieToJSON = async () => {
     const questionario = await db.questionario.toArray();
     const questionarioPergunta = await db.questionario_pergunta.toArray();
 
-    // Criar um objeto para armazenar todos os dados
     const data = {
       caracteristicas,
       tags,
@@ -65,16 +63,26 @@ export const exportDexieToJSON = async () => {
       questionario_pergunta: questionarioPergunta,
     };
 
-    // Converter o objeto de dados para JSON
-    const json = JSON.stringify(data, null, 2);
-
-    // Criar um blob com os dados JSON
-    const blob = new Blob([json], { type: "application/json" });
-
-    // Usar file-saver para salvar o arquivo JSON
-    saveAs(blob, "dados-dexie.json");
+    return JSON.stringify(data);
   } catch (error) {
     console.error("Erro ao exportar dados:", error);
+    throw error;
+  }
+};
+
+/**
+ * Função para baixar todos os dados do Dexie em JSON
+ *
+ */
+export const downloadDexieToJSON = async () => {
+  try {
+    const jsonData = await exportDexieToJSON();
+
+    // Cria um blob para baixar o JSON
+    const blob = new Blob([jsonData], { type: "application/json" });
+    saveAs(blob, "quiz-rpg.json");
+  } catch (error) {
+    console.error("Erro ao baixar dados:", error);
   }
 };
 
@@ -82,9 +90,9 @@ export const exportDexieToJSON = async () => {
  * Função para importar dados do JSON fornecido pelo usuário
  * e caso dê algum erro ele fará um rollback automaticamente
  *
- * @param {File} file Arquivo JSON aberto pelo usuário
+ * @param {File | object} data Arquivo JSON aberto pelo usuário ou um objeto JSON
  */
-export const importJSONFromFile = async (file: File) => {
+export const importJSONFromFile = async (data: File | object) => {
   const readFileAsText = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -106,9 +114,18 @@ export const importJSONFromFile = async (file: File) => {
   };
 
   try {
-    // Ler o conteúdo do arquivo
-    const content = await readFileAsText(file);
-    const data = JSON.parse(content);
+    let parsedData;
+
+    if (data instanceof File) {
+      // Se for um arquivo, use o FileReader para ler
+      const content = await readFileAsText(data);
+      parsedData = JSON.parse(content);
+    } else if (typeof data === "object") {
+      // Se for um objeto JSON já decodificado, use diretamente
+      parsedData = data;
+    } else {
+      throw new TypeError("Formato de dados inválido para importação.");
+    }
 
     // Passo 1: Guardar o estado atual
     const backup = await getBackup();
@@ -120,10 +137,10 @@ export const importJSONFromFile = async (file: File) => {
         await db.tag.clear();
         await db.caracteristica_tag.clear();
         await db.alternativa.clear();
-        await db.caracteristica.bulkAdd(data.caracteristicas);
-        await db.tag.bulkAdd(data.tags);
-        await db.caracteristica_tag.bulkAdd(data.caracteristica_tag);
-        await db.alternativa.bulkAdd(data.alternativa);
+        await db.caracteristica.bulkAdd(parsedData.caracteristicas);
+        await db.tag.bulkAdd(parsedData.tags);
+        await db.caracteristica_tag.bulkAdd(parsedData.caracteristica_tag);
+        await db.alternativa.bulkAdd(parsedData.alternativa);
       });
 
       await db.transaction("rw", db.alternativa_tag, db.pergunta, db.questionario, db.questionario_pergunta, async () => {
@@ -131,10 +148,10 @@ export const importJSONFromFile = async (file: File) => {
         await db.pergunta.clear();
         await db.questionario.clear();
         await db.questionario_pergunta.clear();
-        await db.alternativa_tag.bulkAdd(data.alternativa_tag);
-        await db.pergunta.bulkAdd(data.pergunta);
-        await db.questionario.bulkAdd(data.questionario);
-        await db.questionario_pergunta.bulkAdd(data.questionario_pergunta);
+        await db.alternativa_tag.bulkAdd(parsedData.alternativa_tag);
+        await db.pergunta.bulkAdd(parsedData.pergunta);
+        await db.questionario.bulkAdd(parsedData.questionario);
+        await db.questionario_pergunta.bulkAdd(parsedData.questionario_pergunta);
       });
 
       console.log("Dados importados com sucesso!");

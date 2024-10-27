@@ -1,32 +1,33 @@
+import EmojiConvertor from "emoji-js";
 import { useEffect, useMemo, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Button, Form, Modal } from "react-bootstrap";
+import ReactMarkdown from "react-markdown";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import remarkGfm from "remark-gfm";
+import { v4 as uuidv4 } from "uuid";
 import NavbarRPG from "./components/Navbar";
-import Home from "./views/Home";
+import ToastNotification from "./components/ToastNotification";
+import { ToastProvider } from "./context/ToastContext";
+import { importDefaultData } from "./database/db";
+import { ToastType, ToastVariant } from "./types";
+import Backgrounds from "./views/Backgrounds";
 import Caracteristicas from "./views/Caracteristicas";
 import Classes from "./views/Classes";
-import Racas from "./views/Racas";
-import Backgrounds from "./views/Backgrounds";
-import Tags from "./views/Tags";
-import EditarTag from "./views/EditarTag";
-import Perguntas from "./views/Perguntas";
-import Questionarios from "./views/Questionarios";
+import CriarQuestionario from "./views/CriarQuestionario";
 import EditarBackground from "./views/EditarBackground";
 import EditarClasse from "./views/EditarClasse";
-import EditarRaca from "./views/EditarRaca";
-import { importDefaultData } from "./database/db";
-import { Responder } from "./views/Responder";
 import EditarPergunta from "./views/EditarPergunta";
 import EditarQuestionario from "./views/EditarQuestionario";
+import EditarRaca from "./views/EditarRaca";
+import EditarTag from "./views/EditarTag";
+import Home from "./views/Home";
+import Perguntas from "./views/Perguntas";
+import Questionarios from "./views/Questionarios";
+import Racas from "./views/Racas";
+import { Responder } from "./views/Responder";
 import { Resultado } from "./views/Resultado";
-import CriarQuestionario from "./views/CriarQuestionario";
-import { Modal, Button, Form } from "react-bootstrap";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import EmojiConvertor from "emoji-js";
-import { ToastType, ToastVariant } from "./types";
-import { ToastProvider } from "./context/ToastContext";
-import { v4 as uuidv4 } from "uuid";
-import ToastNotification from "./components/ToastNotification";
+import Tags from "./views/Tags";
+import Import from "./views/Import";
 
 function App() {
   const [showPatchNotes, setShowPatchNotes] = useState(false);
@@ -160,6 +161,7 @@ function App() {
             <Route path="/editar-questionario/:id" element={<EditarQuestionario />} />
             <Route path="/criar-questionario" element={<CriarQuestionario />} />
             <Route path="/resultado" element={<Resultado />} />
+            <Route path="/import" element={<Import />} />
           </Routes>
         </Router>
 

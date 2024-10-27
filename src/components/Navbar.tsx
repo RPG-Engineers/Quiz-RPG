@@ -1,13 +1,13 @@
-import { Button, Container, Dropdown, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
+import { faFileArrowDown, faFileArrowUp, faLink } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+import { Container, Dropdown, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import LOGO from "../assets/img/logo.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
-import { faFileArrowDown, faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { exportDexieToJSON, importJSONFromFile } from "../database/db";
-import React from "react";
 import { useToast } from "../context/ToastContext";
+import { downloadDexieToJSON, exportDexieToJSON, importJSONFromFile } from "../database/db";
 
 const NavbarRPG: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const NavbarRPG: React.FC = () => {
 
   // Função de exportação
   const handleExportClick = async () => {
-    await exportDexieToJSON();
+    await downloadDexieToJSON();
   };
 
   // Função para disparar o clique no input de arquivo
@@ -33,14 +33,46 @@ const NavbarRPG: React.FC = () => {
         showToast("Dados importados com sucesso! Recarregando página em 3 segundos", "success");
         setTimeout(() => navigate(0), 3000);
       } catch (error) {
-        if (error instanceof Error) {
-          showToast(error.message, "danger");
-        } else {
-          console.error(error);
-          showToast("Ocorreu um erro desconhecido", "danger");
-        }
+        console.error(error);
+        showToast("Ocorreu um erro ao importar os dados", "danger");
       }
     }
+  };
+
+  // Função de criação do link compartilhável
+  const handleShareableLink = async () => {
+    try {
+      const jsonString = await exportDexieToJSON();
+      const encodedData = btoa(encodeURIComponent(jsonString)); // Codificando a string JSON para Base64
+      const shareLink = `${window.location.origin}/import?data=${encodedData}`;      
+
+      // Verifica o comprimento do link
+      if (shareLink.length > 10000) {
+        showToast("O link é muito longo para ser gerado. Utilize o JSON ao invés disso", "danger");
+        return;
+      }
+
+      // Encurtar a URL usando a API do TinyURL
+      const tinyUrl = await shortenUrl(shareLink);
+
+      await navigator.clipboard.writeText(tinyUrl);
+      showToast("Link encurtado copiado para a área de transferência!", "success");
+    } catch (error) {
+      console.error(error);
+      showToast("Erro ao gerar link", "danger");
+    }
+  };
+
+  // Função para encurtar a URL usando TinyURL
+  const shortenUrl = async (url: string) => {
+    const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+
+    if (!response.ok) {
+      throw new Error("Erro ao encurtar a URL");
+    }
+
+    const shortUrl = await response.text();
+    return shortUrl;
   };
 
   return (
@@ -79,17 +111,28 @@ const NavbarRPG: React.FC = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Importar/Exportar Dados" id="export-nav-dropdown" className="show-text">
-              <Dropdown.Item as="button">
-                <Button variant="button">
+              <Dropdown.Item as="button" onClick={handleExportClick}>
+                <div className="px-2 py-1">
                   <FontAwesomeIcon icon={faFileArrowUp} className="fa-xl mx-2" />
-                  Exportar dados
-                </Button>
+                  <span>Exportar dados</span>
+                </div>
               </Dropdown.Item>
-              <Dropdown.Item as="button">
-                <Button variant="button">
+              <Dropdown.Item as="button" onClick={handleImportClick}>
+                <div className="px-2 py-1">
                   <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
-                  Importar dados
-                </Button>
+                  <span>Importar dados</span>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                  />
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item as="button" onClick={handleShareableLink}>
+                <FontAwesomeIcon icon={faLink} className="fa-xl mx-2" />
+                Criar link compartilhável
               </Dropdown.Item>
             </NavDropdown>
             <Nav.Link
@@ -134,6 +177,10 @@ const NavbarRPG: React.FC = () => {
                       ref={fileInputRef}
                     />
                   </div>
+                </Dropdown.Item>
+                <Dropdown.Item as="button" onClick={handleShareableLink}>
+                  <FontAwesomeIcon icon={faLink} className="fa-xl mx-2" />
+                  Criar link compartilhável
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
