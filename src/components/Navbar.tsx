@@ -4,6 +4,7 @@ import LOGO from "../assets/img/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 import { faFileArrowDown, faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { exportDexieToJSON, importJSONFromFile } from "../database/db";
 import React from "react";
 import { useToast } from "../context/ToastContext";
@@ -30,7 +31,7 @@ const NavbarRPG: React.FC = () => {
       try {
         await importJSONFromFile(file);
         showToast("Dados importados com sucesso! Recarregando página em 3 segundos", "success");
-        setTimeout(() => (navigate(0)), 3000);
+        setTimeout(() => navigate(0), 3000);
       } catch (error) {
         if (error instanceof Error) {
           showToast(error.message, "danger");
@@ -91,33 +92,52 @@ const NavbarRPG: React.FC = () => {
                 </Button>
               </Dropdown.Item>
             </NavDropdown>
+            <Nav.Link
+              as={Link}
+              className="show-text"
+              target="_blank"
+              rel="noopener noreferrer"
+              to="https://github.com/RPG-Engineers/Quiz-RPG"
+            >
+              Github
+            </Nav.Link>
           </Nav>
-          <Dropdown>
-            <Dropdown.Toggle variant="link" id="export-dropdown" className="remover-seta">
-              <FontAwesomeIcon icon={faFolderOpen} style={{ color: "white" }} className="fa-xl mx-2 hidden-icon" />
-            </Dropdown.Toggle>
-            <Dropdown.Menu align="end">
-              <Dropdown.Item as="button" onClick={handleExportClick}>
-                <div className="px-2 py-1">
-                  <FontAwesomeIcon icon={faFileArrowUp} className="fa-xl mx-2" />
-                  <span>Exportar dados</span>
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item as="button" onClick={handleImportClick}>
-                <div className="px-2 py-1">
-                  <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
-                  <span>Importar dados</span>
-                  <input
-                    type="file"
-                    accept=".json"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                    ref={fileInputRef}
-                  />
-                </div>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <div className="d-flex align-items-center">
+            <a
+              href="https://github.com/RPG-Engineers/Quiz-RPG"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white mx-2 hidden-icon"
+            >
+              <FontAwesomeIcon icon={faGithub} className="fa-xl" />
+            </a>
+            <Dropdown>
+              <Dropdown.Toggle variant="link" id="export-dropdown" className="remover-seta">
+                <FontAwesomeIcon icon={faFolderOpen} style={{ color: "white" }} className="fa-xl mx-2 hidden-icon" />
+              </Dropdown.Toggle>
+              <Dropdown.Menu align="end">
+                <Dropdown.Item as="button" onClick={handleExportClick}>
+                  <div className="px-2 py-1">
+                    <FontAwesomeIcon icon={faFileArrowUp} className="fa-xl mx-2" />
+                    <span>Exportar dados</span>
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item as="button" onClick={handleImportClick}>
+                  <div className="px-2 py-1">
+                    <FontAwesomeIcon icon={faFileArrowDown} className="fa-xl mx-2" />
+                    <span>Importar dados</span>
+                    <input
+                      type="file"
+                      accept=".json"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                      ref={fileInputRef}
+                    />
+                  </div>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>
