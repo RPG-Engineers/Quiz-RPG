@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { Container, Row, Col, Card, Form, Button, Accordion, Modal } from "react-bootstrap";
-import { AlternativeCreate, AlternativeCreateProps } from "./AlternativeCreate";
-import { Alternativa, FormErrors, Pergunta, Tag } from "../types";
-import { addAlternativa, associateAlternativaToTags } from "../database/alternativa";
-import { addPergunta } from "../database/pergunta";
+import { Accordion, Button, Card, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "../context/ToastContext";
+import { addAlternativa, associateAlternativaToTags } from "../database/alternativa";
+import { addPergunta } from "../database/pergunta";
+import { Alternativa, FormErrors, Pergunta, Tag } from "../types";
 import { handleInputChange } from "../utils/formHelpers";
-import HintCard from "./HintCard";
+import { AlternativeCreate, AlternativeCreateProps } from "./AlternativeCreate";
 
 interface QuestionCreateProps {
   tags: Tag[];
@@ -24,6 +23,7 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
       onRemove: () => {},
       onTextChange: () => {},
       onTagChange: () => {},
+      onEnter: () => {},
     },
   ]);
   const [formErrors, setFormErrors] = useState<FormErrors>({
@@ -40,6 +40,8 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
   // Funções de Manipulação de Alternativas
   const handleAddAlternative = () => {
     const newAlternativeId = uuidv4();
+    const newInputRef = React.createRef<HTMLInputElement>();
+
     setAlternativaProps((prev) => [
       ...prev,
       {
@@ -50,8 +52,15 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
         onRemove: () => handleRemoveAlternative(newAlternativeId),
         onTextChange: handleAlternativeTextChange,
         onTagChange: handleAlternativeTagChange,
+        onEnter: handleAddAlternative,
+        inputRef: newInputRef,
       },
     ]);
+
+    // Focar no campo de entrada usando o ID após um pequeno delay
+    setTimeout(() => {
+      newInputRef.current?.focus();
+    }, 0);
   };
 
   const handleAlternativeTextChange = (id: string, text: string) => {
@@ -134,6 +143,7 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
           onRemove: () => {},
           onTextChange: handleAlternativeTextChange,
           onTagChange: handleAlternativeTagChange,
+          onEnter: handleAddAlternative,
         },
       ]);
       setAlternativaTexts({});
@@ -187,6 +197,8 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
                         tags={tags}
                         onTextChange={handleAlternativeTextChange}
                         onTagChange={handleAlternativeTagChange}
+                        onEnter={handleAddAlternative}
+                        inputRef={alternativa.inputRef}
                       />
                     ))}
                   </Accordion>

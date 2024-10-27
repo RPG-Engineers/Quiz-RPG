@@ -25,31 +25,15 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
   const { showToast } = useToast();
 
   // Funções de Manipulação de Alternativas
-  const handleAddAlternative = () => {
-    const newAlternativeId = uuidv4();
-    setAlternativaProps((prev) => [
-      ...prev,
-      {
-        id: newAlternativeId,
-        placeholder: `Opção ${prev.length + 1}`,
-        eventKey: newAlternativeId,
-        tags: [],
-        onRemove: () => handleRemoveAlternative(newAlternativeId),
-        onTextChange: handleAlternativaTextChange,
-        onTagChange: handleAlternativaTagChange,
-      },
-    ]);
-  };
-
-  const handleAlternativaTextChange = (id: string, text: string) => {
+  const handleAlternativaTextChange = useCallback((id: string, text: string) => {
     setAlternativaTexts((prev) => ({ ...prev, [id]: text }));
-  };
+  }, []);
 
   const handleAlternativaTagChange = useCallback((id: string, selectedTags: Set<number>) => {
     setAlternativaTags((prev) => ({ ...prev, [id]: selectedTags }));
   }, []);
 
-  const handleRemoveAlternative = (idToRemove: string) => {
+  const handleRemoveAlternative = useCallback((idToRemove: string) => {
     setAlternativaProps((prev) =>
       prev
         .filter((alt) => alt.id !== idToRemove)
@@ -65,7 +49,32 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
       const { [idToRemove]: _, ...rest } = prev;
       return rest;
     });
-  };
+  }, []);
+
+  const handleAddAlternative = useCallback(() => {
+    const newAlternativeId = uuidv4();
+    const newInputRef = React.createRef<HTMLInputElement>();
+
+    setAlternativaProps((prev) => [
+      ...prev,
+      {
+        id: newAlternativeId,
+        placeholder: `Opção ${prev.length + 1}`,
+        eventKey: newAlternativeId,
+        tags: [],
+        onRemove: () => handleRemoveAlternative(newAlternativeId),
+        onTextChange: handleAlternativaTextChange,
+        onTagChange: handleAlternativaTagChange,
+        onEnter: handleAddAlternative,
+        inputRef: newInputRef,
+      },
+    ]);
+    
+    // Define o foco no novo campo de entrada
+    setTimeout(() => {
+      newInputRef.current?.focus();
+    }, 0);
+  }, [handleAlternativaTextChange, handleAlternativaTagChange, handleRemoveAlternative]);
 
   // Função para salvar a pergunta
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,6 +146,7 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
             onRemove: () => handleRemoveAlternative(alternativa.id_alternativa!.toString()),
             onTextChange: handleAlternativaTextChange,
             onTagChange: handleAlternativaTagChange,
+            onEnter: handleAddAlternative,
             initialText: alternativa.alternativa,
             initialTags: alternativa.tagsIds,
           });
@@ -149,7 +159,14 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
     };
 
     fetchData();
-  }, [id, handleAlternativaTagChange, tags]);
+  }, [
+    id,
+    handleAlternativaTagChange,
+    handleAlternativaTextChange,
+    handleRemoveAlternative,
+    handleAddAlternative,
+    tags,
+  ]);
 
   return (
     <Container className="mt-3">
@@ -188,8 +205,10 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
                         tags={tags}
                         onTextChange={handleAlternativaTextChange}
                         onTagChange={handleAlternativaTagChange}
+                        onEnter={handleAddAlternative}
                         initialText={alternativaTexts[alternativa.id]}
                         initialTags={alternativaTags[alternativa.id]}
+                        inputRef={alternativa.inputRef}
                       />
                     ))}
                   </Accordion>
