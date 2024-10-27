@@ -39,3 +39,43 @@
   border: 1px solid black;
   transform: scale(1.05);
 }
+
+.card-resultado {
+  position: relative;
+}
+
+.trophy-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('../img/pngwing.com.png') no-repeat;
+  background-size: contain;
+  margin-top: 20px; /* Adicione um espaço acima do troféu */
+}
+
+.trophy-icon {
+  font-size: 2rem; /* Tamanho do ícone */
+  color: inherit; /* Mantém a cor do card */
+}
+
+.placement-number {
+  font-size: 1.5rem; /* Tamanho do número */
+  font-weight: bold; /* Peso da fonte */
+  margin: 0 10px; /* Espaço em torno do número */
+}
+
+/* Cores personalizadas para o troféu */
+.card-resultado.gold .trophy-icon,
+.card-resultado.gold .placement-number {
+  color: gold; /* Cor do troféu e número */
+}
+
+.card-resultado.silver .trophy-icon,
+.card-resultado.silver .placement-number {
+  color: silver; /* Cor do troféu e número */
+}
+
+.card-resultado.bronze .trophy-icon,
+.card-resultado.bronze .placement-number {
+  color: #cd7f32; /* Cor do troféu e número */
+}
