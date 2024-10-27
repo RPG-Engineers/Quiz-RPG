@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import NavbarRPG from "./components/Navbar";
 import Home from "./views/Home";
@@ -12,14 +13,13 @@ import Questionarios from "./views/Questionarios";
 import EditarBackground from "./views/EditarBackground";
 import EditarClasse from "./views/EditarClasse";
 import EditarRaca from "./views/EditarRaca";
-import { useEffect, useMemo, useState } from "react";
 import { importDefaultData } from "./database/db";
 import { Responder } from "./views/Responder";
 import EditarPergunta from "./views/EditarPergunta";
 import EditarQuestionario from "./views/EditarQuestionario";
 import { Resultado } from "./views/Resultado";
 import CriarQuestionario from "./views/CriarQuestionario";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import EmojiConvertor from "emoji-js";
@@ -31,6 +31,10 @@ import ToastNotification from "./components/ToastNotification";
 function App() {
   const [showPatchNotes, setShowPatchNotes] = useState(false);
   const [patchNotes, setPatchNotes] = useState("");
+  const [showWarningModal, setShowWarningModal] = useState(
+    !localStorage.getItem("dontShowWarningAgain")
+  );
+  const [dontShowAgain, setDontShowAgain] = useState(false); // Estado para a opção "Não mostrar novamente"
   const [toasts, setToasts] = useState<Array<ToastType>>([]);
 
   // Inicializa a conversão de emoji
@@ -125,6 +129,13 @@ function App() {
       });
   };
 
+  const handleWarningModalClose = () => {
+    if (dontShowAgain) {
+      localStorage.setItem("dontShowWarningAgain", "true");
+    }
+    setShowWarningModal(false);
+  };
+
   return (
     <>
       <ToastProvider>
@@ -163,6 +174,28 @@ function App() {
           <Modal.Footer>
             <Button variant="primary" onClick={handlePatchNotesClose}>
               Fechar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Modal de Aviso de Dados Locais */}
+        <Modal show={showWarningModal} onHide={handleWarningModalClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Aviso Importante</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Os dados salvos no programa são armazenados localmente no seu navegador. Caso você limpe o cache ou exclua os cookies, esses dados poderão ser perdidos. Para evitar perda de informações, recomendamos que você exporte seus dados regularmente e os salve em um local seguro.
+            <Form.Check 
+              type="checkbox" 
+              label="Não mostrar novamente" 
+              checked={dontShowAgain} 
+              onChange={(e) => setDontShowAgain(e.target.checked)} 
+              className="mt-3" 
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={handleWarningModalClose}>
+              Entendi
             </Button>
           </Modal.Footer>
         </Modal>
