@@ -14,6 +14,7 @@ const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
           <ResultCard
             title={top3[2]?.nome}
             imageSrc={top3[2]?.url_imagem}
+            urlReferencia={top3[2]?.url_referencia}
             type={CardType.Bronze}
             placement={3}
           />
@@ -22,6 +23,7 @@ const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
           <ResultCard
             title={top3[0]?.nome}
             imageSrc={top3[0]?.url_imagem}
+            urlReferencia={top3[0]?.url_referencia}
             type={CardType.Gold}
             placement={1}
           />
@@ -30,6 +32,7 @@ const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
           <ResultCard
             title={top3[1]?.nome}
             imageSrc={top3[1]?.url_imagem}
+            urlReferencia={top3[1]?.url_referencia}
             type={CardType.Silver}
             placement={2}
           />
