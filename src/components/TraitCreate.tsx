@@ -8,7 +8,6 @@ import { useToast } from "../context/ToastContext";
 import { handleInputChange } from "../utils/formHelpers";
 import HintTooltip from "./HintTooltip";
 import HintCard from "./HintCard";
-import { Link } from "react-router-dom";
 
 interface TraitCreateProps {
   tags: Tag[];
