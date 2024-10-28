@@ -1,3 +1,21 @@
+# [1.2.0](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.1.0...v1.2.0) (2024-10-28)
+
+
+### Bug Fixes
+
+* :lipstick: Adicionado silhueta na exibição do resultado ([bb4ea91](https://github.com/RPG-Engineers/Quiz-RPG/commit/bb4ea917e5bd549ef6966905cbcff0a888772f6a))
+
+
+### Features
+
+* :card_file_box: Adicionado dados default ([7409e99](https://github.com/RPG-Engineers/Quiz-RPG/commit/7409e991a666de33cc6eae084b155f06ee31e7dd)), closes [#101](https://github.com/RPG-Engineers/Quiz-RPG/issues/101)
+* :children_crossing: Adicionado modal de aviso de dados locais ([ea1d02e](https://github.com/RPG-Engineers/Quiz-RPG/commit/ea1d02e009830e15b6f69db70b36a2cc90a1a11c))
+* :sparkles: Adicionado dicas e dicas de contexto ([22a5b83](https://github.com/RPG-Engineers/Quiz-RPG/commit/22a5b8350f37eee75910dc3696e0ca1507e10c7e)), closes [#161](https://github.com/RPG-Engineers/Quiz-RPG/issues/161)
+* :sparkles: Colocado em ordem alfabética seleção de tags ([0b0254e](https://github.com/RPG-Engineers/Quiz-RPG/commit/0b0254ef60d9fa9cd34ff3bc43df23daa0214b79))
+* :sparkles: Implementado link compartilhável ([ddee5df](https://github.com/RPG-Engineers/Quiz-RPG/commit/ddee5df24f7d10c29c896f829438594c6c0db073))
+* :sparkles: Implementado redirecionamentos ao clicar nas características ([9c051b3](https://github.com/RPG-Engineers/Quiz-RPG/commit/9c051b3caffaa0d4761c2316195f439c413cdf6c)), closes [#175](https://github.com/RPG-Engineers/Quiz-RPG/issues/175)
+* :sparkles: Melhorado qualidade de vida na criação de alternativas ([bd37262](https://github.com/RPG-Engineers/Quiz-RPG/commit/bd37262937c1a51e126ec2c7db5698a5cf826962))
+
 # [1.1.0](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.0.0...v1.1.0) (2024-10-26)
 
 
