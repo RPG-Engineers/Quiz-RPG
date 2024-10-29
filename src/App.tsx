@@ -29,12 +29,16 @@ import { Resultado } from "./views/Resultado";
 import Tags from "./views/Tags";
 import Import from "./views/Import";
 
+interface PatchNote {
+  version: string;
+  date: string;
+  notes: string;
+}
+
 function App() {
   const [showPatchNotes, setShowPatchNotes] = useState(false);
-  const [patchNotes, setPatchNotes] = useState("");
-  const [showWarningModal, setShowWarningModal] = useState(
-    !localStorage.getItem("dontShowWarningAgain")
-  );
+  const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
+  const [showWarningModal, setShowWarningModal] = useState(!localStorage.getItem("dontShowWarningAgain"));
   const [dontShowAgain, setDontShowAgain] = useState(false); // Estado para a opção "Não mostrar novamente"
   const [toasts, setToasts] = useState<Array<ToastType>>([]);
 
@@ -66,10 +70,15 @@ function App() {
         }
 
         const data = await response.json();
-        const currentVersion = data.version;
+        const currentVersion = data.currentVersion;
+        const notesHistory: PatchNote[] = data.versions.map((note: PatchNote) => ({
+          version: note.version,
+          date: note.date,
+          notes: emoji.replace_colons(note.notes),
+        }));
 
         if (currentVersion && currentVersion !== lastSeenVersion) {
-          setPatchNotes(emoji.replace_colons(data.notes));
+          setPatchNotes(notesHistory);
           setShowPatchNotes(true);
         }
       } catch (error) {
@@ -117,8 +126,7 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        localStorage.setItem("lastSeenVersion", data.version);
-        setPatchNotes(emoji.replace_colons(data.notes));
+        localStorage.setItem("lastSeenVersion", data.currentVersion);
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -166,12 +174,17 @@ function App() {
         </Router>
 
         {/* Modal de Patch Notes */}
-        <Modal show={showPatchNotes} onHide={handlePatchNotesClose} centered>
+        <Modal show={showPatchNotes} onHide={handlePatchNotesClose} centered size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Novidades da versão</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <ReactMarkdown children={patchNotes} remarkPlugins={[remarkGfm]} />
+          <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+            {patchNotes.map((note: PatchNote, index: number) => (
+              <div key={index} style={{ marginBottom: "1rem" }}>
+                <ReactMarkdown children={note.notes} remarkPlugins={[remarkGfm]} />
+                <hr />
+              </div>
+            ))}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={handlePatchNotesClose}>
@@ -186,13 +199,15 @@ function App() {
             <Modal.Title>Aviso Importante</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Os dados salvos no programa são armazenados localmente no seu navegador. Caso você limpe o cache ou exclua os cookies, esses dados poderão ser perdidos. Para evitar perda de informações, recomendamos que você exporte seus dados regularmente e os salve em um local seguro.
-            <Form.Check 
-              type="checkbox" 
-              label="Não mostrar novamente" 
-              checked={dontShowAgain} 
-              onChange={(e) => setDontShowAgain(e.target.checked)} 
-              className="mt-3" 
+            Os dados salvos no programa são armazenados localmente no seu navegador. Caso você limpe o cache ou exclua
+            os cookies, esses dados poderão ser perdidos. Para evitar perda de informações, recomendamos que você
+            exporte seus dados regularmente e os salve em um local seguro.
+            <Form.Check
+              type="checkbox"
+              label="Não mostrar novamente"
+              checked={dontShowAgain}
+              onChange={(e) => setDontShowAgain(e.target.checked)}
+              className="mt-3"
             />
           </Modal.Body>
           <Modal.Footer>
