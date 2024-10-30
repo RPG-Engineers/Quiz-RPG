@@ -4,22 +4,20 @@ import { v4 as uuidv4 } from "uuid";
 import { useToast } from "../context/ToastContext";
 import { addAlternativa, associateAlternativaToTags } from "../database/alternativa";
 import { addPergunta } from "../database/pergunta";
-import { Alternativa, FormErrors, Pergunta, Tag } from "../types";
+import { Alternativa, FormErrors, Pergunta } from "../types";
 import { handleInputChange } from "../utils/formHelpers";
 import { AlternativeCreate, AlternativeCreateProps } from "./AlternativeCreate";
 
 interface QuestionCreateProps {
-  tags: Tag[];
   fetchData: () => Promise<void>;
 }
 
-export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData }) => {
+export const QuestionCreate: React.FC<QuestionCreateProps> = ({ fetchData }) => {
   const [alternativaProps, setAlternativaProps] = useState<AlternativeCreateProps[]>([
     {
       id: uuidv4(),
       placeholder: "Opção 1",
       eventKey: "0",
-      tags: [],
       onRemove: () => {},
       onTextChange: () => {},
       onTagChange: () => {},
@@ -139,7 +137,6 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
           id: uuidv4(),
           placeholder: "Opção 1",
           eventKey: "0",
-          tags: [],
           onRemove: () => {},
           onTextChange: handleAlternativeTextChange,
           onTagChange: handleAlternativeTagChange,
@@ -194,7 +191,6 @@ export const QuestionCreate: React.FC<QuestionCreateProps> = ({ tags, fetchData 
                         placeholder={alternativa.placeholder}
                         eventKey={alternativa.eventKey}
                         onRemove={() => handleRemoveAlternative(alternativa.id)}
-                        tags={tags}
                         onTextChange={handleAlternativeTextChange}
                         onTagChange={handleAlternativeTagChange}
                         onEnter={handleAddAlternative}
