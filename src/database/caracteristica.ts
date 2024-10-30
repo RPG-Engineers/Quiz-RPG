@@ -81,7 +81,7 @@ export async function getCaracteristicaById(id: number): Promise<Caracteristica>
  *
  * @param {string} termo Termo a ser pesquisado
  */
-export async function filtrarCaracteristicas(termo: string): Promise<CaracteristicaWithTags[]> {
+export async function searchCaracteristicas(termo: string): Promise<CaracteristicaWithTags[]> {
   try {
     // Buscar IDs das tags que correspondem ao termo
     const tagIds = await db.tag.where("nome").startsWithIgnoreCase(termo).primaryKeys();
@@ -108,6 +108,32 @@ export async function filtrarCaracteristicas(termo: string): Promise<Caracterist
     return await associateTagsToCaracteristicas(resultado);
   } catch (error) {
     console.error("Erro ao filtrar características:", error);
+    throw error;
+  }
+}
+
+/**
+ * Filtra características pelo nome e tipo especificado.
+ *
+ * @param {string} termo Termo a ser pesquisado no nome da característica.
+ * @param {TipoCaracteristica} tipo Tipo da característica a ser filtrada.
+ */
+export async function searchCaracteristicasByTipo(
+  termo: string,
+  tipo: TipoCaracteristica
+): Promise<CaracteristicaWithTags[]> {
+  try {
+    // Filtra características pelo nome e tipo especificado
+    const caracteristicasFiltradas = await db.caracteristica
+      .where("tipo")
+      .equals(tipo)
+      .and((caracteristica) => caracteristica.nome.toLowerCase().startsWith(termo.toLowerCase()))
+      .toArray();
+
+    // Associa as tags às características filtradas
+    return await associateTagsToCaracteristicas(caracteristicasFiltradas);
+  } catch (error) {
+    console.error("Erro ao filtrar características por nome e tipo:", error);
     throw error;
   }
 }
