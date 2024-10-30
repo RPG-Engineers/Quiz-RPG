@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Button, Container, FormControl, InputGroup, Row } from "react-bootstrap";
 import TraitCard from "../components/TraitCard";
-import { filtrarCaracteristicas, getCaracteristicas } from "../database/caracteristica";
+import { searchCaracteristicas, getCaracteristicas } from "../database/caracteristica";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 
 const Caracteristicas: React.FC = () => {
@@ -25,7 +25,7 @@ const Caracteristicas: React.FC = () => {
     const fetchCaracteristicas = async () => {
       try {
         const caracteristicasFromDB = termoBusca
-          ? await filtrarCaracteristicas(termoBusca)
+          ? await searchCaracteristicas(termoBusca)
           : await getCaracteristicas();
 
         setCaracteristicas(caracteristicasFromDB);

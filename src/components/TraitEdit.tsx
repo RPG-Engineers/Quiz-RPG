@@ -131,7 +131,7 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
                           setFormErrors
                         )
                       }
-                      placeholder="Breve descrição do background"
+                      placeholder={`Breve descrição d${stringTipo}`}
                     />
                   </Form.Group>
 
