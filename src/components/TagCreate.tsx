@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { addTag } from "../database/tag";
 import { useToast } from "../context/ToastContext";
 import { handleInputChange } from "../utils/formHelpers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDice } from "@fortawesome/free-solid-svg-icons";
 
 interface TagCreateProps {
   fetchData: () => Promise<void>;
@@ -27,6 +29,12 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  };
+
+  // Função para randomizar a cor
+  const handleRandomColor = () => {
+    const randomColor = generateRandomColor();
+    setNewTag((prevTag) => ({ ...prevTag, cor: randomColor }));
   };
 
   // Salvar Tag
@@ -86,20 +94,26 @@ const TagCreate: React.FC<TagCreateProps> = ({ fetchData }) => {
 
                 <Form.Group controlId="tagCor" className="mt-2">
                   <Form.Label>Cor da Tag</Form.Label>
-                  <Form.Control
-                    type="color"
-                    name="cor"
-                    value={newTag.cor}
-                    onChange={(e) =>
-                      handleInputChange(
-                        e as React.ChangeEvent<HTMLInputElement>,
-                        newTag,
-                        setNewTag,
-                        formErrors,
-                        setFormErrors
-                      )
-                    }
-                  />
+                  <div className="d-flex align-items-center">
+                    <Form.Control
+                      type="color"
+                      name="cor"
+                      value={newTag.cor}
+                      className="me-2"
+                      onChange={(e) =>
+                        handleInputChange(
+                          e as React.ChangeEvent<HTMLInputElement>,
+                          newTag,
+                          setNewTag,
+                          formErrors,
+                          setFormErrors
+                        )
+                      }
+                    />
+                    <Button variant="dark" onClick={handleRandomColor} title="Randomizar Cor">
+                      <FontAwesomeIcon icon={faDice} />
+                    </Button>
+                  </div>
                 </Form.Group>
 
                 <Button type="submit" variant="success" className="mt-3">
