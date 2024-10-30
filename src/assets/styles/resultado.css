@@ -48,7 +48,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('../img/pngwing.com.png') no-repeat;
   background-size: contain;
   margin-top: 20px; /* Adicione um espaço acima do troféu */
 }

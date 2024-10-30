@@ -7,11 +7,9 @@ import HintCard from "../components/HintCard";
 import { QuestionCreate } from "../components/QuestionCreate";
 import { QuestionMasterCard } from "../components/QuestionMasterCard";
 import { deletePergunta, getPerguntas } from "../database/pergunta";
-import { getTags } from "../database/tag";
-import { Pergunta, Tag } from "../types";
+import { Pergunta } from "../types";
 
 const Perguntas: React.FC = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
@@ -26,9 +24,7 @@ const Perguntas: React.FC = () => {
   };
 
   const fetchData = async () => {
-    const tagsFromDB = await getTags();
     const perguntasFromDB = await getPerguntas();
-    setTags(tagsFromDB);
     setPerguntas(perguntasFromDB);
   };
 
@@ -47,7 +43,7 @@ const Perguntas: React.FC = () => {
         dela, qualificaria a alternativa escolhida com as tags adequadas.
       </HintCard>
 
-      <QuestionCreate tags={tags} fetchData={fetchData} />
+      <QuestionCreate fetchData={fetchData} />
 
       <Container className="mt-3">
         <Row>

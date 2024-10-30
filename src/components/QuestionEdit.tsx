@@ -142,7 +142,6 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
             id: alternativa.id_alternativa.toString(),
             placeholder: `Opção ${alternativasProps.length + 1}`,
             eventKey: alternativa.id_alternativa.toString(),
-            tags: tags,
             onRemove: () => handleRemoveAlternative(alternativa.id_alternativa!.toString()),
             onTextChange: handleAlternativaTextChange,
             onTagChange: handleAlternativaTagChange,
@@ -202,7 +201,6 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({ id, tags }) => {
                         placeholder={alternativa.placeholder}
                         eventKey={alternativa.eventKey}
                         onRemove={() => handleRemoveAlternative(alternativa.id)}
-                        tags={tags}
                         onTextChange={handleAlternativaTextChange}
                         onTagChange={handleAlternativaTagChange}
                         onEnter={handleAddAlternative}
