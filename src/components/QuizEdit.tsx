@@ -10,6 +10,7 @@ import {
 import { FormErrors, Pergunta, Questionario } from "../types";
 import { useToast } from "../context/ToastContext";
 import { handleInputChange } from "../utils/formHelpers";
+import QuestionSelection from "./QuestionSelection";
 
 interface QuizEditProps {
   id: number;
@@ -116,17 +117,11 @@ export const QuizEdit: React.FC<QuizEditProps> = ({ id }) => {
                 </Form.Group>
                 <Form.Group className="mt-3">
                   <h1 className="fs-5">Perguntas</h1>
-                  {perguntas.map((pergunta, index) => (
-                    <div key={index} className="d-flex align-items-center mt-2">
-                      <Form.Check
-                        type="checkbox"
-                        id={pergunta.id_pergunta!.toString()}
-                        label={pergunta.pergunta}
-                        checked={selectedPerguntas.has(pergunta.id_pergunta!)}
-                        onChange={() => handleCheckboxChange(pergunta.id_pergunta!)}
-                      />
-                    </div>
-                  ))}
+                  <QuestionSelection
+                    perguntas={perguntas}
+                    selectedPerguntas={selectedPerguntas}
+                    onTogglePergunta={handleCheckboxChange}
+                  />
                 </Form.Group>
                 <Button variant="success" type="submit" className="mt-3">
                   Salvar

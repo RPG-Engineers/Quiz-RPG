@@ -1,15 +1,19 @@
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { QuestionMasterCard } from "../components/QuestionMasterCard";
-import { QuestionCreate } from "../components/QuestionCreate";
-import { getTags } from "../database/tag";
-import { deletePergunta, getPerguntas } from "../database/pergunta";
-import { Pergunta, Tag } from "../types";
+import { Card, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import HintCard from "../components/HintCard";
+import { QuestionCreate } from "../components/QuestionCreate";
+import { QuestionMasterCard } from "../components/QuestionMasterCard";
+import { deletePergunta, getPerguntas } from "../database/pergunta";
+import { getTags } from "../database/tag";
+import { Pergunta, Tag } from "../types";
 
 const Perguntas: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const handleEdit = (id: number) => {
@@ -28,7 +32,10 @@ const Perguntas: React.FC = () => {
     setPerguntas(perguntasFromDB);
   };
 
-  // Construtor do Componente
+  const filteredPerguntas = perguntas.filter((pergunta) =>
+    pergunta.pergunta.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -36,11 +43,35 @@ const Perguntas: React.FC = () => {
   return (
     <>
       <HintCard>
-        Você pode descrever uma situação do tipo "O que você faria?" e de acordo como o jogador se
-        comportaria diante dela, qualificaria a alternativa escolhida com as tags adequadas.
+        Você pode descrever uma situação do tipo "O que você faria?" e de acordo como o jogador se comportaria diante
+        dela, qualificaria a alternativa escolhida com as tags adequadas.
       </HintCard>
+
       <QuestionCreate tags={tags} fetchData={fetchData} />
-      {perguntas.map((pergunta) => (
+
+      <Container className="mt-3">
+        <Row>
+          <Col md={{ span: 6, offset: 3 }}>
+            <Card>
+              <Card.Body>
+                <InputGroup>
+                  <InputGroup.Text>
+                    <FontAwesomeIcon icon={faSearch} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Buscar perguntas..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </InputGroup>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+
+      {filteredPerguntas.map((pergunta) => (
         <QuestionMasterCard
           key={pergunta.id_pergunta}
           pergunta={pergunta}
