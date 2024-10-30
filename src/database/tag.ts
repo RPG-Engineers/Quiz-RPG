@@ -75,6 +75,18 @@ export async function getTagsByAlternativaId(alternativaId: number): Promise<Tag
 }
 
 /**
+ * Filtra e ordena as tags cujo nome começa com o termo de busca fornecido
+ *
+ * @param {string} searchTerm Termo de busca para filtrar tags pelo nome
+ */
+export async function filterTagsByName(searchTerm: string): Promise<Tag[]> {
+  return await db.tag
+    .where("nome")
+    .startsWithIgnoreCase(searchTerm)
+    .sortBy("nome");
+}
+
+/**
  * Atualiza uma tag do banco de dados
  *
  * @param {number} id Id da tag a ser atualizada

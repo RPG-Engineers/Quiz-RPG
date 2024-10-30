@@ -3,14 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Accordion, Button, Card, Container, Form, useAccordionButton } from "react-bootstrap";
 import { TagSelection } from "./TagSelection";
 import { useState, useEffect } from "react";
-import { Tag } from "../types";
 import HintTooltip from "./HintTooltip";
 
 export interface AlternativeCreateProps {
   id: string;
   placeholder: string;
   eventKey: string;
-  tags: Tag[];
   onRemove: () => void;
   onTextChange: (id: string, text: string) => void;
   onTagChange: (id: string, selectedTags: Set<number>) => void;
@@ -22,7 +20,6 @@ export interface AlternativeCreateProps {
 
 export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
   id,
-  tags,
   eventKey,
   placeholder,
   onRemove,
@@ -83,7 +80,7 @@ export const AlternativeCreate: React.FC<AlternativeCreateProps> = ({
             <Form.Label>
               Tags para Selecionar <HintTooltip>Selecione as tags mais coerentes com a alternativa</HintTooltip>
             </Form.Label>
-            <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
+            <TagSelection selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
           </Form.Group>
         </Container>
       </Accordion.Collapse>

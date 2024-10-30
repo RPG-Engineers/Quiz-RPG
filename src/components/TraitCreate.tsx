@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { addCaracteristica, associateCaracteristicaToTags } from "../database/caracteristica";
-import { Caracteristica, FormErrors, Tag, TipoCaracteristica } from "../types";
-import { getTipo } from "../utils/util";
-import { TagSelection } from "./TagSelection";
 import { useToast } from "../context/ToastContext";
+import { addCaracteristica, associateCaracteristicaToTags } from "../database/caracteristica";
+import { Caracteristica, FormErrors, TipoCaracteristica } from "../types";
 import { handleInputChange } from "../utils/formHelpers";
-import HintTooltip from "./HintTooltip";
+import { getTipo } from "../utils/util";
 import HintCard from "./HintCard";
+import HintTooltip from "./HintTooltip";
+import { TagSelection } from "./TagSelection";
 
 interface TraitCreateProps {
-  tags: Tag[];
   tipo: TipoCaracteristica;
   fetchData: (tipo: TipoCaracteristica) => Promise<void>;
 }
 
-const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
+const TraitCreate: React.FC<TraitCreateProps> = ({ tipo, fetchData }) => {
   const [newTrait, setNewTrait] = useState<Caracteristica>({
     nome: "",
     descricao: "",
@@ -176,7 +175,7 @@ const TraitCreate: React.FC<TraitCreateProps> = ({ tags, tipo, fetchData }) => {
                 <Form.Label>
                   Tags para Selecionar <HintTooltip>Selecione as tags que são coerentes com {stringTipo}</HintTooltip>
                 </Form.Label>
-                <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
+                <TagSelection selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
               </Form.Group>
 
               <Button type="submit" variant="success" className="mt-3">
