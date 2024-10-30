@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 import {
   getCaracteristicaById,
-  updateCaracteristica,
   updateAssociationCaracteristicaToTags,
+  updateCaracteristica,
 } from "../database/caracteristica";
-import { getTags, getTagsByCaracteristicaId } from "../database/tag";
-import { Tag, Caracteristica, TipoCaracteristica, FormErrors } from "../types";
-import { useNavigate } from "react-router-dom";
-import { TagSelection } from "./TagSelection";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import { useToast } from "../context/ToastContext";
-import { getTipo } from "../utils/util";
+import { getTagsByCaracteristicaId } from "../database/tag";
+import { Caracteristica, FormErrors, TipoCaracteristica } from "../types";
 import { handleInputChange } from "../utils/formHelpers";
+import { getTipo } from "../utils/util";
+import { TagSelection } from "./TagSelection";
 
 interface TraitEditProps {
   id: number;
@@ -30,7 +30,6 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
   const [formErrors, setFormErrors] = useState<FormErrors>({
     nome: false,
   });
-  const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<Set<number>>(new Set());
   const stringTipo = getTipo(tipo) == "background" ? "o background" : "a " + getTipo(tipo);
   const navigate = useNavigate();
@@ -83,9 +82,6 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
           .filter((id): id is number => id !== undefined) // Filtre IDs indefinidos
       );
       setSelectedTags(tagIds);
-
-      const tagsFromDB = await getTags();
-      setTags(tagsFromDB);
     };
 
     fetchData();
@@ -179,7 +175,7 @@ const TraitEdit: React.FC<TraitEditProps> = ({ id, tipo, navigationDestiny }) =>
 
                   <Form.Group className="mt-2">
                     <Form.Label>Tags para Selecionar</Form.Label>
-                    <TagSelection tags={tags} selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
+                    <TagSelection selectedTags={selectedTags} handleTagToggle={handleTagToggle} />
                   </Form.Group>
 
                   <Button type="submit" variant="success" className="mt-3">
