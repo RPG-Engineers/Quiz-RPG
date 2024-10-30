@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.2.0...v1.3.0) (2024-10-30)
+
+
+### Features
+
+* :card_file_box: Adicionado questionário base ([1763f8d](https://github.com/RPG-Engineers/Quiz-RPG/commit/1763f8dc5fb154ced520acbc74bb54fb6019e40b)), closes [#182](https://github.com/RPG-Engineers/Quiz-RPG/issues/182)
+* :sparkles: Adicionado barra de busca na seleção de tags ([fc59fb6](https://github.com/RPG-Engineers/Quiz-RPG/commit/fc59fb68762987546a4bcc187ddab892d1af739f)), closes [#183](https://github.com/RPG-Engineers/Quiz-RPG/issues/183)
+* :sparkles: Adicionado barra de busca nas características (parte admin), e generalizado componentes ([fec086a](https://github.com/RPG-Engineers/Quiz-RPG/commit/fec086ab08d9ce0643c336de2a882c0851d4db6a)), closes [#183](https://github.com/RPG-Engineers/Quiz-RPG/issues/183)
+* :sparkles: Adicionado barra de pesquisa de perguntas em questionário e em perguntas ([11b83a0](https://github.com/RPG-Engineers/Quiz-RPG/commit/11b83a0a0823d6339fbff19cf65a0b2af663faff)), closes [#183](https://github.com/RPG-Engineers/Quiz-RPG/issues/183)
+* :sparkles: Adicionado randomizador de cor em tags ([c42264c](https://github.com/RPG-Engineers/Quiz-RPG/commit/c42264c584f1c2116e22f44721535ecc518ab3a2))
+* :sparkles: Configurado para mostrar notas de atualizações antigas e deixar modal rolável ([127c841](https://github.com/RPG-Engineers/Quiz-RPG/commit/127c841fc3107c1c24156ca07fe93318718ffebb)), closes [#184](https://github.com/RPG-Engineers/Quiz-RPG/issues/184)
+
 # [1.2.0](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.1.0...v1.2.0) (2024-10-28)
 
 
