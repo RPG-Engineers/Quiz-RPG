@@ -210,6 +210,59 @@ export const importDefaultData = async () => {
 };
 
 /**
+ * Função para resetar o banco de dados para os dados padrão (versão de fábrica)
+ */
+export const resetToDefault = async () => {
+  try {
+    // Obter os dados padrão do arquivo JSON
+    const response = await fetch("default-data.json");
+    const defaultData = await response.json();
+
+    // Realizar o reset em uma única transação
+    await db.transaction(
+      "rw",
+      [
+        db.caracteristica,
+        db.tag,
+        db.caracteristica_tag,
+        db.alternativa,
+        db.alternativa_tag,
+        db.pergunta,
+        db.questionario,
+        db.questionario_pergunta,
+      ],
+      async () => {
+        // Limpar todas as tabelas
+        await db.caracteristica.clear();
+        await db.tag.clear();
+        await db.caracteristica_tag.clear();
+        await db.alternativa.clear();
+        await db.alternativa_tag.clear();
+        await db.pergunta.clear();
+        await db.questionario.clear();
+        await db.questionario_pergunta.clear();
+
+        // Inserir os dados padrão
+        await db.caracteristica.bulkAdd(defaultData.caracteristicas);
+        await db.tag.bulkAdd(defaultData.tags);
+        await db.caracteristica_tag.bulkAdd(defaultData.caracteristica_tag);
+        await db.alternativa.bulkAdd(defaultData.alternativa);
+        await db.alternativa_tag.bulkAdd(defaultData.alternativa_tag);
+        await db.pergunta.bulkAdd(defaultData.pergunta);
+        await db.questionario.bulkAdd(defaultData.questionario);
+        await db.questionario_pergunta.bulkAdd(defaultData.questionario_pergunta);
+      }
+    );
+
+    console.log("Banco de dados resetado para os dados padrão!");
+    return true;
+  } catch (error) {
+    console.error("Erro ao resetar para os dados padrão:", error);
+    throw new Error("Erro ao resetar os dados. Verifique o arquivo default-data.json.");
+  }
+};
+
+/**
  * Restaura o banco de dados para a versão de backup
  *
  * @param {*} backup Dados de backup para restaurar o banco dados Dexie
