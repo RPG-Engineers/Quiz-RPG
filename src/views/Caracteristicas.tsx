@@ -19,7 +19,12 @@ const Caracteristicas: React.FC = () => {
   const filtrarPorTipo = (tipo: TipoCaracteristica) => {
     return caracteristicas.filter((caracteristica) => caracteristica.tipo === tipo);
   };
-
+  
+  // Função que verifica se há características do tipo
+  const temCaracteristica = (tipo: TipoCaracteristica) => {
+    return filtrarPorTipo(tipo).length > 0;
+  };
+  
   // Construtor do Componente
   useEffect(() => {
     const fetchCaracteristicas = async () => {
@@ -42,7 +47,9 @@ const Caracteristicas: React.FC = () => {
       <Container className="my-4">
         <Row className="align-items-center justify-content-center">
           <InputGroup className="search-bar">
-            <Button disabled><FontAwesomeIcon color="white" stroke="white" strokeWidth={20} icon={faMagnifyingGlass} /></Button>
+            <Button disabled>
+              <FontAwesomeIcon color="white" stroke="white" strokeWidth={20} icon={faMagnifyingGlass} />
+            </Button>
             <FormControl
               type="text"
               placeholder="Digite uma Tag ou uma Característica para pesquisar"
@@ -53,32 +60,41 @@ const Caracteristicas: React.FC = () => {
         </Row>
       </Container>
 
-      <Container fluid className="d-flex justify-content-start">
-        <h3 className="text-white mt-3">Classes</h3>
-      </Container>
-      <div className="bg-secondary">
-        <hr />
-      </div>
+      {temCaracteristica(TipoCaracteristica.CLASSE) && (
+        <>
+          <Container fluid className="d-flex justify-content-start">
+            <h3 className="text-white mt-3">Classes</h3>
+          </Container>
+          <div className="bg-secondary">
+            <hr />
+          </div>
+          <TraitCard tipo={TipoCaracteristica.CLASSE} caracteristicas={filtrarPorTipo(TipoCaracteristica.CLASSE)} />
+        </>
+      )}
 
-      <TraitCard tipo={TipoCaracteristica.CLASSE} caracteristicas={filtrarPorTipo(TipoCaracteristica.CLASSE)} />
+      {temCaracteristica(TipoCaracteristica.RACA) && (
+        <>
+          <Container fluid className="d-flex justify-content-start">
+            <h3 className="text-white mt-3">Raças</h3>
+          </Container>
+          <div className="bg-secondary">
+            <hr />
+          </div>
+          <TraitCard tipo={TipoCaracteristica.RACA} caracteristicas={filtrarPorTipo(TipoCaracteristica.RACA)} />
+        </>
+      )}
 
-      <Container fluid className="d-flex justify-content-start">
-        <h3 className="text-white mt-3">Raças</h3>
-      </Container>
-      <div className="bg-secondary">
-        <hr />
-      </div>
-
-      <TraitCard tipo={TipoCaracteristica.RACA} caracteristicas={filtrarPorTipo(TipoCaracteristica.RACA)} />
-
-      <Container fluid className="d-flex justify-content-start">
-        <h3 className="text-white mt-3">Backgrounds</h3>
-      </Container>
-      <div className="bg-secondary">
-        <hr />
-      </div>
-
-      <TraitCard tipo={TipoCaracteristica.BACKGROUND} caracteristicas={filtrarPorTipo(TipoCaracteristica.BACKGROUND)} />
+      {temCaracteristica(TipoCaracteristica.BACKGROUND) && (
+        <>
+          <Container fluid className="d-flex justify-content-start">
+            <h3 className="text-white mt-3">Backgrounds</h3>
+          </Container>
+          <div className="bg-secondary">
+            <hr />
+          </div>
+          <TraitCard tipo={TipoCaracteristica.BACKGROUND} caracteristicas={filtrarPorTipo(TipoCaracteristica.BACKGROUND)} />
+        </>
+      )}
     </>
   );
 };

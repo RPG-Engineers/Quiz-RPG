@@ -9,8 +9,8 @@ interface ResultPodiumProps {
 const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
   return (
     <Container className="h-100">
-      <Row>
-        <Col xs={4}>
+      <Row className="justify-content-center">
+        <Col xs={12} sm={6} md={4} className="mb-3">
           <ResultCard
             title={top3[2]?.nome}
             imageSrc={top3[2]?.url_imagem}
@@ -19,7 +19,7 @@ const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
             placement={3}
           />
         </Col>
-        <Col xs={4}>
+        <Col xs={12} sm={6} md={4} className="mb-3">
           <ResultCard
             title={top3[0]?.nome}
             imageSrc={top3[0]?.url_imagem}
@@ -28,7 +28,7 @@ const ResultPodium: React.FC<ResultPodiumProps> = ({ top3 }) => {
             placement={1}
           />
         </Col>
-        <Col xs={4}>
+        <Col xs={12} sm={6} md={4} className="mb-3">
           <ResultCard
             title={top3[1]?.nome}
             imageSrc={top3[1]?.url_imagem}

@@ -1,9 +1,11 @@
-import React from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, Card, Accordion, useAccordionButton } from "react-bootstrap";
 import { CaracteristicaWithTags, TipoCaracteristica } from "../types";
 import TagList from "./TagList";
 import silhueta from "../assets/img/silhueta.png";
 import { useToast } from "../context/ToastContext";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface TraitCardProps {
   tipo: TipoCaracteristica;
@@ -12,15 +14,33 @@ interface TraitCardProps {
 
 const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
   const { showToast } = useToast();
+  const [activeKey, setActiveKey] = useState<string | null>(null);
 
   const handleCardClick = (caracteristica: CaracteristicaWithTags) => {
     if (caracteristica.url_referencia) {
-      // Se houver um link de referência, redireciona
       window.open(caracteristica.url_referencia, "_blank");
     } else {
-      // Se não houver link de referência, mostra um toast de aviso
       showToast("Esta característica não possui um link de referência.", "warning");
     }
+  };
+
+  // Componente CustomToggle com ícones do FontAwesome
+  const CustomToggle = ({ eventKey }: { eventKey: string }) => {
+    const decoratedOnClick = useAccordionButton(eventKey, () =>
+      setActiveKey(activeKey === eventKey ? null : eventKey)
+    );
+
+    const isExpanded = activeKey === eventKey;
+    return (
+      <Card.Header
+        onClick={decoratedOnClick}
+        className="d-flex justify-content-between align-items-center p-3 border-top"
+        style={{ backgroundColor: "#f8f9fa", cursor: "pointer" }}
+      >
+        <span>Clique para ver a imagem</span>
+        <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} />
+      </Card.Header>
+    );
   };
 
   return (
@@ -30,8 +50,35 @@ const TraitCard: React.FC<TraitCardProps> = ({ tipo, caracteristicas }) => {
           .filter((caracteristica) => caracteristica.tipo === tipo)
           .map((caracteristica) => (
             <Col key={caracteristica.id_caracteristica} md={4} className="mb-4">
+              {/* Accordion para Mobile */}
+              <Accordion activeKey={activeKey} className="d-md-none">
+                <Card className="mb-3" style={{ cursor: "pointer" }}>
+                  <Card.Body onClick={() => handleCardClick(caracteristica)}>
+                    <Card.Title>{caracteristica.nome}</Card.Title>
+                    <h6>Descrição</h6>
+                    <Card.Text>{caracteristica.descricao}</Card.Text>
+                    <TagList tags={caracteristica.tags} />
+                  </Card.Body>
+                  <CustomToggle eventKey={caracteristica.id_caracteristica!.toString()} />
+                  <Accordion.Collapse eventKey={caracteristica.id_caracteristica!.toString()}>
+                    <Card.Body className="p-0" style={{ borderTop: "1px solid #ddd" }}>
+                      <Card.Img
+                        src={caracteristica.url_imagem || silhueta}
+                        alt={caracteristica.nome}
+                        style={{
+                          objectFit: "contain",
+                          width: "100%",
+                          maxHeight: "500px",
+                        }}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+
+              {/* Layout para Desktop */}
               <Card
-                className="mb-3"
+                className="d-none d-md-flex mb-3"
                 style={{ maxWidth: "540px", height: "300px", cursor: "pointer" }}
                 onClick={() => handleCardClick(caracteristica)}
               >

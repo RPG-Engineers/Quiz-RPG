@@ -28,9 +28,9 @@ export const QuizMasterCard: React.FC<QuizMasterCardProps> = ({ questionario, on
   };
 
   return (
-    <Container className="h-100 mt-3">
-      <Row className="align-items-center h-100">
-        <Col xs={6} className="mx-auto">
+    <Container className="mt-3">
+      <Row>
+        <Col md={{ span: 6, offset: 3 }}>
           <Card>
             <Card.Body>
               <Card.Title>{questionario.nome}</Card.Title>

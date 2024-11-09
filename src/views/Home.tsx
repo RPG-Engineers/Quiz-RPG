@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     if (defaultQuizId) {
       navigate(`/responder/${defaultQuizId}`);
     } else {
-      showToast("Nenhum questionário padrão encontrado.", 'warning');
+      showToast("Nenhum questionário padrão encontrado.", "warning");
     }
   };
 
@@ -22,8 +22,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchDefaultQuiz = async () => {
       const id = await getDefaultQuiz();
-      if(id)
-      {
+      if (id) {
         setDefaultQuizId(id);
       }
     };
@@ -31,7 +30,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <Container className="text-center vh-90">
+    <Container className="text-center vh-90 mt-3">
       <Row className="justify-content-center align-items-center vh-90">
         <Col md={6}>
           <Image
