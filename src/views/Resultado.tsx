@@ -11,12 +11,10 @@ export const Resultado: React.FC = () => {
   const location = useLocation();
   const [resultado, setResultado] = useState<[CaracteristicaWithTags, number][]>([]);
 
-  // Filtrar os top N para uma categoria específica
   const getTopByCategory = (resultado: [CaracteristicaWithTags, number][], tipo: TipoCaracteristica, n: number) => {
     return resultado.filter(([caracteristica]) => caracteristica.tipo === tipo).slice(0, n);
   };
 
-  // Construtor do Componente
   useEffect(() => {
     const fetchData = async () => {
       if (!location.state || !location.state.respostas) {
@@ -36,8 +34,8 @@ export const Resultado: React.FC = () => {
   return (
     <>
       <div className="mt-5">
-        <Container fluid className="d-flex flex-column align-items-center">
-          <h3 className="text-white mt-3">Classes</h3>
+        <Container fluid className="d-flex flex-column align-items-center px-3">
+          <h3 className="text-white mt-3 text-center">Classes</h3>
           <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 3).map((item) => item[0])} />
           <ResultBarChart
             labels={getTopByCategory(resultado, TipoCaracteristica.CLASSE, 10).map(
@@ -48,9 +46,9 @@ export const Resultado: React.FC = () => {
         </Container>
       </div>
 
-      <Container fluid className="mt-5">
+      <Container fluid className="mt-5 px-3">
         <div className="d-flex flex-column align-items-center">
-          <h3 className="text-white mt-3">Raças</h3>
+          <h3 className="text-white mt-3 text-center">Raças</h3>
           <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.RACA, 3).map((item) => item[0])} />
           <ResultBarChart
             labels={getTopByCategory(resultado, TipoCaracteristica.RACA, 10).map(
@@ -61,9 +59,9 @@ export const Resultado: React.FC = () => {
         </div>
       </Container>
 
-      <Container fluid className="mt-5 mb-5">
+      <Container fluid className="mt-5 mb-5 px-3">
         <div className="d-flex flex-column align-items-center">
-          <h3 className="text-white mt-3">Backgrounds</h3>
+          <h3 className="text-white mt-3 text-center">Backgrounds</h3>
           <ResultPodium top3={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 3).map((item) => item[0])} />
           <ResultBarChart
             labels={getTopByCategory(resultado, TipoCaracteristica.BACKGROUND, 10).map(

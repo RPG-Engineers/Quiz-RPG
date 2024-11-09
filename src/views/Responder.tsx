@@ -73,8 +73,8 @@ export const Responder: React.FC = () => {
   return (
     <Container className="h-100 mt-3">
       <ProgressBar now={progress} label={`${Math.round(progress)}%`} className="mb-4" />
-      <Row className="align-items-center h-100">
-        <Col xs={6} className="mx-auto">
+        <Row>
+          <Col md={{ span: 6, offset: 3 }}>
           {perguntasExibir.map((pergunta) => (
             <AnswerCard
               key={pergunta.pergunta.id_pergunta}

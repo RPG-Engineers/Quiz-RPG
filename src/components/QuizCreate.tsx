@@ -39,7 +39,7 @@ export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
   // Salvar Questionário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validação do nome do questionário
     newQuiz.nome = newQuiz.nome.trim();
     if (newQuiz.nome === "") {
@@ -65,9 +65,9 @@ export const QuizCreate: React.FC<QuizCreateProps> = ({ perguntas }) => {
   };
 
   return (
-    <Container className="h-100 mt-3">
-      <Row className="align-items-center h-100">
-        <Col xs={6} className="mx-auto">
+    <Container className="mt-3">
+      <Row>
+        <Col md={{ span: 6, offset: 3 }}>
           <Card>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
