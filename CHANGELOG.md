@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.3.1...v1.4.0) (2024-11-09)
+
+
+### Features
+
+* :lipstick: Ajustado responsividade para mobile ([4787f4e](https://github.com/RPG-Engineers/Quiz-RPG/commit/4787f4e57870fbb76f701b61717aaa53d5217ffb)), closes [#181](https://github.com/RPG-Engineers/Quiz-RPG/issues/181)
+* :sparkles: Adicionado botão de reset ([601b074](https://github.com/RPG-Engineers/Quiz-RPG/commit/601b07442f47a5a253f3b31645713534bea13b1f))
+
 ## [1.3.1](https://github.com/RPG-Engineers/Quiz-RPG/compare/v1.3.0...v1.3.1) (2024-10-30)
 
 
